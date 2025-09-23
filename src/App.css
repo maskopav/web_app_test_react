@@ -1,0 +1,83 @@
+/* App.css - simple clean styling */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin-bottom: 10px;
+  font-size: 28px;
+  text-align: center;
+}
+
+p {
+  text-align: center;
+  color: #666;
+}
+
+.status {
+  margin: 20px 0;
+  font-weight: bold;
+  text-align: center;
+}
+
+button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  background-color: #0078d4;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background-color: #005fa3;
+}
+
+button.stop {
+  background-color: #d83b01;
+}
+
+button.stop:hover {
+  background-color: #a82c00;
+}
+
+button.save {
+  background-color: #107c10;
+}
+
+button.save:hover {
+  background-color: #0b5d0b;
+}
+
+audio {
+  width: 100%;
+  margin-top: 15px;
+}

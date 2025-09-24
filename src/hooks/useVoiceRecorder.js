@@ -68,24 +68,34 @@ export const useVoiceRecorder = (options = {}) => {
   };
 
   // Recording functions
-  const startRecording = () => {
-    if (stream) {
-      setRecordingStatus(RECORDING);
-      setRecordingTime(0);
-      
-      const recorder = new MediaRecorder(stream, { mimeType: audioFormat });
-      mediaRecorder.current = recorder;
-      
-      recorder.start();
-      startTimer();
-      
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunks.current.push(event.data);
+    const startRecording = () => {
+        if (stream) {
+            setRecordingStatus(RECORDING);
+            setRecordingTime(0);
+            
+            const recorder = new MediaRecorder(stream, { mimeType: audioFormat });
+            mediaRecorder.current = recorder;
+            
+            recorder.start();
+            startTimer();
+            
+            recorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                audioChunks.current.push(event.data);
+                }
+            };
+
+            // Setup audio context + analyser for visualization
+            if (!audioContext.current) {
+                audioContext.current = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            const source = audioContext.current.createMediaStreamSource(stream);
+            analyser.current = audioContext.current.createAnalyser();
+            analyser.current.fftSize = 256;
+            source.connect(analyser.current);
         }
-      };
-    }
-  };
+    };
+
 
   const pauseRecording = () => {
     if (mediaRecorder.current && recordingStatus === RECORDING) {

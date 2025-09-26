@@ -31,17 +31,17 @@ return (
             <>
             {recordingStatus === IDLE && (
                 <button onClick={onStart} className="btn-start">
-                🔴 Start Recording
+                🔴 START
                 </button>
             )}
 
             {recordingStatus === RECORDING && (
                 <div className="button-group">
                 <button onClick={onPause} className="btn-pause">
-                    ⏸️ Pause
+                    ⏸️ PAUSE
                 </button>
                 <button onClick={onStop} className="btn-stop">
-                    ⏹️ Stop
+                    ⏹️ STOP
                 </button>
                 </div>
             )}
@@ -49,10 +49,10 @@ return (
             {recordingStatus === PAUSED && (
                 <div className="button-group">
                 <button onClick={onResume} className="btn-resume">
-                    ▶️ Resume
+                    ▶️ RESUME
                 </button>
                 <button onClick={onStop} className="btn-stop">
-                    ⏹️ Stop
+                    ⏹️ STOP
                 </button>
                 </div>
             )}

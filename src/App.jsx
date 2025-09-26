@@ -28,6 +28,14 @@ const TASKS = [
   // }
 ];
 
+// Labels for each type
+const TASK_LABELS = {
+  voice: "Vocal Task",
+  motor: "Motor Task",
+  camera: "Camera Task",
+  // Add more types here as needed
+};
+
 function App() {
   const [taskIndex, setTaskIndex] = useState(0);
 
@@ -77,9 +85,28 @@ function App() {
     }
   };
 
+  // Progress counts
+  const currentTask = TASKS[taskIndex];
+  const currentType = currentTask?.type;
+
+  const totalOfType = TASKS.filter(t => t.type === currentType).length;
+  const currentOfType = TASKS
+    .slice(0, taskIndex + 1)
+    .filter(t => t.type === currentType).length;
+
   return (
     <div className="app-container">
-      {renderCurrentTask()}
+      {currentTask && (
+        <div className="task-wrapper">
+          <div className="task-progress">
+            {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType}
+          </div>
+  
+          <div className="card">
+            {renderCurrentTask()}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

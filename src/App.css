@@ -74,27 +74,54 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column; /* Added for multiple VoiceRecorder components in App.jsx */
 }
 
-/* Card - responsive sizing */
-.card {
+/* Wrapper that connects progress + card */
+.task-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 95vw;
+  max-width: 1300px; /* grows with viewport, but capped */
+  height: calc(100vh - 2 * var(--spacing-sm)); /* always visible with small margins */
+}
+
+/* Task progress bar/header */
+.task-progress {
   background: var(--color-bg-white-translucent);
   backdrop-filter: blur(10px);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* only top rounded */
+  padding: var(--spacing-md);
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-align: center;
+  color: #000000;
+  box-shadow: 0 8px 16px var(--color-shadow-light);
+  flex-shrink: 0;
+}
+
+/* Card - fills remaining space below task-progress */
+.card {
+  flex: 1; /* expand to fill vertical space */
+  background: var(--color-bg-white-translucent);
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg); /* only bottom rounded */
   padding: var(--spacing-lg);
-  width: 100%;
-  max-width: 800px; /* Kept max-width from original App.css */
   box-shadow: 0 20px 40px var(--color-shadow-light);
   text-align: center;
   transition: all 0.3s ease;
-  margin-bottom: var(--spacing-lg); /* Add margin between multiple cards */
+  /* Ensure content fits without horizontal scroll */
+  overflow-y: hidden;
+  overflow-x: hidden;
+  word-wrap: break-word;
 }
 
 /* Playback section separator */
 .playback-section {
   border-top: 2px solid var(--color-border-light);
 }
+
+
 
 
 /* -------------------- 4. Accessibility & Utilities -------------------- */

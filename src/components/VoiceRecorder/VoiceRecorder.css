@@ -4,16 +4,15 @@
 
 /* -------------------- Timer Circle -------------------- */
 
-.timer-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Make the timer and buttons scale */
+  .timer-container {
     margin: var(--spacing-lg) auto;
-    width: 200px;
-    height: 200px;
+    max-width: 220px;
+    width: 40vw;
+    height: 40vw;
+    max-height: 220px;
   }
-  
+
   .timer-circle {
     width: 200px;
     height: 200px;

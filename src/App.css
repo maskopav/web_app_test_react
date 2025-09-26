@@ -105,6 +105,20 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
+/* Button style for next task */
+.btn-next-task {
+  background: linear-gradient(45deg, #4CAF50 0%, #8BC34A 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-next-task:hover:not(:disabled) {
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+}
+
 /* Accessibility - Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .timer-circle.recording {

@@ -1,25 +1,34 @@
 import React from "react";
+import { NextTaskButton } from "./NextTaskButton";
 
 // components/VoiceRecorder/PlaybackSection.jsx - Audio playback component
 export const PlaybackSection = ({ 
     audioURL, 
-    onSave, 
-    onNewRecording,
-    className = "" 
+    recordingStatus, 
+    onRepeat,
+    onNextTask,
+    showNextButton = true
 }) => {
-if (!audioURL) return null;
+    // Only show playback section if recording is complete
+    if (!audioURL) return null;
+
+    const isRecorded = recordingStatus === 'recorded';
 
     return (
-        <div className={`playback-section ${className}`}>
+        <div className="playback-section">
         <audio src={audioURL} controls />
         
         <div className="button-group">
-            <button onClick={onSave} className="btn-save">
-            💾 Save Recording
+            <button onClick={onRepeat} className="btn-repeat">
+            🔄 Repeat
             </button>
-            <button onClick={onNewRecording} className="btn-new">
-            🔄 New Recording
-            </button>
+
+            {showNextButton && (
+            <NextTaskButton 
+                onClick={onNextTask} 
+                disabled={!isRecorded} 
+            />
+            )}
         </div>
         </div>
     );

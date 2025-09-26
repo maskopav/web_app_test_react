@@ -192,11 +192,11 @@
     background: linear-gradient(135deg, #95a5a6, var(--color-status-idle));
   }
   
-  .btn-save {
+  .btn-next {
     background: linear-gradient(135deg, #107c10, #0b5d0b);
   }
   
-  .btn-new {
+  .btn-repeat {
     background: linear-gradient(135deg, #6c5ce7, #5f3dc4);
   }
   

@@ -11,10 +11,12 @@ import { PlaybackSection } from './PlaybackSection';
 export const VoiceRecorder = ({ 
     title = "🎙️ Voice Recorder",
     subtitle = "Record, pause, resume, and save your audio with real-time visualization",
+    onNextTask,
     onRecordingComplete = () => {},
     onError = (err) => console.error(err),
     showVisualizer = true,
     autoPermission = true,
+    showNextButton = true,
     className = ""
 }) => {
     const voiceRecorder = useVoiceRecorder({
@@ -33,57 +35,66 @@ export const VoiceRecorder = ({
         pauseRecording,
         resumeRecording,
         stopRecording,
-        resetRecording
+        repeatRecording,
+        RECORDING_STATES
     } = voiceRecorder;
 
     // Auto-request permission on mount if enabled
     React.useEffect(() => {
         if (autoPermission) {
-        getMicrophonePermission();
+            getMicrophonePermission();
         }
     }, [autoPermission]);
 
-    const handleSaveRecording = () => {
-        if (audioURL) {
-        const link = document.createElement('a');
-        link.href = audioURL;
-        link.download = `recording-${Date.now()}.webm`;
-        link.click();
-        }
+    const handleNextTask = () => {
+        if (!onNextTask) return;
+
+        // Prepare task data to be saved
+        const taskData = {
+            audioURL: audioURL,
+            recordingTime: recordingTime,
+            timestamp: new Date().toISOString(),
+            taskTitle: title,
+            taskType: 'voice'
+        };
+        
+        // Call the parent's provided function
+        onNextTask(taskData);
     };
 
     return (
         <div className={`app-container ${className}`}>
-        <div className="card">
-            <h1>{title}</h1>
-            <p>{subtitle}</p>
+            <div className="card">
+                <h1>{title}</h1>
+                <p>{subtitle}</p>
 
-            <RecordingTimer
-            time={recordingTime}
-            status={recordingStatus}
-            audioLevels={audioLevels}
-            showVisualizer={showVisualizer}
-            />
+                <RecordingTimer
+                time={recordingTime}
+                status={recordingStatus}
+                audioLevels={audioLevels}
+                showVisualizer={showVisualizer}
+                />
 
-            <StatusIndicator status={recordingStatus} />
+                <StatusIndicator status={recordingStatus} />
 
-            <RecordingControls
-            recordingStatus={recordingStatus}
-            permission={permission}
-            onStart={startRecording}
-            onPause={pauseRecording}
-            onResume={resumeRecording}
-            onStop={stopRecording}
-            onPermission={getMicrophonePermission}
-            />
+                <RecordingControls
+                recordingStatus={recordingStatus}
+                permission={permission}
+                onStart={startRecording}
+                onPause={pauseRecording}
+                onResume={resumeRecording}
+                onStop={stopRecording}
+                onPermission={getMicrophonePermission}
+                />
 
-            <PlaybackSection
-            audioURL={audioURL}
-            onSave={handleSaveRecording}
-            onNewRecording={resetRecording}
-            />
-        </div>
+                <PlaybackSection
+                audioURL={audioURL}
+                recordingStatus={recordingStatus}
+                onRepeat={repeatRecording}
+                onNextTask={handleNextTask}
+                showNextButton={showNextButton}
+                />
+            </div>
         </div>
     );
 };
-

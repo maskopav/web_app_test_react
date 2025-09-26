@@ -15,7 +15,7 @@ export const RecordingControls = ({
 const { IDLE, RECORDING, PAUSED } = useVoiceRecorder().RECORDING_STATES;
 
 return (
-        <div className={`controls ${className}`}>
+    <div className={`controls ${className}`}>
         {/* Permission Button */}
         {!permission && (
             <button 
@@ -58,6 +58,6 @@ return (
             )}
             </>
         )}
-        </div>
-    );
+    </div>
+);
 };

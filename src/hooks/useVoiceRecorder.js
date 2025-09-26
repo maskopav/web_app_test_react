@@ -147,6 +147,11 @@ export const useVoiceRecorder = (options = {}) => {
         if (animationFrame.current) {
             cancelAnimationFrame(animationFrame.current);
         }
+
+        if (audioContext.current && audioContext.current.state !== "closed") {
+            audioContext.current.close();
+            audioContext.current = null;
+        }
     };
 
     // Audio Visualization Effect 
@@ -218,8 +223,14 @@ export const useVoiceRecorder = (options = {}) => {
             cancelAnimationFrame(animationFrame.current);
         }
         if (audioContext.current) {
-            audioContext.current.close();
-        }
+            // Only close if it's not already closed
+            if (audioContext.current.state !== "closed") {
+                audioContext.current.close().catch(err => {
+                console.warn("AudioContext close failed:", err);
+                });
+            }
+            audioContext.current = null; // reset ref
+                }
         };
     }, [audioURL]);
 

@@ -63,38 +63,36 @@ export const VoiceRecorder = ({
     };
 
     return (
-        <div className={`app-container ${className}`}>
-            <div className="card">
-                <h1>{title}</h1>
-                <p>{subtitle}</p>
+        <div className={`task-container ${className}`}>
+            <h1>{title}</h1>
+            <p>{subtitle}</p>
 
-                <RecordingTimer
-                time={recordingTime}
-                status={recordingStatus}
-                audioLevels={audioLevels}
-                showVisualizer={showVisualizer}
-                />
+            <RecordingTimer
+            time={recordingTime}
+            status={recordingStatus}
+            audioLevels={audioLevels}
+            showVisualizer={showVisualizer}
+            />
 
-                <StatusIndicator status={recordingStatus} />
+            <StatusIndicator status={recordingStatus} />
 
-                <RecordingControls
-                recordingStatus={recordingStatus}
-                permission={permission}
-                onStart={startRecording}
-                onPause={pauseRecording}
-                onResume={resumeRecording}
-                onStop={stopRecording}
-                onPermission={getMicrophonePermission}
-                />
+            <RecordingControls
+            recordingStatus={recordingStatus}
+            permission={permission}
+            onStart={startRecording}
+            onPause={pauseRecording}
+            onResume={resumeRecording}
+            onStop={stopRecording}
+            onPermission={getMicrophonePermission}
+            />
 
-                <PlaybackSection
-                audioURL={audioURL}
-                recordingStatus={recordingStatus}
-                onRepeat={repeatRecording}
-                onNextTask={handleNextTask}
-                showNextButton={showNextButton}
-                />
-            </div>
+            <PlaybackSection
+            audioURL={audioURL}
+            recordingStatus={recordingStatus}
+            onRepeat={repeatRecording}
+            onNextTask={handleNextTask}
+            showNextButton={showNextButton}
+            />
         </div>
     );
 };

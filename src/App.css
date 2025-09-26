@@ -1,191 +1,111 @@
-/* App.css - Global Styles, Design Tokens, and Base Layout */
-
-/* -------------------- 1. Design Tokens (CSS Variables) -------------------- */
+/* App.css <div className="app-container"> {currentTask && ( <div className="task-wrapper"> <div className="task-progress"> {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType} </div> <div className="card"> {renderCurrentTask()} </div> </div> )} </div> */ 
 :root {
-  /* Colors */
-  --color-primary: #667eea; /* Background start */
-  --color-secondary: #764ba2; /* Background end */
-  --color-text-dark: #2d3748;
-  --color-text-medium: #666;
-  --color-text-light: #f7fafc;
-  --color-white: #ffffff;
-  --color-shadow-light: rgba(0, 0, 0, 0.1);
-  --color-shadow-heavy: rgba(0, 0, 0, 0.2);
-  --color-border-light: #e9ecef;
-  --color-bg-light: #f6f8fa;
-  --color-bg-white-translucent: rgba(255, 255, 255, 0.95);
-
-  /* Status Colors */
-  --color-status-recording: #e74c3c; /* Red */
-  --color-status-paused: #f38212; /* Yellow */
-  --color-status-recorded: #2e7d32; /* Green */
-  --color-status-idle: #6c757d; /* Gray */
-
-  /* Spacing */
-  --spacing-xs: 0.5rem;
-  --spacing-sm: 1rem;
-  --spacing-md: 1.5rem;
-  --spacing-lg: 2rem;
-  --spacing-xl: 4rem;
-
-  /* Border Radius */
-  --radius-sm: 12px;
-  --radius-md: 16px;
-  --radius-lg: 20px;
-}
-
-
-/* -------------------- 2. CSS Reset and Base Styles -------------------- */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  --bg: #f9fafb;
+  --card-bg: #ffffff;
+  --text: #333;
+  --muted: #6b7280;
+  --primary: #3764df;
+  --danger: #e74c3c;
+  --warning: #f39c12;
+  --success: #27ae60;
+  --purple: #7e3ff4;
+  --radius: 1rem;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --transition: all 0.2s ease;
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-  color: var(--color-text-dark);
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.5rem;
   min-height: 100vh;
 }
 
-/* Typography */
+.task-wrapper {
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 100%;
+}
+
+.task-progress {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+  text-align: center;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
 h1 {
-  margin-bottom: var(--spacing-xs);
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  margin-bottom: 0.75rem;
   font-weight: 600;
-  color: var(--color-text-dark);
 }
 
 p {
-  color: var(--color-text-medium);
-  margin-bottom: var(--spacing-lg);
-  font-size: clamp(0.875rem, 2vw, 1rem);
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: var(--muted);
 }
 
-
-/* -------------------- 3. Layout Classes -------------------- */
-
-/* Main container - responsive with padding */
-.app-container {
-  min-height: 100vh;
-  min-width: 100vw;
-  padding: var(--spacing-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Wrapper that connects progress + card */
-.task-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  width: 95vw;
-  max-width: 1300px; /* grows with viewport, but capped */
-  height: calc(100vh - 2 * var(--spacing-sm)); /* always visible with small margins */
-}
-
-/* Task progress bar/header */
-.task-progress {
-  background: var(--color-bg-white-translucent);
-  backdrop-filter: blur(10px);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* only top rounded */
-  padding: var(--spacing-md);
-  font-size: 1.4rem;
+/* Buttons */
+button {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
   font-weight: 500;
-  text-align: center;
-  color: #000000;
-  box-shadow: 0 8px 16px var(--color-shadow-light);
-  flex-shrink: 0;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+button:hover:not(:disabled) {
+  filter: brightness(0.9);
+  transform: translateY(-1px);
+}
+button:active {
+  transform: translateY(1px);
+}
+button:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Card - fills remaining space below task-progress */
-.card {
-  flex: 1; /* expand to fill vertical space */
-  background: var(--color-bg-white-translucent);
-  backdrop-filter: blur(10px);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg); /* only bottom rounded */
-  padding: var(--spacing-lg);
-  box-shadow: 0 20px 40px var(--color-shadow-light);
-  text-align: center;
-  transition: all 0.3s ease;
-  /* Ensure content fits without horizontal scroll */
-  overflow-y: hidden;
-  overflow-x: hidden;
-  word-wrap: break-word;
-}
-
-/* Playback section separator */
-.playback-section {
-  border-top: 2px solid var(--color-border-light);
-}
-
-
-
-
-/* -------------------- 4. Accessibility & Utilities -------------------- */
-
-/* Accessibility - Focus styles for buttons */
-button:focus-visible {
-  outline: 3px solid #4f46e5;
-  outline-offset: 2px;
-}
-
-/* Button style for next task */
-.btn-next-task {
-  background: linear-gradient(45deg, #4CAF50 0%, #8BC34A 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+.button-group {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+}
+.button-group button {
+  flex: 1;
 }
 
-.btn-next-task:hover:not(:disabled) {
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+.btn-start {
+  background: var(--danger);
 }
-
-/* Accessibility - Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .timer-circle.recording {
-    animation: none;
-  }
-  
-  button {
-    transition: none;
-  }
-  
-  button:hover {
-    transform: none;
-  }
-  
-  .visualizer-bar {
-    transition: none;
-  }
+.btn-pause {
+  background: var(--purple);
 }
-
-/* Loading state */
-.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Responsive breakpoints */
-@media (max-width: 768px) {
-  .app-container {
-    padding: var(--spacing-xs);
-  }
-  
-  .card {
-    padding: var(--spacing-md);
-    border-radius: var(--radius-md);
-  }
-}
-
-@media (max-width: 480px) {
-  .card {
-    padding: var(--spacing-sm);
-    margin: var(--spacing-xs);
-  }
+.btn-resume,
+.btn-next {
+  background: var(--success);
 }

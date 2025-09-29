@@ -25,6 +25,7 @@ export const useVoiceRecorder = (options = {}) => {
     const [recordingTime, setRecordingTime] = useState(0);
     const [audioLevels, setAudioLevels] = useState(new Array(12).fill(0));
     const [activeSubtitle, setActiveSubtitle] = useState(subtitle);
+    const [exampleAudio, setExampleAudio] = useState(null);
 
     // Refs
     const mediaRecorder = useRef(null);
@@ -74,6 +75,7 @@ export const useVoiceRecorder = (options = {}) => {
     // Recording functions
     const startRecording = () => {
         if (stream) {
+            stopExample(); // stop example playback if active
             setRecordingStatus(RECORDING);
             setRecordingTime(0);
 
@@ -141,6 +143,8 @@ export const useVoiceRecorder = (options = {}) => {
     };
 
     const repeatRecording = () => {
+        stopExample(); // stop example playback if active
+
         if (audioURL) {
             URL.revokeObjectURL(audioURL);
             setAudioURL(null);
@@ -164,13 +168,41 @@ export const useVoiceRecorder = (options = {}) => {
 
     // Play audio example
     const playExample = () => {
-        console.log('Function playExample called!')
-        if (audioExample) {
-            console.log('Audio is playing')
-            const audio = new Audio(audioExample);
-            audio.play();
+        console.log(audioExample)
+        if (!audioExample) return;
+      
+        // Stop previous example if playing
+        if (exampleAudio) {
+          exampleAudio.pause();
+          exampleAudio.currentTime = 0;
         }
-    };
+      
+        const audio = new Audio(audioExample);
+        setExampleAudio(audio);
+        console.log(audio);
+        console.log(exampleAudio);
+
+    
+        audio.play().catch(err => {
+          console.error("Error playing example audio:", err);
+          setExampleAudio(null);
+        });
+
+        audio.onended = () => {
+            setExampleAudio(null); // cleanup
+        };
+      };
+      
+      // Stop Example function (used by startRecording/repeatRecording)
+      const stopExample = () => {
+        console.log('Stopping audio example!');
+        console.log(exampleAudio);
+        if (exampleAudio) {
+            exampleAudio.pause();
+            exampleAudio.currentTime = 0;
+            setExampleAudio(null);
+        }
+      };
 
     // Audio Visualization Effect 
     useEffect(() => {
@@ -260,6 +292,7 @@ return {
     recordingTime,
     audioLevels,
     activeSubtitle,
+    exampleAudio,
     
     // Actions
     getMicrophonePermission,
@@ -269,6 +302,7 @@ return {
     stopRecording,
     repeatRecording,
     playExample,
+    stopExample,
     
     // Utilities
     formatTime: (seconds) => {

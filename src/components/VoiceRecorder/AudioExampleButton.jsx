@@ -1,23 +1,23 @@
 // components/VoiceRecorder/AudioExampleButton.jsx
 import React from "react";
+import audioExampleIcon from "../../assets/audio-example-icon.svg";
 
-export const AudioExampleButton = ({ audioExample }) => {
+export const AudioExampleButton = ({recordingStatus, audioExample, playExample}) => {
   if (!audioExample) return null;
-
-  const handlePlay = () => {
-    try {
-      const audio = new Audio(audioExample);
-      audio.play().catch(err => {
-        console.error("Failed to play example:", err);
-      });
-    } catch (err) {
-      console.error("Audio error:", err);
-    }
-  };
+  
+  const isDisabled = recordingStatus === "recording";
 
   return (
-    <button className="btn-example" onClick={handlePlay}>
-      ▶️ Play Example
+    <button
+      className={`audio-example-btn ${isDisabled ? "disabled" : ""}`}
+      onClick={playExample}
+      disabled={isDisabled}
+      title={isDisabled ? "Disabled while recording" : "Play example audio"}
+    >
+      <img
+        src={audioExampleIcon}
+        alt="Play Example"
+      />
     </button>
   );
 };

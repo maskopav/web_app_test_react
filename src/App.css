@@ -1,7 +1,7 @@
 /* App.css <div className="app-container"> {currentTask && ( <div className="task-wrapper"> <div className="task-progress"> {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType} </div> <div className="card"> {renderCurrentTask()} </div> </div> )} </div> */ 
 :root {
   --bg: #f9fafb;
-  --card-bg: #ffffff;
+  --card-bg: #ededed;
   --text: #333;
   --muted: #6b7280;
   --primary: #3764df;
@@ -52,7 +52,8 @@ body {
 }
 
 .completion-screen {
-  margin-bottom: 30vh;
+  padding: 2vh;
+  margin-bottom: 10vh;
 }
 
 h1 {

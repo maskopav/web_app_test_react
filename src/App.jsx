@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import VoiceRecorder from './components/VoiceRecorder';
+import doneCheckmarkIcon from "./assets/done-checkmark-icon.svg";
 import './App.css';
 
 // App.jsx
@@ -62,6 +63,10 @@ function App() {
         <div className="completion-screen">
           <h1>All Tasks Completed!</h1>
           <p>You have successfully finished all assignments.</p>
+          <img
+            src={doneCheckmarkIcon}
+            style={{ width: 120, height: 120 }}
+          />
         </div>
       );
     }

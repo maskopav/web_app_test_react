@@ -44,6 +44,7 @@ export const VoiceRecorder = ({
         stopRecording,
         repeatRecording,
         playExample,
+        stopExample,
         RECORDING_STATES
     } = voiceRecorder;
 
@@ -75,13 +76,17 @@ export const VoiceRecorder = ({
             <h1>{title}</h1>
             <p>{activeSubtitle}</p>
 
-            <AudioExampleButton audioExample={audioExample} />
-
             <RecordingTimer
             time={recordingTime}
             status={recordingStatus}
             audioLevels={audioLevels}
             showVisualizer={showVisualizer}
+            />
+
+            <AudioExampleButton 
+            recordingStatus={recordingStatus}
+            audioExample={audioExample} 
+            playExample={playExample} 
             />
 
             <StatusIndicator status={recordingStatus} />

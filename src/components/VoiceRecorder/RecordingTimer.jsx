@@ -7,7 +7,8 @@ export const RecordingTimer = ({
     status, 
     audioLevels = [], 
     showVisualizer = true,
-    className = "" 
+    className = "",
+    children
 }) => {
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -16,18 +17,22 @@ export const RecordingTimer = ({
     };
 
     return (
-        <div className={`timer-container ${className}`}>
+        <div className={`timer-wrapper`}>
+            {/* Timer circle */}
             <div className={`timer-circle ${status}`}>
                 <div className={`timer-display ${status === 'recording' ? 'recording' : ''}`}>
-                {formatTime(time)}
+                    {formatTime(time)}
                 </div>
                 {showVisualizer && (status === 'recording' || status === 'paused') && (
-                <AudioVisualizer 
-                    audioLevels={audioLevels} 
-                    isActive={status === 'recording'} 
-                />
+                    <AudioVisualizer 
+                        audioLevels={audioLevels} 
+                        isActive={status === 'recording'} 
+                    />
                 )}
             </div>
+
+            {/* Extra control (e.g. play example button) */}
+            {children && <div className="extra-control">{children}</div>}
         </div>
     );
 };

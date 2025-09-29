@@ -81,14 +81,14 @@ export const VoiceRecorder = ({
             status={recordingStatus}
             audioLevels={audioLevels}
             showVisualizer={showVisualizer}
-            />
-
-            <AudioExampleButton 
-            recordingStatus={recordingStatus}
-            audioExample={audioExample} 
-            playExample={playExample} 
-            />
-
+            >
+                <AudioExampleButton 
+                recordingStatus={recordingStatus}
+                audioExample={audioExample} 
+                playExample={playExample} 
+                />
+            </RecordingTimer>
+            
             <StatusIndicator status={recordingStatus} />
 
             <RecordingControls

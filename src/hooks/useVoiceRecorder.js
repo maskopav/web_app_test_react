@@ -168,7 +168,6 @@ export const useVoiceRecorder = (options = {}) => {
 
     // Play audio example
     const playExample = () => {
-        console.log(audioExample)
         if (!audioExample) return;
       
         // Stop previous example if playing
@@ -179,9 +178,6 @@ export const useVoiceRecorder = (options = {}) => {
       
         const audio = new Audio(audioExample);
         setExampleAudio(audio);
-        console.log(audio);
-        console.log(exampleAudio);
-
     
         audio.play().catch(err => {
           console.error("Error playing example audio:", err);
@@ -195,8 +191,6 @@ export const useVoiceRecorder = (options = {}) => {
       
       // Stop Example function (used by startRecording/repeatRecording)
       const stopExample = () => {
-        console.log('Stopping audio example!');
-        console.log(exampleAudio);
         if (exampleAudio) {
             exampleAudio.pause();
             exampleAudio.currentTime = 0;

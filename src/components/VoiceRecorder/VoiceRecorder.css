@@ -33,6 +33,32 @@
 */
 
 /* Timer */
+.timer-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.extra-control {
+  position: absolute;
+  right: 20vw;   /* space from the right edge */
+}
+
+/* On narrow screens → fall back to flex row */
+@media (max-width: 750px) {
+  .extra-control {
+    position: static;
+    transform: none;
+    margin-left: 1rem;  /* small gap next to circle */
+  }
+
+  .timer-wrapper {
+    justify-content: center;
+    gap: 1rem; /* keep spacing consistent */
+  }
+}
+
 .timer-circle {
   width: 190px;
   height: 190px;
@@ -41,7 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1.2rem auto;
+  margin: 0 auto;
   transition: border-color 0.3s ease;
 }
 .timer-circle.recording {
@@ -54,6 +80,29 @@
   font-size: 2rem;
   font-weight: 700;
 }
+
+/* Audio Example icon*/
+.audio-example-btn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important; 
+  align-items: center;
+  cursor: pointer;
+  padding: 0;
+  justify-content: center;
+}
+
+.audio-example-btn.disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.audio-example-btn img {
+  display: block;
+  width: 60px; 
+  height: 60px;
+}
+
 
 /* Status badge */
 .status {
@@ -79,24 +128,3 @@
   background: var(--success);
 }
 
-/* Audio Example icon*/
-.audio-example-btn {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important; 
-  align-items: center;
-  cursor: pointer;
-  padding: 0;
-  justify-content: center;
-}
-
-.audio-example-btn.disabled {
-  opacity: 0.8;
-  cursor: not-allowed;
-}
-
-.audio-example-btn img {
-  display: block;
-  width: 60px; 
-  height: 60px;
-}

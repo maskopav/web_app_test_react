@@ -3,7 +3,6 @@
 A voice recording component built with **React**.  
 It leverages a **custom hook** for clean logic separation, **real-time audio visualization** using the Web Audio API, and robust control handling (record, pause, resume, stop).
 
----
 
 ## Features
 - **Custom Hook Architecture** – encapsulated recording logic in `useVoiceRecorder.js`.
@@ -13,7 +12,30 @@ It leverages a **custom hook** for clean logic separation, **real-time audio vis
 - **Automatic Cleanup** – stops streams, revokes URLs, and closes `AudioContext` on unmount.
 - **Output Handling** – provides both an `audioBlob` and a temporary `audioURL` via callback.
 
----
+## Defining Tasks
+
+All tasks are defined in `App.jsx` inside the `TASKS` array.  
+Each task is an object with configurable arguments:
+
+| Argument         | Type      | Required  | Description                                                                 |
+|------------------|-----------|-----------|-----------------------------------------------------------------------------|
+| `type`           | string    | ✅        | Type of task (e.g. `"voice"`, `"camera"`).                                  |
+| `title`          | string    | ✅        | Title of the task shown at the top of the card.                             |
+| `subtitle`       | string    | ✅        | Instruction text shown before recording starts.                             |
+| `subtitleActive` | string    | ❌        | Alternative subtitle shown *after pressing START*. Useful for reading tasks.|
+| `audioExample`   | string    | ❌        | Path to an audio file (from `/public/audio/`) with an example to play. Adds a **▶️ Play Example** button before recording or when repeating a task. |
+| `showNextButton` | boolean   | ❌        | Show or hide the "Next" button (default: `true`).                           |
+
+### Example
+```js
+{
+  type: 'voice',
+  title: 'PA-TA-KA #2',
+  subtitle: 'Press START and repeat the syllables /pa/-/ta/-/ka/...',
+  subtitleActive: 'Repeat quickly and accurately until the timer ends.',
+  audioExample: '/audio/pataka.mp3'
+}
+```
 
 ## Project Architecture
 
@@ -32,16 +54,15 @@ Handles:
 ### 2. Presentation Layer (`components/VoiceRecorder/`)
 A set of modular components that consume the hook’s state and actions:
 
-| Component              | Purpose                                                                 |
-|-------------------------|-------------------------------------------------------------------------|
-| **VoiceRecorder.jsx**   | Container. Uses the hook and orchestrates all sub-components.           |
-| **RecordingControls.jsx** | Renders buttons (`Start`, `Pause`, `Resume`, `Stop`) based on state.   |
-| **RecordingTimer.jsx**  | Displays elapsed time and includes the `AudioVisualizer`.               |
-| **AudioVisualizer.jsx** | Animated bars based on real-time `audioLevels`.                         |
-| **StatusIndicator.jsx** | Displays the current recording status (Ready, Recording, Paused, etc.). |
-| **PlaybackSection.jsx** | Provides playback UI and controls to Save or Reset the recording.       |
+| Component                 | Purpose                                                                 |
+|---------------------------|-------------------------------------------------------------------------|
+| **VoiceRecorder.jsx**     | Container. Uses the hook and orchestrates all sub-components.           |
+| **RecordingControls.jsx** | Renders buttons (`Start`, `Pause`, `Resume`, `Stop`) based on state.    |
+| **RecordingTimer.jsx**    | Displays elapsed time and includes the `AudioVisualizer`.               |
+| **AudioVisualizer.jsx**   | Animated bars based on real-time `audioLevels`.                         |
+| **StatusIndicator.jsx**   | Displays the current recording status (Ready, Recording, Paused, etc.). |
+| **PlaybackSection.jsx**   | Provides playback UI and controls to Save or Reset the recording.       |
 
----
 
 ## File Structure
 ```
@@ -62,7 +83,12 @@ src/
 └── App.jsx
 ```
 
----
+
+## Front End
+
+Main styles and formatting are contained in the App.css.
+For other specific styles used in components, new file with css modules is created.
+
 
 ## Installation & Usage
 

@@ -14,11 +14,13 @@ const TASKS = [
     type: 'voice',
     title: 'PA-TA-KA #2',
     subtitle: 'Press the START button to start the countdown. When it runs out, take a deep breath and reapeat the syllables /pa/-/ta/-/ka/ as quickly and accurately as possible until the timer runs out. ',
+    audioExample: '/audio/pataka.mp3', // optional example file
   },
   {
     type: 'voice',
     title: 'Reading #1',
     subtitle: 'Press the START button to start the countdown. When it runs out, read the text that appears on the screen with pitch and loudness comfortable to you. Press the STOP button at the end. ',
+    subtitleActive: 'When you first put a seedling in a ground, you look at it three times a day: has it grown or not? And he holds his breath, leans over it, presses a little soil at its roots, fluffs up its leaves, and generally bothers it with various actions which he considers useful care. And when the seedling nevertheless takes hold and grows like water, one marvels at this wonder of nature, feels something like a miracle, and considers it one of his greatest personal achievements.',
   },
   // In the future, you can add other task types here:
   // {
@@ -72,6 +74,8 @@ function App() {
             key={taskIndex} // Key ensures the component remounts for each new task
             title={currentTask.title}
             subtitle={currentTask.subtitle}
+            subtitleActive={currentTask.subtitleActive}
+            audioExample={currentTask.audioExample}
             onNextTask={handleNextTask}
             //showNextButton={true} // Hide next button on last task
           />

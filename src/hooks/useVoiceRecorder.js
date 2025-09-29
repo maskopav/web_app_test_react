@@ -5,7 +5,10 @@ export const useVoiceRecorder = (options = {}) => {
     const {
         onRecordingComplete = () => {},
         onError = () => {},
-        audioFormat = "audio/webm"
+        audioFormat = "audio/webm",
+        subtitle,           // initial subtitle
+        subtitleActive,     // subtitle after START
+        audioExample        // optional audio example URL
     } = options;
 
     // Recording states
@@ -21,6 +24,7 @@ export const useVoiceRecorder = (options = {}) => {
     const [audioURL, setAudioURL] = useState(null);
     const [recordingTime, setRecordingTime] = useState(0);
     const [audioLevels, setAudioLevels] = useState(new Array(12).fill(0));
+    const [activeSubtitle, setActiveSubtitle] = useState(subtitle);
 
     // Refs
     const mediaRecorder = useRef(null);
@@ -72,6 +76,10 @@ export const useVoiceRecorder = (options = {}) => {
         if (stream) {
             setRecordingStatus(RECORDING);
             setRecordingTime(0);
+
+            if (subtitleActive) {
+                setActiveSubtitle(subtitleActive); // switch subtitle
+            }
             
             const recorder = new MediaRecorder(stream, { mimeType: audioFormat });
             mediaRecorder.current = recorder;
@@ -151,6 +159,16 @@ export const useVoiceRecorder = (options = {}) => {
         if (audioContext.current && audioContext.current.state !== "closed") {
             audioContext.current.close();
             audioContext.current = null;
+        }
+    };
+
+    // Play audio example
+    const playExample = () => {
+        console.log('Function playExample called!')
+        if (audioExample) {
+            console.log('Audio is playing')
+            const audio = new Audio(audioExample);
+            audio.play();
         }
     };
 
@@ -241,6 +259,7 @@ return {
     audioURL,
     recordingTime,
     audioLevels,
+    activeSubtitle,
     
     // Actions
     getMicrophonePermission,
@@ -249,6 +268,7 @@ return {
     resumeRecording,
     stopRecording,
     repeatRecording,
+    playExample,
     
     // Utilities
     formatTime: (seconds) => {

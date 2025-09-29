@@ -51,6 +51,10 @@ body {
   text-align: center;
 }
 
+.completion-screen {
+  margin-bottom: 30vh;
+}
+
 h1 {
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin-bottom: 0.75rem;
@@ -62,6 +66,8 @@ p {
   margin-bottom: 1.5rem;
   color: var(--muted);
 }
+
+
 
 /* Buttons */
 button {

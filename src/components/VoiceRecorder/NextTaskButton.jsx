@@ -8,7 +8,7 @@ export const NextTaskButton = ({ onClick, disabled = false }) => {
         disabled={disabled} 
         className="btn-next"
         >
-        ➡️ Next Task
+        ➡️ Next
         </button>
     );
 };

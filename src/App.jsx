@@ -57,7 +57,7 @@ function App() {
     // If all tasks are completed, show a final message
     if (!currentTask) {
       return (
-        <div className="card text-center">
+        <div className="completion-screen">
           <h1>All Tasks Completed!</h1>
           <p>You have successfully finished all assignments.</p>
         </div>
@@ -73,7 +73,7 @@ function App() {
             title={currentTask.title}
             subtitle={currentTask.subtitle}
             onNextTask={handleNextTask}
-            showNextButton={taskIndex < TASKS.length - 1} // Hide next button on last task
+            //showNextButton={true} // Hide next button on last task
           />
         );
       case 'camera':
@@ -96,17 +96,18 @@ function App() {
 
   return (
     <div className="app-container">
-      {currentTask && (
-        <div className="task-wrapper">
+      <div className="task-wrapper">
+        {taskIndex < TASKS.length && (
           <div className="task-progress">
             {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType}
           </div>
+        )}
   
-          <div className="card">
-            {renderCurrentTask()}
-          </div>
+        <div className="card">
+          {renderCurrentTask()}
         </div>
-      )}
+      </div>
+        
     </div>
   );
 }

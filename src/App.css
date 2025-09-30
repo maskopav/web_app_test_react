@@ -25,8 +25,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0.5rem;
-  min-height: 100vh;
+  padding: 0.2rem;
+  min-height: 95vh;
 }
 
 .task-wrapper {
@@ -115,4 +115,33 @@ button:disabled {
 .btn-resume,
 .btn-next {
   background: var(--success);
+}
+
+
+/* Mobile-friendly adjustments */
+@media (max-width: 600px) {
+  .app-container {
+    padding: 0.1rem;
+  }
+  
+  h1 {
+    font-size: 1.4rem;   /* slightly smaller title */
+    margin: 0.2em;
+  }
+
+  p {
+    font-size: 1.1rem;  
+    margin: 0.2rem;
+  }
+
+  .task-progress {
+    font-size: 1.1rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .button-group button, .controls button {
+    font-size: 1rem;  
+    padding: 0.2rem 0.6rem;
+  }
+
 }

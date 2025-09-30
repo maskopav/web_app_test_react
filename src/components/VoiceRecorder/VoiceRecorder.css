@@ -99,17 +99,6 @@
   align-items: center;
 }
 
-/* Mobile: move below */
-@media (max-width: 750px) {
-  .extra-control {
-    position: static;
-    margin-top: 1rem;
-    transform: none;
-  }
-  .timer-wrapper {
-    flex-direction: column;
-  }
-}
 
 /* Audio Example icon*/
 .audio-example-btn {
@@ -158,3 +147,35 @@
   background: var(--success);
 }
 
+
+/* Mobile-friendly adjustments */
+@media (max-width: 600px) {
+  .timer-wrapper {
+    padding: 0.1rem;      /* reduce padding */
+    gap: 0.1rem;           /* smaller spacing */
+  }
+
+  .timer-circle {
+    width: 90px;         /* smaller timer */
+    height: 90px;
+    border-width: 4px;
+  }
+
+  .timer-display {
+    font-size: 1.2rem;   /* smaller digits */
+  }
+
+  .status {
+    font-size: 0.9rem;   /* compact status badge */
+    padding: 0.2rem 0.6rem;
+  }
+
+  .extra-control {
+    left: 60vw;   /* distance from center */
+  }
+
+  .audio-example-btn img {
+    width: 40px; 
+    height: 40px;
+  }
+}

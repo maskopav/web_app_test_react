@@ -19,9 +19,11 @@ git clone https://github.com/yourusername/react-voice-recorder.git
 cd react-voice-recorder
 npm install
 npm run dev
+# or
+npm run dev -- --host # To run the app with network acess
 ```
 Open `http://localhost:5173` in your browser.
-For testing on mobile, use the Network URL shown in your terminal (same Wi-Fi required).
+For testing on mobile, use the Network URL (e.g. `http://192.168.87.184:5173/`) shown in your terminal (same Wi-Fi required).
 
 
 ## Configurable Tasks

@@ -39,26 +39,36 @@ export const useVoiceRecorder = (options = {}) => {
 
     // Get microphone permission
     const getMicrophonePermission = async () => {
-        if ("MediaRecorder" in window) {
-            try {
-                const streamData = await navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: false,
-                });
-                setPermission(true);
-                setStream(streamData);
-                return true;
-            } catch (err) {
-                onError(err);
-                setPermission(false);
-                return false;
-            }
-        } else {
-            const error = new Error("MediaRecorder API is not supported in this browser.");
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            const error = new Error("Your browser does not support audio recording.");
             onError(error);
+            setPermission(false);
+            return false;
+        }
+    
+        try {
+        // IMPORTANT: must be called from a user gesture
+        const streamData = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: false,
+            });
+            setPermission(true);
+            setStream(streamData);
+            return true;
+        } catch (err) {
+            // Handle errors explicitly
+            if (err.name === "NotAllowedError") {
+                onError(new Error("Microphone access was denied. Please allow it in browser settings."));
+            } else if (err.name === "NotFoundError") {
+                onError(new Error("No microphone device found."));
+            } else {
+                onError(err);
+            }
+            setPermission(false);
             return false;
         }
     };
+  
 
     // Timer functions
     const startTimer = () => {

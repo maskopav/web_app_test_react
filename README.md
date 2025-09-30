@@ -38,6 +38,7 @@ All tasks are defined in `src/tasks.js`.
 | `subtitleActive` | string    | ❌        | Alternative subtitle shown *after pressing START*. |`t("tasks.pataka.title")`   |
 | `audioExample`   | string    | ❌        | Path to an audio file (from `/public/audio/`) with an example to play.|`"/audio/pataka.mp3"`|
 | `maxDuration`    | number    | ❌        | Maximum recording time (in seconds). Recording will auto-stop when reached. When defined, the UI switches to **countdown mode** and hides pause/stop buttons.  | `30` |
+| `repeat`         | number    | ❌        | Number of times to repeat this task for reproducibility. Title will show `#1`, `#2`, ... | `2` |
 | `showNextButton` | boolean   | ❌        | Show or hide the "Next" button.                    | default: `true`            |
 
 ### Adding a New Language

@@ -66,7 +66,7 @@ export const useVoiceRecorder = (options = {}) => {
             if (maxDuration) {
                 setRemainingTime(prev => {
                     if (prev == null) return null;
-                    if (prev < 1) {
+                    if (prev <= 1) {
                         stopRecording();
                         return 0;
                     }

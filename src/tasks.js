@@ -7,6 +7,7 @@ export const TASKS = () => [
     type: "voice",
     title: t("tasks.prolongedPhonationA.title"),
     subtitle: t("tasks.prolongedPhonationA.subtitle"),
+    repeat: 2,
   },
   {
     type: "voice",
@@ -14,6 +15,7 @@ export const TASKS = () => [
     subtitle: t("tasks.pataka.subtitle"),
     audioExample: "/audio/pataka.mp3",
     maxDuration: 10,
+    repeat: 2,
   },
   {
     type: "voice",

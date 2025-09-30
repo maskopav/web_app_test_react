@@ -10,7 +10,20 @@ function App() {
   const { t } = useTranslation();
   const [taskIndex, setTaskIndex] = useState(0);
 
-  const TASKS = getTasks();
+  // Expand tasks with repeat count
+  const rawTasks = getTasks();
+  const TASKS = rawTasks.flatMap(task => {
+    if (task.repeat && task.repeat > 1) {
+      return Array.from({length: task.repeat }, (_, i) => ({
+        ...task,
+        _repeatIndex: i + 1,
+        _repeatTotal: task.repeat,
+
+      }));
+    }
+    return {...task, _repeatIndex: 1, _repeatTotal: 1}
+  });
+
   const TASK_LABELS = {
     voice: t("taskLabels.voice"),
     motor: t("taskLabels.motor"),
@@ -45,7 +58,10 @@ function App() {
         return (
           <VoiceRecorder
             key={taskIndex} // Key ensures the component remounts for each new task
-            title={currentTask.title}
+            title={currentTask._repeatTotal > 1
+              ? `${currentTask.title} #${currentTask._repeatIndex}`
+              : currentTask.title
+            }
             subtitle={currentTask.subtitle}
             subtitleActive={currentTask.subtitleActive}
             audioExample={currentTask.audioExample}

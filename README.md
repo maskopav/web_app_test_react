@@ -50,8 +50,8 @@ All tasks are defined in `App.jsx` inside the `TASKS` array.
 
 ## Internationalization (i18n)
 This project uses react-i18next to support multiple languages.
-Translations are stored in src/i18n/ as JSON files, one per language. Config lives in `src/i18n.js` and is loaded in `main.jsx` with `import "./i18n"`;.
-```
+Translations are stored in src/i18n/ as JSON files, one per language. Config lives in `src/i18n.js` and is loaded in `main.jsx` with `import "./i18n"`.
+```bash
 src/
 └── i18n/
     ├── en.json
@@ -60,6 +60,7 @@ src/
     └── # add a new language with the same components and keys as in other language files
 
 ```
+**To add new language**, create `.json` file with the same keys as in other languages, add the language in config file `src/i18n.js`.
 
 ## Project Architecture & File Structure
 The project follows a **Container / Presentation pattern**, separating **logic** from **UI components**.  

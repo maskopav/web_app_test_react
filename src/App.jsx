@@ -56,8 +56,8 @@ function App() {
     if (!currentTask) {
       return (
         <div className="completion-screen">
-          <h1>All Tasks Completed!</h1>
-          <p>You have successfully finished all assignments.</p>
+          <h1>{t("completion.title")}</h1>
+          <p>{t("completion.message")}</p>
           <img
             src={doneCheckmarkIcon}
             style={{ width: 120, height: 120 }}

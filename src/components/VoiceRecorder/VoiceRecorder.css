@@ -38,6 +38,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 3vh;
+}
+
+.intensity-circle {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 0, 0, 0.3); /* red glow, tweak as needed */
+  transition: transform 0.08s linear, opacity 0.08s linear;
+  z-index: 0;
 }
 
 .extra-control {
@@ -60,10 +71,11 @@
 }
 
 .timer-circle {
-  width: 190px;
-  height: 190px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border: 10px solid #6b7280;
+  background: white;
+  border: 5px solid #6b7280;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,8 +89,8 @@
   border-color: var(--warning);
 }
 .timer-display {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  font-weight: bold;
 }
 
 /* Audio Example icon*/

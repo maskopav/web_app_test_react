@@ -1,5 +1,4 @@
 import React from 'react';
-import { AudioVisualizer } from './AudioVisualizer';
 
 // components/VoiceRecorder/RecordingTimer.jsx - Timer circle component
 export const RecordingTimer = ({ 
@@ -17,19 +16,31 @@ export const RecordingTimer = ({
         return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
+    // Compute intensity from audioLevels (0-100)
+    const avgLevel = audioLevels.length
+        ? audioLevels.reduce((a,b) => a+b, 0) / audioLevels.length
+        : 0;
+    const intensityScale = 1 + avgLevel / 140; // scaling factor for circle size
+    const intensityOpacity = Math.min(0.2 + avgLevel / 200, 1); // glow visibility
+
     return (
         <div className={`timer-wrapper`}>
+            {/* Outer intensity circle */}
+            {status === 'recording' && (
+                <div
+                    className="intensity-circle"
+                    style={{
+                        transform: `scale(${intensityScale})`,
+                        opacity: intensityOpacity,
+                    }}
+                />
+            )}
+
             {/* Timer circle */}
             <div className={`timer-circle ${status}`}>
                 <div className={`timer-display ${status === 'recording' ? 'recording' : ''}`}>
-                {remainingTime !== null ? formatTime(remainingTime) : formatTime(time)}
+                    {remainingTime !== null ? formatTime(remainingTime) : formatTime(time)}
                 </div>
-                {showVisualizer && (status === 'recording' || status === 'paused') && (
-                    <AudioVisualizer 
-                        audioLevels={audioLevels} 
-                        isActive={status === 'recording'} 
-                    />
-                )}
             </div>
 
             {/* Extra control (e.g. play example button) */}

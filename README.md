@@ -2,13 +2,13 @@
 
 A voice recording component built with **React**.  
 A **React component** for guided voice recording tasks.  
-Built with a custom recording hook, multilingual support, configurable tasks, and full i18n support for multilingual apps.
+Built with a custom recording hook, multilingual support, modular task definitions, and a clean architecture for easy extension.
 
 
 ## Features
 - **Custom Hook** – all recording logic encapsulated in `useVoiceRecorder.js`.
 - **Full Recording Flow** – supports *idle*, *recording*, *paused*, and *recorded* states.
-- **Task System** – define tasks in `App.jsx` with title, instructions, and optional audio example.
+- **Task System** – tasks defined in a single tasks.js file
 - **Internationalization (i18n)** – translations handled via `react-i18next`, with JSON files in `src/i18n/`.
 - **Automatic Cleanup** – closes streams, revokes URLs, and resets audio context.
 - **Mobile Ready** – test directly on your phone over LAN.
@@ -26,41 +26,55 @@ For testing on mobile, use the Network URL shown in your terminal (same Wi-Fi re
 
 ## Configurable Tasks
 
-All tasks are defined in `App.jsx` inside the `TASKS` array. 
+All tasks are defined in `src/tasks.js`. 
 
-| Argument         | Type      | Required  | Description                                                                 |
-|------------------|-----------|-----------|-----------------------------------------------------------------------------|
-| `type`           | string    | ✅        | Type of task (e.g. `"voice"`, `"camera"`).                                  |
-| `title`          | string    | ✅        | Title of the task shown at the top of the card.                             |
-| `subtitle`       | string    | ✅        | Instruction text shown before recording starts.                             |
-| `subtitleActive` | string    | ❌        | Alternative subtitle shown *after pressing START*. Useful for reading tasks.|
-| `audioExample`   | string    | ❌        | Path to an audio file (from `/public/audio/`) with an example to play.      |
-| `showNextButton` | boolean   | ❌        | Show or hide the "Next" button (default: `true`).                           |
+❗Each task uses translation keys for text (from i18n/*.json), not hardcoded strings❗
 
-### Example
+| Argument         | Type      | Required  | Description                                         | Example                    |
+|------------------|-----------|-----------|-----------------------------------------------------|----------------------------|
+| `type`           | string    | ✅        | Type of task.                                      | `"voice"`                  |
+| `title`          | string    | ✅        | Title of the task shown at the top of the card.    |`t("tasks.pataka.title")`   |
+| `subtitle`       | string    | ✅        | Instruction text shown before recording starts.    |`t("tasks.pataka.subtitle")`|
+| `subtitleActive` | string    | ❌        | Alternative subtitle shown *after pressing START*. |`t("tasks.pataka.title")`   |
+| `audioExample`   | string    | ❌        | Path to an audio file (from `/public/audio/`) with an example to play.|`"/audio/pataka.mp3"`|
+| `showNextButton` | boolean   | ❌        | Show or hide the "Next" button.                    | default: `true`            |
+
+### Adding a New Language
+1. Open `src/tasks.js`
+2. Add a new entry:
 ```js
 {
-  type: 'voice',
-  title: 'PA-TA-KA #2',
-  subtitle: 'Press START and repeat the syllables /pa/-/ta/-/ka/...',
-  subtitleActive: 'Repeat quickly and accurately until the timer ends.',
-  audioExample: '/audio/pataka.mp3'
+  type: "voice",
+  i18nKey: "tasks.newTaskKey",
+  audioExample: "/audio/example.mp3"
 }
 ```
+3. Update all language files in `src/i18n/` with translations:
+```json
+"newTaskKey": {
+  "title": "New Task",
+  "subtitle": "Instructions before recording...",
+  "subtitleActive": "Instructions after pressing START"
+}
+```
+4. Done! The task appears automatically in the flow.
 
 ## Internationalization (i18n)
 This project uses react-i18next to support multiple languages.
-Translations are stored in src/i18n/ as JSON files, one per language. Config lives in `src/i18n.js` and is loaded in `main.jsx` with `import "./i18n"`.
+Translations are stored in `src/i18n/` as JSON files, one per language.
 ```bash
 src/
 └── i18n/
     ├── en.json
     ├── cs.json
     ├── de.json
-    └── # add a new language with the same components and keys as in other language files
-
+    ├── # add a new language with the same components and keys as in other language files
+    └── index.js  # i18n setup
 ```
-**To add new language**, create `.json` file with the same keys as in other languages, add the language in config file `src/i18n.js`.
+### Adding a New Language
+1. Copy an existing file (e.g. `en.json`) → `fr.json`
+2. Translate the values, keeping keys identical
+3. Register the language in `src/i18n/index.js`
 
 ## Project Architecture & File Structure
 The project follows a **Container / Presentation pattern**, separating **logic** from **UI components**.  
@@ -68,18 +82,19 @@ Below is the file structure with inline notes describing each file’s role:
 ```bash
 src/
 ├── components/
-│ └── VoiceRecorder/         # UI layer for recording feature
-│ ├── VoiceRecorder.jsx      # Container: wires hook state/actions to subcomponents
-│ ├── VoiceRecorder.css      # Scoped styles for VoiceRecorder
-│ ├── AudioExampleButton.jsx # Button for playing example audio clip (if defined in task)
-│ ├── AudioVisualizer.jsx    # Renders real-time animated bars from audio levels
-│ ├── NextTaskButton.jsx     # Navigation button to move to the next task
-│ ├── PlaybackSection.jsx    # Playback UI + Save / Reset controls
-│ ├── RecordingControls.jsx  # Start / Pause / Resume / Stop buttons
-│ ├── RecordingTimer.jsx     # Displays elapsed time + contains AudioVisualizer
-│ ├── StatusIndicator.jsx    # Shows current state (Idle, Recording, Paused, etc.)
-│ └── index.js               # Barrel file for clean imports
-│
+│ |── VoiceRecorder/           # UI layer for recording feature
+│ | ├── VoiceRecorder.jsx      # Container: wires hook state/actions to subcomponents
+│ | ├── VoiceRecorder.css      # Scoped styles for VoiceRecorder
+│ | ├── AudioExampleButton.jsx # Button for playing example audio clip (if defined in task)
+│ | ├── AudioVisualizer.jsx    # Renders real-time animated bars from audio levels
+│ | ├── NextTaskButton.jsx     # Navigation button to move to the next task
+│ | ├── PlaybackSection.jsx    # Playback UI + Save / Reset controls
+│ | ├── RecordingControls.jsx  # Start / Pause / Resume / Stop buttons
+│ | ├── RecordingTimer.jsx     # Displays elapsed time + contains AudioVisualizer
+│ | ├── StatusIndicator.jsx    # Shows current state (Idle, Recording, Paused, etc.)
+│ | └── index.js               # Barrel file for clean imports
+│ └── CompletionScreen.jsx     # Dedicated UI for final screen
+|
 ├── hooks/
 │ └── useVoiceRecorder.js    # Logic layer: manages state, MediaRecorder, AudioContext
 │                            # Exposes API: startRecording, pauseRecording, resumeRecording, stopRecording, resetRecording
@@ -89,7 +104,8 @@ src/
 │ ├── cs.json                # Czech translations
 │ └── index.js               # i18n configuration (react-i18next setup)
 │
-├── App.jsx                  # Entry UI: task definitions + main flow
+├── tasks.js                 # All task definitions in one place
+├── App.jsx                  # Orchestrates main flow
 ├── App.css                  # Global styles
 ├── main.jsx                 # App bootstrap (ReactDOM + i18n import)
 └── i18n.js                  # (optional) alternate entry for i18n if not inside src/i18n/

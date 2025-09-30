@@ -1,36 +1,16 @@
 import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import VoiceRecorder from './components/VoiceRecorder';
-import doneCheckmarkIcon from "./assets/done-checkmark-icon.svg";
+import CompletionScreen from "./components/CompletionScreen";
+import { TASKS as getTasks } from "./tasks";
 import './App.css';
 
 // App.jsx
-// Define your tasks in an easily extendable array
-
 function App() {
   const { t } = useTranslation();
   const [taskIndex, setTaskIndex] = useState(0);
 
-  const TASKS = [
-    {
-      type: "voice",
-      title: t("tasks.prolongedPhonationA.title"),
-      subtitle: t("tasks.prolongedPhonationA.subtitle"),
-    },
-    {
-      type: "voice",
-      title: t("tasks.pataka.title"),
-      subtitle: t("tasks.pataka.subtitle"),
-      audioExample: "/audio/pataka.mp3",
-    },
-    {
-      type: "voice",
-      title: t("tasks.readingSeedling.title"),
-      subtitle: t("tasks.readingSeedling.subtitle"),
-      subtitleActive: t("tasks.readingSeedling.subtitleActive"),
-    }
-  ];
-
+  const TASKS = getTasks();
   const TASK_LABELS = {
     voice: t("taskLabels.voice"),
     motor: t("taskLabels.motor"),
@@ -55,14 +35,7 @@ function App() {
     // If all tasks are completed, show a final message
     if (!currentTask) {
       return (
-        <div className="completion-screen">
-          <h1>{t("completion.title")}</h1>
-          <p>{t("completion.message")}</p>
-          <img
-            src={doneCheckmarkIcon}
-            style={{ width: 120, height: 120 }}
-          />
-        </div>
+        <CompletionScreen />
       );
     }
 

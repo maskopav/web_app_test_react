@@ -1,17 +1,19 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 // components/VoiceRecorder/StatusIndicator.jsx - Status display component
 export const StatusIndicator = ({ status, className = "" }) => {
+    const { t } = useTranslation();
     const getStatusText = (status) => {
         switch (status) {
         case 'recording':
-            return '🔴 Recording...';
+            return t("status.recording");
         case 'paused':
-            return '⏸️ Paused';
+            return t("status.paused");
         case 'recorded':
-            return '✅ Recorded';
+            return t("status.recorded");
         default:
-            return '⚪ Ready';
+            return t("status.ready");
         }
     };
     

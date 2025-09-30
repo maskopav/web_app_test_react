@@ -1,21 +1,32 @@
 # 🎙️ React Voice Recorder Component
 
 A voice recording component built with **React**.  
-It leverages a **custom hook** for clean logic separation, **real-time audio visualization** using the Web Audio API, and robust control handling (record, pause, resume, stop).
+A **React component** for guided voice recording tasks.  
+Built with a custom recording hook, multilingual support, configurable tasks, and full i18n support for multilingual apps.
 
 
 ## Features
-- **Custom Hook Architecture** – encapsulated recording logic in `useVoiceRecorder.js`.
-- **Real-time Audio Visualization** – powered by Web Audio API’s `AnalyserNode`.
-- **Full Control Flow** – supports `idle`, `recording`, `paused`, and `recorded` states.
-- **Clean Component Separation** – modular UI (timer, controls, status, playback).
-- **Automatic Cleanup** – stops streams, revokes URLs, and closes `AudioContext` on unmount.
-- **Output Handling** – provides both an `audioBlob` and a temporary `audioURL` via callback.
+- **Custom Hook** – all recording logic encapsulated in `useVoiceRecorder.js`.
+- **Full Recording Flow** – supports *idle*, *recording*, *paused*, and *recorded* states.
+- **Task System** – define tasks in `App.jsx` with title, instructions, and optional audio example.
+- **Internationalization (i18n)** – translations handled via `react-i18next`, with JSON files in `src/i18n/`.
+- **Automatic Cleanup** – closes streams, revokes URLs, and resets audio context.
+- **Mobile Ready** – test directly on your phone over LAN.
 
-## Defining Tasks
+## Quick Start
+```bash
+git clone https://github.com/yourusername/react-voice-recorder.git
+cd react-voice-recorder
+npm install
+npm run dev
+```
+Open `http://localhost:5173` in your browser.
+For testing on mobile, use the Network URL shown in your terminal (same Wi-Fi required).
 
-All tasks are defined in `App.jsx` inside the `TASKS` array.  
-Each task is an object with configurable arguments:
+
+## Configurable Tasks
+
+All tasks are defined in `App.jsx` inside the `TASKS` array. 
 
 | Argument         | Type      | Required  | Description                                                                 |
 |------------------|-----------|-----------|-----------------------------------------------------------------------------|
@@ -23,7 +34,7 @@ Each task is an object with configurable arguments:
 | `title`          | string    | ✅        | Title of the task shown at the top of the card.                             |
 | `subtitle`       | string    | ✅        | Instruction text shown before recording starts.                             |
 | `subtitleActive` | string    | ❌        | Alternative subtitle shown *after pressing START*. Useful for reading tasks.|
-| `audioExample`   | string    | ❌        | Path to an audio file (from `/public/audio/`) with an example to play. Adds a **▶️ Play Example** button before recording or when repeating a task. |
+| `audioExample`   | string    | ❌        | Path to an audio file (from `/public/audio/`) with an example to play.      |
 | `showNextButton` | boolean   | ❌        | Show or hide the "Next" button (default: `true`).                           |
 
 ### Example
@@ -37,57 +48,61 @@ Each task is an object with configurable arguments:
 }
 ```
 
-## Project Architecture
-
-The project follows a **Container/Presentation pattern**, separating **logic** from **UI**:
-
-### 1. Logic Layer (`hooks/useVoiceRecorder.js`)
-Handles:
-- Recording state (`recordingStatus`, `audioURL`, `recordingTime`, `audioLevels`, etc.)
-- Browser APIs:
-  - `navigator.mediaDevices.getUserMedia` – microphone access
-  - `MediaRecorder` – recording
-  - `AudioContext` + `AnalyserNode` – visualization
-- Timers, cleanup, and side effects
-- Exposes a clean API: `startRecording`, `pauseRecording`, `resumeRecording`, `stopRecording`, `resetRecording`, etc.
-
-### 2. Presentation Layer (`components/VoiceRecorder/`)
-A set of modular components that consume the hook’s state and actions:
-
-| Component                 | Purpose                                                                 |
-|---------------------------|-------------------------------------------------------------------------|
-| **VoiceRecorder.jsx**     | Container. Uses the hook and orchestrates all sub-components.           |
-| **RecordingControls.jsx** | Renders buttons (`Start`, `Pause`, `Resume`, `Stop`) based on state.    |
-| **RecordingTimer.jsx**    | Displays elapsed time and includes the `AudioVisualizer`.               |
-| **AudioVisualizer.jsx**   | Animated bars based on real-time `audioLevels`.                         |
-| **StatusIndicator.jsx**   | Displays the current recording status (Ready, Recording, Paused, etc.). |
-| **PlaybackSection.jsx**   | Provides playback UI and controls to Save or Reset the recording.       |
-
-
-## File Structure
+## Internationalization (i18n)
+This project uses react-i18next to support multiple languages.
+Translations are stored in src/i18n/ as JSON files, one per language. Config lives in `src/i18n.js` and is loaded in `main.jsx` with `import "./i18n"`;.
 ```
 src/
-├── components/
-│   └── VoiceRecorder/
-│       ├── VoiceRecorder.jsx
-│       ├── VoiceRecorder.css (voice recording styles)
-│       ├──AudioVisualizer.jsx
-│       ├──PlaybackSection.jsx
-│       ├──RecordingControls.jsx
-│       ├──RecordingTimer.jsx
-│       ├──StatusIndicator.jsx
-│       └── index.js
-├── hooks/
-│   └── useVoiceRecorder.js
-├── App.css
-└── App.jsx
+└── i18n/
+    ├── en.json
+    ├── cs.json
+    ├── de.json
+    └── # add a new language with the same components and keys as in other language files
+
 ```
 
+## Project Architecture & File Structure
+The project follows a **Container / Presentation pattern**, separating **logic** from **UI components**.  
+Below is the file structure with inline notes describing each file’s role:
+```bash
+src/
+├── components/
+│ └── VoiceRecorder/         # UI layer for recording feature
+│ ├── VoiceRecorder.jsx      # Container: wires hook state/actions to subcomponents
+│ ├── VoiceRecorder.css      # Scoped styles for VoiceRecorder
+│ ├── AudioExampleButton.jsx # Button for playing example audio clip (if defined in task)
+│ ├── AudioVisualizer.jsx    # Renders real-time animated bars from audio levels
+│ ├── NextTaskButton.jsx     # Navigation button to move to the next task
+│ ├── PlaybackSection.jsx    # Playback UI + Save / Reset controls
+│ ├── RecordingControls.jsx  # Start / Pause / Resume / Stop buttons
+│ ├── RecordingTimer.jsx     # Displays elapsed time + contains AudioVisualizer
+│ ├── StatusIndicator.jsx    # Shows current state (Idle, Recording, Paused, etc.)
+│ └── index.js               # Barrel file for clean imports
+│
+├── hooks/
+│ └── useVoiceRecorder.js    # Logic layer: manages state, MediaRecorder, AudioContext
+│                            # Exposes API: startRecording, pauseRecording, resumeRecording, stopRecording, resetRecording
+│
+├── i18n/                    # Internationalization setup
+│ ├── en.json                # English translations
+│ ├── cs.json                # Czech translations
+│ └── index.js               # i18n configuration (react-i18next setup)
+│
+├── App.jsx                  # Entry UI: task definitions + main flow
+├── App.css                  # Global styles
+├── main.jsx                 # App bootstrap (ReactDOM + i18n import)
+└── i18n.js                  # (optional) alternate entry for i18n if not inside src/i18n/
+```
 
-## Front End
+### Summary
+- **Logic lives in `hooks/useVoiceRecorder.js`**: manages browser APIs, timers, state, and cleanup.  
+- **Presentation lives in `components/VoiceRecorder/`**: small, focused UI components that consume the hook.  
+- **Tasks live in `App.jsx`**: configurable set of exercises with titles, subtitles, and audio examples.  
+- **i18n lives in `src/i18n/`**: JSON files per language + `index.js` setup with `react-i18next`.  
 
-Main styles and formatting are contained in the App.css.
-For other specific styles used in components, new file with css modules is created.
+### Styling
+- **Global styles**: `App.css`
+- **Component-specific styles**: colocated `.css` files inside each folder
 
 
 ## Installation & Usage

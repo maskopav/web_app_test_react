@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { useVoiceRecorder } from '../../hooks/useVoiceRecorder';
 
 // components/VoiceRecorder/RecordingControls.jsx - Control buttons component
@@ -12,9 +13,10 @@ export const RecordingControls = ({
     onPermission,
     className = ""
 }) => {
-const { IDLE, RECORDING, PAUSED } = useVoiceRecorder().RECORDING_STATES;
+    const { t } = useTranslation();
+    const { IDLE, RECORDING, PAUSED } = useVoiceRecorder().RECORDING_STATES;
 
-return (
+    return (
     <div className={`controls ${className}`}>
         {/* Permission Button */}
         {!permission && (
@@ -22,7 +24,7 @@ return (
             onClick={onPermission}
             className="btn-permission"
             >
-            🎤 Get Microphone Permission
+            {t("buttons.permission")}
             </button>
         )}
 
@@ -31,17 +33,17 @@ return (
             <>
             {recordingStatus === IDLE && (
                 <button onClick={onStart} className="btn-start">
-                🔴 START
+                {t("buttons.start")}
                 </button>
             )}
 
             {recordingStatus === RECORDING && (
                 <div className="button-group">
                 <button onClick={onPause} className="btn-pause">
-                    ⏸️ PAUSE
+                {t("buttons.pause")}
                 </button>
                 <button onClick={onStop} className="btn-stop">
-                    ⏹️ STOP
+                {t("buttons.stop")}
                 </button>
                 </div>
             )}
@@ -49,15 +51,15 @@ return (
             {recordingStatus === PAUSED && (
                 <div className="button-group">
                 <button onClick={onResume} className="btn-resume">
-                    ▶️ RESUME
+                {t("buttons.resume")}
                 </button>
                 <button onClick={onStop} className="btn-stop">
-                    ⏹️ STOP
+                {t("buttons.stop")}
                 </button>
                 </div>
             )}
             </>
         )}
     </div>
-);
+    );
 };

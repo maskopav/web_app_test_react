@@ -1,0 +1,42 @@
+{
+    "buttons": {
+      "next": "➡️ Next",
+      "repeat": "🔄 Repeat",
+      "start": "🔴 START",
+      "pause": "⏸️ PAUSE",
+      "resume": "▶️ RESUME",
+      "stop": "⏹️ STOP",
+      "permission": "🎤 Get Microphone Permission"
+    },
+    "status": {
+      "ready": "⚪ Ready",
+      "recording": "🔴 Recording...",
+      "paused": "⏸️ Paused",
+      "recorded": "✅ Recorded"
+    },
+    "tasks": {
+    "prolongedPhonationA": {
+        "title": "Prolonged phonation",
+        "subtitle": "Press the START button to start task. Take a deep breath and perform a sustained phonation of /a/, as long and steadily as possible. When you are out of breath, press the STOP button."
+    },
+    "pataka": {
+        "title": "PA-TA-KA",
+        "subtitle": "Press the START button to start task. Take a deep breath and reapeat the syllables /pa/-/ta/-/ka/ as quickly and accurately as possible until the timer runs out."
+        },
+    "readingSeedling": {
+        "title": "Reading",
+        "subtitle": "Press START to begin reading the text that appears on the screen with pitch and loudness comfortable to you. Press the STOP button at the end.",
+        "subtitleActive": "When you first put a seedling in a ground, you look at it three times a day: has it grown or not? And he holds his breath, leans over it, presses a little soil at its roots, fluffs up its leaves, and generally bothers it with various actions which he considers useful care. And when the seedling nevertheless takes hold and grows like water, one marvels at this wonder of nature, feels something like a miracle, and considers it one of his greatest personal achievements."
+        }
+    },
+    "taskLabels": {
+      "voice": "Vocal Task",
+      "motor": "Motor Task",
+      "camera": "Camera Task"
+    },
+    "completion": {
+      "title": "All Tasks Completed!",
+      "message": "You have successfully finished all assignments."
+    }
+  }
+  

@@ -1,46 +1,41 @@
 import React, { useState } from 'react';
+import { useTranslation } from "react-i18next";
 import VoiceRecorder from './components/VoiceRecorder';
 import doneCheckmarkIcon from "./assets/done-checkmark-icon.svg";
 import './App.css';
 
 // App.jsx
 // Define your tasks in an easily extendable array
-const TASKS = [
-  {
-    type: 'voice',
-    title: 'Prolonged phonation #1',
-    subtitle: 'Press the START button to start the countdown. When it runs out, take a deep breath and perform a sustained phonation of /a/, as long and steadily as possible. When you are out of breath, press the STOP button.',
-  },
-  {
-    type: 'voice',
-    title: 'PA-TA-KA #2',
-    subtitle: 'Press the START button to start the countdown. When it runs out, take a deep breath and reapeat the syllables /pa/-/ta/-/ka/ as quickly and accurately as possible until the timer runs out. ',
-    audioExample: '/audio/pataka.mp3', // optional example file
-  },
-  {
-    type: 'voice',
-    title: 'Reading #1',
-    subtitle: 'Press the START button to start the countdown. When it runs out, read the text that appears on the screen with pitch and loudness comfortable to you. Press the STOP button at the end. ',
-    subtitleActive: 'When you first put a seedling in a ground, you look at it three times a day: has it grown or not? And he holds his breath, leans over it, presses a little soil at its roots, fluffs up its leaves, and generally bothers it with various actions which he considers useful care. And when the seedling nevertheless takes hold and grows like water, one marvels at this wonder of nature, feels something like a miracle, and considers it one of his greatest personal achievements.',
-  },
-  // In the future, you can add other task types here:
-  // {
-  //   type: 'camera',
-  //   title: 'TASK 3: CAPTURE PHOTO',
-  //   subtitle: 'Capture a clear photo of the object.'
-  // }
-];
-
-// Labels for each type
-const TASK_LABELS = {
-  voice: "Vocal Task",
-  motor: "Motor Task",
-  camera: "Camera Task",
-  // Add more types here as needed
-};
 
 function App() {
+  const { t } = useTranslation();
   const [taskIndex, setTaskIndex] = useState(0);
+
+  const TASKS = [
+    {
+      type: "voice",
+      title: t("tasks.prolongedPhonationA.title"),
+      subtitle: t("tasks.prolongedPhonationA.subtitle"),
+    },
+    {
+      type: "voice",
+      title: t("tasks.pataka.title"),
+      subtitle: t("tasks.pataka.subtitle"),
+      audioExample: "/audio/pataka.mp3",
+    },
+    {
+      type: "voice",
+      title: t("tasks.readingSeedling.title"),
+      subtitle: t("tasks.readingSeedling.subtitle"),
+      subtitleActive: t("tasks.readingSeedling.subtitleActive"),
+    }
+  ];
+
+  const TASK_LABELS = {
+    voice: t("taskLabels.voice"),
+    motor: t("taskLabels.motor"),
+    camera: t("taskLabels.camera"),
+  };
 
   const handleNextTask = (taskData) => {
     // This is where you would process the data from the completed task

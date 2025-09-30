@@ -11,6 +11,7 @@ export const RecordingControls = ({
     onResume,
     onStop,
     onPermission,
+    disableControls = false,
     className = ""
 }) => {
     const { t } = useTranslation();
@@ -37,7 +38,7 @@ export const RecordingControls = ({
                 </button>
             )}
 
-            {recordingStatus === RECORDING && (
+            {recordingStatus === RECORDING && !disableControls && (
                 <div className="button-group">
                 <button onClick={onPause} className="btn-pause">
                 {t("buttons.pause")}
@@ -48,7 +49,7 @@ export const RecordingControls = ({
                 </div>
             )}
 
-            {recordingStatus === PAUSED && (
+            {recordingStatus === PAUSED && !disableControls && (
                 <div className="button-group">
                 <button onClick={onResume} className="btn-resume">
                 {t("buttons.resume")}

@@ -8,7 +8,8 @@ export const useVoiceRecorder = (options = {}) => {
         audioFormat = "audio/webm",
         subtitle,           // initial subtitle
         subtitleActive,     // subtitle after START
-        audioExample        // optional audio example URL
+        audioExample,       // optional audio example URL
+        maxDuration         // optional duration of task in seconds
     } = options;
 
     // Recording states
@@ -23,6 +24,7 @@ export const useVoiceRecorder = (options = {}) => {
     const [stream, setStream] = useState(null);
     const [audioURL, setAudioURL] = useState(null);
     const [recordingTime, setRecordingTime] = useState(0);
+    const [remainingTime, setRemainingTime] = useState(maxDuration || null);
     const [audioLevels, setAudioLevels] = useState(new Array(12).fill(0));
     const [activeSubtitle, setActiveSubtitle] = useState(subtitle);
     const [exampleAudio, setExampleAudio] = useState(null);
@@ -61,7 +63,18 @@ export const useVoiceRecorder = (options = {}) => {
     // Timer functions
     const startTimer = () => {
         timerInterval.current = setInterval(() => {
-            setRecordingTime(prev => prev + 1);
+            if (maxDuration) {
+                setRemainingTime(prev => {
+                    if (prev == null) return null;
+                    if (prev < 1) {
+                        stopRecording();
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            } else {
+                setRecordingTime(prev => prev + 1);
+            }
         }, 1000);
     };
 
@@ -77,7 +90,11 @@ export const useVoiceRecorder = (options = {}) => {
         if (stream) {
             stopExample(); // stop example playback if active
             setRecordingStatus(RECORDING);
-            setRecordingTime(0);
+            if (maxDuration) {
+                setRemainingTime(maxDuration);
+            } else {
+                setRecordingTime(0);
+            }
 
             if (subtitleActive) {
                 setActiveSubtitle(subtitleActive); // switch subtitle
@@ -284,6 +301,7 @@ return {
     permission,
     audioURL,
     recordingTime,
+    remainingTime,
     audioLevels,
     activeSubtitle,
     exampleAudio,

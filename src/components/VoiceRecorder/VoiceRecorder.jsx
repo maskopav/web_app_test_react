@@ -14,6 +14,7 @@ export const VoiceRecorder = ({
     subtitle = "Record, pause, resume, and save your audio with real-time visualization",
     subtitleActive,
     audioExample,
+    maxDuration,
     onNextTask,
     onRecordingComplete = () => {},
     onError = (err) => console.error(err),
@@ -27,7 +28,8 @@ export const VoiceRecorder = ({
         onError,
         subtitle,
         subtitleActive,
-        audioExample
+        audioExample,
+        maxDuration
     });
 
     const {
@@ -78,6 +80,7 @@ export const VoiceRecorder = ({
 
             <RecordingTimer
             time={recordingTime}
+            remainingTime={voiceRecorder.remainingTime}
             status={recordingStatus}
             audioLevels={audioLevels}
             showVisualizer={showVisualizer}
@@ -93,6 +96,7 @@ export const VoiceRecorder = ({
 
             <RecordingControls
             recordingStatus={recordingStatus}
+            disableControls={!!maxDuration}
             permission={permission}
             onStart={startRecording}
             onPause={pauseRecording}

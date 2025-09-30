@@ -49,6 +49,7 @@ function App() {
             subtitle={currentTask.subtitle}
             subtitleActive={currentTask.subtitleActive}
             audioExample={currentTask.audioExample}
+            maxDuration={currentTask.maxDuration}
             onNextTask={handleNextTask}
             //showNextButton={true} // Hide next button on last task
           />

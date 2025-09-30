@@ -13,6 +13,7 @@ export const TASKS = () => [
     title: t("tasks.pataka.title"),
     subtitle: t("tasks.pataka.subtitle"),
     audioExample: "/audio/pataka.mp3",
+    maxDuration: 10,
   },
   {
     type: "voice",

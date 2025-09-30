@@ -4,6 +4,7 @@ import { AudioVisualizer } from './AudioVisualizer';
 // components/VoiceRecorder/RecordingTimer.jsx - Timer circle component
 export const RecordingTimer = ({ 
     time, 
+    remainingTime,
     status, 
     audioLevels = [], 
     showVisualizer = true,
@@ -21,7 +22,7 @@ export const RecordingTimer = ({
             {/* Timer circle */}
             <div className={`timer-circle ${status}`}>
                 <div className={`timer-display ${status === 'recording' ? 'recording' : ''}`}>
-                    {formatTime(time)}
+                {remainingTime !== null ? formatTime(remainingTime) : formatTime(time)}
                 </div>
                 {showVisualizer && (status === 'recording' || status === 'paused') && (
                     <AudioVisualizer 

@@ -25,21 +25,23 @@ export const RecordingTimer = ({
 
     return (
         <div className={`timer-wrapper`}>
-            {/* Outer intensity circle */}
-            {status === 'recording' && (
-                <div
-                    className="intensity-circle"
-                    style={{
-                        transform: `scale(${intensityScale})`,
-                        opacity: intensityOpacity,
-                    }}
-                />
-            )}
+            <div className="timer-core">
+                {/* Outer intensity circle */}
+                {status === 'recording' && (
+                    <div
+                        className="intensity-circle"
+                        style={{
+                            transform: `scale(${intensityScale})`,
+                            opacity: intensityOpacity,
+                        }}
+                    />
+                )}
 
-            {/* Timer circle */}
-            <div className={`timer-circle ${status}`}>
-                <div className={`timer-display ${status === 'recording' ? 'recording' : ''}`}>
-                    {remainingTime !== null ? formatTime(remainingTime) : formatTime(time)}
+                {/* Timer circle */}
+                <div className={`timer-circle ${status}`}>
+                    <div className={`timer-display ${status === 'recording' ? 'recording' : ''}`}>
+                        {remainingTime !== null ? formatTime(remainingTime) : formatTime(time)}
+                    </div>
                 </div>
             </div>
 

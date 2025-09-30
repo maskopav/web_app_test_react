@@ -41,6 +41,17 @@
   padding: 3vh;
 }
 
+/* Wrap timer + intensity circle together */
+.timer-core {
+  position: relative;
+  width: 150px;   /* matches intensity circle size */
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Intensity circle always centered */
 .intensity-circle {
   position: absolute;
   width: 150px;
@@ -51,25 +62,7 @@
   z-index: 0;
 }
 
-.extra-control {
-  position: absolute;
-  right: 20vw;   /* space from the right edge */
-}
-
-/* On narrow screens → fall back to flex row */
-@media (max-width: 750px) {
-  .extra-control {
-    position: static;
-    transform: none;
-    margin-left: 1rem;  /* small gap next to circle */
-  }
-
-  .timer-wrapper {
-    justify-content: center;
-    gap: 1rem; /* keep spacing consistent */
-  }
-}
-
+/* Timer circle on top */
 .timer-circle {
   width: 100px;
   height: 100px;
@@ -79,8 +72,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
   transition: border-color 0.3s ease;
+  z-index: 1; /* above intensity*/
 }
 .timer-circle.recording {
   border-color: var(--danger);
@@ -91,6 +84,31 @@
 .timer-display {
   font-size: 1.8rem;
   font-weight: bold;
+}
+
+/* Extra control (speaker button) */
+.extra-control {
+  position: absolute;
+  left: 52vw;   /* distance from center */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Mobile: move below */
+@media (max-width: 750px) {
+  .extra-control {
+    position: static;
+    margin-top: 1rem;
+    transform: none;
+  }
+  .timer-wrapper {
+    flex-direction: column;
+  }
 }
 
 /* Audio Example icon*/

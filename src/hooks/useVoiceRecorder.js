@@ -9,6 +9,7 @@ export const useVoiceRecorder = (options = {}) => {
         subtitle,           // initial subtitle
         subtitleActive,     // subtitle after START
         audioExample,       // optional audio example URL
+        mode = "basicStop",  // "basicStop" | "countDown" | "delayedStop"
         maxDuration         // optional duration of task in seconds
     } = options;
 
@@ -73,16 +74,26 @@ export const useVoiceRecorder = (options = {}) => {
     // Timer functions
     const startTimer = () => {
         timerInterval.current = setInterval(() => {
-            if (maxDuration) {
+            if (mode === "countDown") {
                 setRemainingTime(prev => {
                     if (prev == null) return null;
                     if (prev <= 1) {
-                        stopRecording();
+                        stopRecording(); // stop automatically when countdown hits 0
                         return 0;
                     }
                     return prev - 1;
                 });
-            } else {
+            } else if (mode === "delayedStop") {
+                // Count up until maxDuration, then stop
+                setRecordingTime(prev => {
+                  if (maxDuration && prev + 1 >= maxDuration) {
+                    stopRecording();
+                    return maxDuration;
+                  }
+                  return prev + 1;
+                });
+            } else if (mode === "basicStop") {
+                // Just count up, never auto-stop
                 setRecordingTime(prev => prev + 1);
             }
         }, 1000);
@@ -97,40 +108,40 @@ export const useVoiceRecorder = (options = {}) => {
 
     // Recording functions
     const startRecording = () => {
-        if (stream) {
-            stopExample(); // stop example playback if active
-            setRecordingStatus(RECORDING);
-            if (maxDuration) {
-                setRemainingTime(maxDuration);
-            } else {
-                setRecordingTime(0);
-            }
+        if (!stream) return;
+        stopExample(); // stop example playback if active
+        setRecordingStatus(RECORDING);
 
-            if (subtitleActive) {
-                setActiveSubtitle(subtitleActive); // switch subtitle
-            }
-            
-            const recorder = new MediaRecorder(stream, { mimeType: audioFormat });
-            mediaRecorder.current = recorder;
-            
-            recorder.start();
-            startTimer();
-            
-            recorder.ondataavailable = (event) => {
-                if (event.data.size > 0) {
-                    audioChunks.current.push(event.data);
-                }
-            };
-
-            // Setup audio context + analyser for visualization
-            if (!audioContext.current) {
-                audioContext.current = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            const source = audioContext.current.createMediaStreamSource(stream);
-            analyser.current = audioContext.current.createAnalyser();
-            analyser.current.fftSize = 256;
-            source.connect(analyser.current);
+        if (mode === "countDown") {
+            setRemainingTime(maxDuration || 10);
+        } else {
+            setRecordingTime(0);
         }
+
+        if (subtitleActive) {
+            setActiveSubtitle(subtitleActive); // switch subtitle
+        }
+        
+        const recorder = new MediaRecorder(stream, { mimeType: audioFormat });
+        mediaRecorder.current = recorder;
+        
+        recorder.start();
+        startTimer();
+        
+        recorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                audioChunks.current.push(event.data);
+            }
+        };
+
+        // Setup audio context + analyser for visualization
+        if (!audioContext.current) {
+            audioContext.current = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const source = audioContext.current.createMediaStreamSource(stream);
+        analyser.current = audioContext.current.createAnalyser();
+        analyser.current.fftSize = 256;
+        source.connect(analyser.current);
     };
 
 

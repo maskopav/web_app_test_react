@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import VoiceRecorder from './components/VoiceRecorder';
 import CompletionScreen from "./components/CompletionScreen";
-import { TASKS as getTasks } from "./tasks";
+import { TASKS as TASK_DEFS } from "./tasks";
 import './App.css';
 
 // App.jsx
@@ -11,8 +11,8 @@ function App() {
   const [taskIndex, setTaskIndex] = useState(0);
 
   // Expand tasks with repeat count
-  const rawTasks = getTasks();
-  const TASKS = rawTasks.flatMap(task => {
+  const rawTasks = TASK_DEFS;
+  const expandedTasks = rawTasks.flatMap(task => {
     if (task.repeat && task.repeat > 1) {
       return Array.from({length: task.repeat }, (_, i) => ({
         ...task,
@@ -43,14 +43,11 @@ function App() {
   };
 
   const renderCurrentTask = () => {
-    const currentTask = TASKS[taskIndex];
+    const currentTask = expandedTasks[taskIndex];
+    console.log(currentTask)
 
     // If all tasks are completed, show a final message
-    if (!currentTask) {
-      return (
-        <CompletionScreen />
-      );
-    }
+    if (!currentTask) return <CompletionScreen />;
 
     // Render the appropriate component based on task type
     switch (currentTask.type) {
@@ -59,13 +56,17 @@ function App() {
           <VoiceRecorder
             key={taskIndex} // Key ensures the component remounts for each new task
             title={currentTask._repeatTotal > 1
-              ? `${currentTask.title} #${currentTask._repeatIndex}`
-              : currentTask.title
+              ? `${t(currentTask.titleKey, currentTask.translationParams)} #${currentTask._repeatIndex}`
+            : t(currentTask.titleKey, currentTask.translationParams)
             }
-            subtitle={currentTask.subtitle}
-            subtitleActive={currentTask.subtitleActive}
+            subtitle={t(currentTask.subtitleKey, currentTask.translationParams)}
+            subtitleActive={currentTask.subtitleActiveKey
+              ? t(currentTask.subtitleActiveKey, currentTask.translationParams)
+              : undefined
+            }
             audioExample={currentTask.audioExample}
-            maxDuration={currentTask.maxDuration}
+            mode={currentTask.recording.mode}
+            maxDuration={currentTask.recording.maxDuration}
             onNextTask={handleNextTask}
             //showNextButton={true} // Hide next button on last task
           />
@@ -80,18 +81,18 @@ function App() {
   };
 
   // Progress counts
-  const currentTask = TASKS[taskIndex];
+  const currentTask = expandedTasks[taskIndex];
   const currentType = currentTask?.type;
 
-  const totalOfType = TASKS.filter(t => t.type === currentType).length;
-  const currentOfType = TASKS
+  const totalOfType = expandedTasks.filter(t => t.type === currentType).length;
+  const currentOfType = expandedTasks
     .slice(0, taskIndex + 1)
     .filter(t => t.type === currentType).length;
 
   return (
     <div className="app-container">
       <div className="task-wrapper">
-        {taskIndex < TASKS.length && (
+        {taskIndex < expandedTasks.length && (
           <div className="task-progress">
             {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType}
           </div>

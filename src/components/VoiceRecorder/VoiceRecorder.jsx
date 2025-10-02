@@ -14,6 +14,7 @@ export const VoiceRecorder = ({
     subtitle = "Record, pause, resume, and save your audio with real-time visualization",
     subtitleActive,
     audioExample,
+    mode,
     maxDuration,
     onNextTask,
     onRecordingComplete = () => {},
@@ -29,6 +30,7 @@ export const VoiceRecorder = ({
         subtitle,
         subtitleActive,
         audioExample,
+        mode,
         maxDuration
     });
 

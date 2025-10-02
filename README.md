@@ -150,4 +150,11 @@ Open the Network URL on your phone (connected to the same Wi‑Fi) to test on mo
 - Avoid corporate/VPN networks that isolate devices
 
 
+## Deployment (running on the server)
+- App needs to be build at first -> static files are generated inside the folder `dist` using command `npm run build`
+- Upload `dist` folder to the filemanager server
+- Open `https://malenia.feld.cvut.cz/test/dist/`
+
+
+
 

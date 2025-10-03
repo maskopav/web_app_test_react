@@ -51,13 +51,15 @@ export interface RetellingTask extends BaseTask<"retelling"> {
 }
 
 export interface ReadingTask extends BaseTask<"reading"> {
-  reading: string;
+  textTitle: string;
+  textActive: string;
   recording: Extract<RecordingMode, { mode: "basicStop" }>;
 }
 
 export interface MonologueTask extends BaseTask<"monologue"> {
   category: "monologue";
   topic: string;
+  topicDescription: string,
   recording: Extract<RecordingMode, { mode: "basicStop" }>;
 }
 
@@ -76,7 +78,7 @@ export type Task =
 export function phonationTask(
   overrides: Partial<Pick<PhonationTask, "phoneme" | "repeat" | "illustration" >> & { maxDuration?: number } = {}
 ): PhonationTask {
-  const phoneme = overrides.phoneme ?? "aaa";
+  const phoneme = overrides.phoneme ?? "inputs.phonation.phoneme.e";
   const maxDuration = overrides.maxDuration ?? 10;
   const repeat = overrides.repeat ?? 2;
 
@@ -97,7 +99,7 @@ export function phonationTask(
 export function syllableRepeatingTask(
   overrides: Partial<Pick<SyllableRepeatingTask, "syllable" | "repeat" | "illustration" >> & { maxDuration?: number } = {}
 ): SyllableRepeatingTask {
-  const syllable = overrides.syllable ?? "pa-ta-ka";
+  const syllable = overrides.syllable ?? "inputs.syllableRepeating.syllable.pataka";
   const maxDuration = overrides.maxDuration ?? 10;
   const repeat = overrides.repeat ?? 2;
 
@@ -118,7 +120,7 @@ export function syllableRepeatingTask(
 export function retellingTask(
   overrides: Partial<Pick<RetellingTask, "fairytale" | "repeat" | "illustration">> = {}
 ): RetellingTask {
-  const fairytale = overrides.fairytale ?? "Snow White";
+  const fairytale = overrides.fairytale ?? "inputs.retelling.fairytale.snowWhite";
   const repeat = overrides.repeat ?? 1;
 
   return {
@@ -136,9 +138,10 @@ export function retellingTask(
 
 // 4. Reading
 export function readingTask(
-  overrides: Partial<Pick<ReadingTask, "reading" | "repeat" | "illustration">> = {}
+  overrides: Partial<Pick<ReadingTask, "textTitle" | "textActive" | "repeat" | "illustration">> = {}
 ): ReadingTask {
-  const reading = overrides.reading ?? "Seedling";
+  const textTitle = overrides.textTitle ?? "inputs.reading.seedling.textTitle";
+  const textActive = overrides.textActive ?? "inputs.reading.seedling.textActive";
   const repeat = overrides.repeat ?? 1;
 
   return {
@@ -147,8 +150,9 @@ export function readingTask(
     titleKey: "tasks.reading.title",
     subtitleKey: "tasks.reading.subtitle",
     subtitleActiveKey: "tasks.reading.subtitleActive",
-    translationParams: { textTitle: reading, textActive: reading },
-    reading,
+    translationParams: { textTitle, textActive },
+    textTitle,
+    textActive,
     recording: { mode: "basicStop" },
     repeat,
     ...overrides,
@@ -157,9 +161,10 @@ export function readingTask(
 
 // 5. Monologue
 export function monologueTask(
-  overrides: Partial<Pick<MonologueTask, "topic" | "repeat" | "illustration">> = {}
+  overrides: Partial<Pick<MonologueTask, "topic" | "topicDescription" | "repeat" | "illustration">> = {}
 ): MonologueTask {
-  const topic = overrides.topic ?? "Hobbies";
+  const topic = overrides.topic ?? "inputs.monologue.hobbies.topic";
+  const topicDescription = overrides.topic ?? "inputs.monologue.hobbies.topicDescription";
   const repeat = overrides.repeat ?? 1;
 
   return {
@@ -167,8 +172,9 @@ export function monologueTask(
     category: "monologue",
     titleKey: "tasks.monologue.title",
     subtitleKey: "tasks.monologue.subtitle",
-    translationParams: { topic, topicDescription: topic },
+    translationParams: { topic, topicDescription},
     topic,
+    topicDescription,
     recording: { mode: "basicStop" },
     repeat,
     ...overrides,
@@ -179,10 +185,14 @@ export function monologueTask(
 // === All predefined tasks ===
 //
 export const TASKS: Task[] = [
-  phonationTask({ phoneme: "aaa", maxDuration: 2, repeat: 1 }),
-  syllableRepeatingTask(), // uses default syllable "pa-ta-ka"
-  readingTask(),
-  retellingTask({ fairytale: "Hansel and Gretel" }),
-  syllableRepeatingTask({ syllable: "ta-ta-ta", maxDuration: 3 }),
+  phonationTask({ maxDuration: 2, repeat: 1 }),
+  readingTask({
+    textTitle: "inputs.reading.seedling.textTitle", 
+    textActive: "inputs.reading.seedling.textActive"}),
+  retellingTask({ 
+    fairytale: "inputs.retelling.fairytale.hanselAndGretel"}),
+  syllableRepeatingTask({ 
+    syllable: "inputs.syllableRepeating.syllable.ka", 
+    maxDuration: 3 }),
   monologueTask(),
 ];

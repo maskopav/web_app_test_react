@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import VoiceRecorder from './components/VoiceRecorder';
 import CompletionScreen from "./components/CompletionScreen";
 import { TASKS as TASK_DEFS } from "./tasks";
+import { resolveTranslationParams } from "./utils/translation";
 import './App.css';
 
 // App.jsx
@@ -46,8 +47,12 @@ function App() {
     const currentTask = expandedTasks[taskIndex];
     console.log(currentTask)
 
+
     // If all tasks are completed, show a final message
     if (!currentTask) return <CompletionScreen />;
+
+    // auto-resolve all params once
+    const params = resolveTranslationParams(currentTask.translationParams);
 
     // Render the appropriate component based on task type
     switch (currentTask.type) {
@@ -56,12 +61,12 @@ function App() {
           <VoiceRecorder
             key={taskIndex} // Key ensures the component remounts for each new task
             title={currentTask._repeatTotal > 1
-              ? `${t(currentTask.titleKey, currentTask.translationParams)} #${currentTask._repeatIndex}`
-            : t(currentTask.titleKey, currentTask.translationParams)
+              ? `${t(currentTask.titleKey, params)} #${currentTask._repeatIndex}`
+              : t(currentTask.titleKey, params)
             }
-            subtitle={t(currentTask.subtitleKey, currentTask.translationParams)}
+            subtitle={t(currentTask.subtitleKey, params)}
             subtitleActive={currentTask.subtitleActiveKey
-              ? t(currentTask.subtitleActiveKey, currentTask.translationParams)
+              ? t(currentTask.subtitleActiveKey, params)
               : undefined
             }
             audioExample={currentTask.audioExample}

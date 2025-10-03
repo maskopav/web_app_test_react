@@ -22,19 +22,33 @@
       "subtitle": "Press START and talk about {{topicDescription}} until the timer runs out."
     }
   },
-  "taskInputs": {
+
+  "inputs": {
     "phonation": {
-      "phoneme": { "a": "aaa", "e": "eee", "i": "iii", "o": "ooo", "u": "uuu" }
+      "phoneme": { 
+        "a": "aaa", 
+        "e": "eee", 
+        "i": "iii", 
+        "o": "ooo", 
+        "u": "uuu" 
+      }
     },
     "syllableRepeating": {
-      "syllable": { "pataka": "pa-ta-ka", "ta": "ta-ta-ta", "ka": "ka-ka-ka" }
+      "syllable": { 
+        "pataka": "pa-ta-ka", 
+        "ta": "ta-ta-ta", 
+        "ka": "ka-ka-ka" 
+      }
     },
     "retelling": {
-      "fairytale": { "hanselAndGretel": "Hansel and Gretel" }
+      "fairytale": { 
+        "hanselAndGretel": "Hansel and Gretel", 
+        "snowWhite": "Snow White"
+      }
     },
     "reading": {
       "seedling": {
-        "textTitle": "Reading Seedling",
+        "textTitle": "Seedling",
         "textActive": "When you first put a seedling in the ground..."
       }
     },
@@ -45,6 +59,7 @@
       }
     }
   },
+
   "taskLabels": {
     "voice": "Vocal Task",
     "motor": "Motor Task",

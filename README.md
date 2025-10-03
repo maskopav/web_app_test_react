@@ -65,7 +65,7 @@ Diagram 2 – Task Parameters: concrete overridable arguments for each task type
 - { mode: "delayedStop", maxDuration: number } → starts immediately, auto-stops after duration
 
 ### 3. Task Factories (Recommended)
-Instead of manually writing the full BaseTask + RecordingMode, you should use the Task Factories.
+Instead of manually writing the full BaseTask + RecordingMode, you should use the **Task Factories**.
 Factories hide internal details (like mode) and only expose the arguments relevant for each task.
 | Task type              | Factory Function        | Overridable Arguments                               | Fixed Behavior (internal) |
 | ---------------------- | ----------------------- | --------------------------------------------------- | ------------------------- |

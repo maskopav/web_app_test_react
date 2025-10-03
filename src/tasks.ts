@@ -1,63 +1,61 @@
 // src/tasks.ts
 
-// Base Types
-export type TaskType = "voice" | "motor" | "camera";
-
-// Categories
-export type TaskCategory =
-  | "phonation"
-  | "syllableRepeating"
-  | "retelling"
-  | "reading"
-  | "monologue";
-
 // Recording modes
 export type RecordingMode =
   | { mode: "basicStop"; maxDuration?: never }
   | { mode: "countDown"; maxDuration: number }
   | { mode: "delayedStop"; maxDuration: number };
 
+// Mapping of category -> type
+type CategoryToType = {
+    phonation: "voice";
+    syllableRepeating: "voice";
+    retelling: "voice";
+    reading: "voice";
+    monologue: "voice";
+    // later: motor tasks, camera tasks, etc
+  };
+  
+// Helper: given a category, infer its type
+type TypeForCategory<C extends keyof CategoryToType> = CategoryToType[C];
+
 
 // === Base Task ===
-export interface BaseTask {
-    type: TaskType;
-    category: TaskCategory;
+export interface BaseTask<C extends keyof CategoryToType> {
+    type: TypeForCategory<C>;
+    category: C;
     titleKey: string;
     subtitleKey: string;
     subtitleActiveKey?: string;
     translationParams?: Record<string, any>;
-    audioExample?: string;
+    illustration?: string;
     repeat?: number;
     recording: RecordingMode;
 }
   
 
 // === Specialized Tasks ===
-export interface PhonationTask extends BaseTask {
-  category: "phonation";
+export interface PhonationTask extends BaseTask<"phonation"> {
   phoneme: string;
   recording: Extract<RecordingMode, { mode: "delayedStop" }>;
 }
 
-export interface SyllableRepeatingTask extends BaseTask {
-  category: "syllableRepeating";
+export interface SyllableRepeatingTask extends BaseTask<"syllableRepeating"> {
   syllable: string;
   recording: Extract<RecordingMode, { mode: "countDown" }>;
 }
 
-export interface RetellingTask extends BaseTask {
-  category: "retelling";
+export interface RetellingTask extends BaseTask<"retelling"> {
   fairytale: string;
   recording: Extract<RecordingMode, { mode: "basicStop" }>;
 }
 
-export interface ReadingTask extends BaseTask {
-  category: "reading";
+export interface ReadingTask extends BaseTask<"reading"> {
   reading: string;
   recording: Extract<RecordingMode, { mode: "basicStop" }>;
 }
 
-export interface MonologueTask extends BaseTask {
+export interface MonologueTask extends BaseTask<"monologue"> {
   category: "monologue";
   topic: string;
   recording: Extract<RecordingMode, { mode: "basicStop" }>;
@@ -76,7 +74,7 @@ export type Task =
 
 // 1. Phonation
 export function phonationTask(
-  overrides: Partial<Pick<PhonationTask, "phoneme" | "repeat" | "audioExample" >> & { maxDuration?: number } = {}
+  overrides: Partial<Pick<PhonationTask, "phoneme" | "repeat" | "illustration" >> & { maxDuration?: number } = {}
 ): PhonationTask {
   const phoneme = overrides.phoneme ?? "aaa";
   const maxDuration = overrides.maxDuration ?? 10;
@@ -97,7 +95,7 @@ export function phonationTask(
 
 // 2. Syllable repeating
 export function syllableRepeatingTask(
-  overrides: Partial<Pick<SyllableRepeatingTask, "syllable" | "repeat" | "audioExample" >> & { maxDuration?: number } = {}
+  overrides: Partial<Pick<SyllableRepeatingTask, "syllable" | "repeat" | "illustration" >> & { maxDuration?: number } = {}
 ): SyllableRepeatingTask {
   const syllable = overrides.syllable ?? "pa-ta-ka";
   const maxDuration = overrides.maxDuration ?? 10;
@@ -118,7 +116,7 @@ export function syllableRepeatingTask(
 
 // 3. Retelling
 export function retellingTask(
-  overrides: Partial<Pick<RetellingTask, "fairytale" | "repeat" | "audioExample">> = {}
+  overrides: Partial<Pick<RetellingTask, "fairytale" | "repeat" | "illustration">> = {}
 ): RetellingTask {
   const fairytale = overrides.fairytale ?? "Snow White";
   const repeat = overrides.repeat ?? 1;
@@ -138,7 +136,7 @@ export function retellingTask(
 
 // 4. Reading
 export function readingTask(
-  overrides: Partial<Pick<ReadingTask, "reading" | "repeat" | "audioExample">> = {}
+  overrides: Partial<Pick<ReadingTask, "reading" | "repeat" | "illustration">> = {}
 ): ReadingTask {
   const reading = overrides.reading ?? "Seedling";
   const repeat = overrides.repeat ?? 1;
@@ -159,7 +157,7 @@ export function readingTask(
 
 // 5. Monologue
 export function monologueTask(
-  overrides: Partial<Pick<MonologueTask, "topic" | "repeat" | "audioExample">> = {}
+  overrides: Partial<Pick<MonologueTask, "topic" | "repeat" | "illustration">> = {}
 ): MonologueTask {
   const topic = overrides.topic ?? "Hobbies";
   const repeat = overrides.repeat ?? 1;

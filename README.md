@@ -28,20 +28,64 @@ For testing on mobile, use the Network URL (e.g. `http://192.168.87.184:5173/`) 
 
 ## Configurable Tasks
 
-All tasks are defined in `src/tasks.js`. 
+All tasks are defined with specialized factories in `src/tasks.ts`. (TypeScript is a superset of JavaScript that adds static typing.)
+- Each task type has **fixed defaults** (recording mode, task description, etc.).
+- Users can override only the **arguments relevant to that task type** (e.g. `phoneme` and `maxDuration` for `Phonation`, but not for `Reading`).
+- ❗All text is internationalized: tasks use translation keys from `i18n/*.json`, never hardcoded strings.❗
 
-❗Each task uses translation keys for text (from i18n/*.json), not hardcoded strings❗
+Tasks in this project follow a layered definition system:
+1. **BaseTask** → defines shared properties across all tasks.
+2. **RecordingMode** → defines how recording starts/stops.
+3. **Specialized Tasks** → extend BaseTask with specific arguments (phoneme, syllable, fairytale, …).
+4. **Task Factories** → simple helper functions that lock defaults and expose only the relevant arguments for each task type.
 
-| Argument         | Type      | Required  | Description                                         | Example                    |
-|------------------|-----------|-----------|-----------------------------------------------------|----------------------------|
-| `type`           | string    | ✅        | Type of task.                                      | `"voice"`                  |
-| `title`          | string    | ✅        | Title of the task shown at the top of the card.    |`t("tasks.pataka.title")`   |
-| `subtitle`       | string    | ✅        | Instruction text shown before recording starts.    |`t("tasks.pataka.subtitle")`|
-| `subtitleActive` | string    | ❌        | Alternative subtitle shown *after pressing START*. |`t("tasks.pataka.title")`   |
-| `audioExample`   | string    | ❌        | Path to an audio file (from `/public/audio/`) with an example to play.|`"/audio/pataka.mp3"`|
-| `maxDuration`    | number    | ❌        | Maximum recording time (in seconds). Recording will auto-stop when reached. When defined, the UI switches to **countdown mode** and hides pause/stop buttons.  | `30` |
-| `repeat`         | number    | ❌        | Number of times to repeat this task for reproducibility. Title will show `#1`, `#2`, ... | `2` |
-| `showNextButton` | boolean   | ❌        | Show or hide the "Next" button.                    | default: `true`            |
+👉 See the diagrams for a full overview:
+
+Diagram 1 – Task Structure: relationship between BaseTask, TaskType, TaskCategory, and RecordingMode.
+![Task Structure Diagram](./docs/task-structure.png)
+Diagram 2 – Task Parameters: concrete overridable arguments for each task type.
+![Task Parameters Diagram](./docs/task-parameters.png)
+
+### 1. BaseTask:
+| Argument            | Type                             | Required | Description                                                                                                 |
+| ------------------- | -------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `type`              | `"voice" \| "motor" \| "camera"` | ✅        | Type of task. Currently only `"voice"` is used.                                                             |
+| `category`          | string enum                      | ✅        | Logical group of the task: `"phonation"`, `"syllableRepeating"`, `"retelling"`, `"reading"`, `"monologue"`. |
+| `titleKey`          | string                           | ✅        | i18n key for task title.                                                                                    |
+| `subtitleKey`       | string                           | ✅        | i18n key for subtitle shown before recording starts.                                                        |
+| `subtitleActiveKey` | string                           | ❌        | i18n key for subtitle shown *after* recording starts.                                                       |
+| `translationParams` | object                           | ❌        | Key–value params passed into i18n translations.                                                             |
+| `audioExample`      | string                           | ❌        | Path to an example audio file (`/public/audio/...`).                                                        |
+| `repeat`            | number                           | ❌        | How many times the task should repeat. Defaults depend on factory.                                          |
+| `recording`         | `RecordingMode`                  | ✅        | Defines how recording starts/stops.                                                                         |
+
+### 2. RecordingMode variants:
+- { mode: "basicStop" } → manual start/stop
+- { mode: "countDown", maxDuration: number } → countdown timer, stops automatically
+- { mode: "delayedStop", maxDuration: number } → starts immediately, auto-stops after duration
+
+### 3. Task Factories (Recommended)
+Instead of manually writing the full BaseTask + RecordingMode, you should use the Task Factories.
+Factories hide internal details (like mode) and only expose the arguments relevant for each task.
+| Task type              | Factory Function        | Overridable Arguments                               | Fixed Behavior (internal) |
+| ---------------------- | ----------------------- | --------------------------------------------------- | ------------------------- |
+| **Phonation**          | `phonationTask`         | `phoneme`, `maxDuration`, `repeat`, `audioExample`  | Recording = `delayedStop` |
+| **Syllable Repeating** | `syllableRepeatingTask` | `syllable`, `maxDuration`, `repeat`, `audioExample` | Recording = `countDown`   |
+| **Retelling**          | `retellingTask`         | `fairytale`, `repeat`, `audioExample`               | Recording = `basicStop`   |
+| **Reading**            | `readingTask`           | `reading`, `repeat`, `audioExample`                 | Recording = `basicStop`   |
+| **Monologue**          | `monologueTask`         | `topic`, `repeat`, `audioExample`                   | Recording = `basicStop`   |
+
+Example Usage
+```ts
+export const TASKS: Task[] = [
+  phonationTask({ phoneme: "aaa", maxDuration: 5, repeat: 1 }),
+  syllableRepeatingTask(), // defaults: syllable "pa-ta-ka", maxDuration 10
+  readingTask(),
+  retellingTask({ fairytale: "Hansel and Gretel" }),
+  syllableRepeatingTask({ syllable: "ta-ta-ta", maxDuration: 3 }),
+  monologueTask(),
+];
+```
 
 ### Adding a New Language
 1. Open `src/tasks.js`
@@ -108,7 +152,7 @@ src/
 │ ├── cs.json                # Czech translations
 │ └── index.js               # i18n configuration (react-i18next setup)
 │
-├── tasks.js                 # All task definitions in one place
+├── tasks.ts                 # All task definitions in one place
 ├── App.jsx                  # Orchestrates main flow
 ├── App.css                  # Global styles
 ├── main.jsx                 # App bootstrap (ReactDOM + i18n import)

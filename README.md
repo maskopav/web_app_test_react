@@ -141,11 +141,22 @@ src/
 │ | ├── RecordingTimer.jsx     # Displays elapsed time + contains AudioVisualizer
 │ | ├── StatusIndicator.jsx    # Shows current state (Idle, Recording, Paused, etc.)
 │ | └── index.js               # Barrel file for clean imports
+│ │
+│ ├── AdminTaskEditor/
+│ │ ├── AdminTaskEditor.jsx    # main container component
+│ │ ├── Modal.jsx              # reusable modal component
+│ │ ├── index.js               # barrel export
+│ │ ├── AdminTaskEditor.css    # scoped styles
+│ │ └── helpers.js             # small helpers like collectInputPaths
+│ │
+│ |── ModeSwitchButton.jsx     # 
 │ └── CompletionScreen.jsx     # Dedicated UI for final screen
 |
 ├── hooks/
 │ └── useVoiceRecorder.js    # Logic layer: manages state, MediaRecorder, AudioContext
 │                            # Exposes API: startRecording, pauseRecording, resumeRecording, stopRecording, resetRecording
+├── utils/
+│ └── translation.ts         # Translation function 
 │
 ├── i18n/                    # Internationalization setup
 │ ├── en.json                # English translations
@@ -155,8 +166,7 @@ src/
 ├── tasks.ts                 # All task definitions in one place
 ├── App.jsx                  # Orchestrates main flow
 ├── App.css                  # Global styles
-├── main.jsx                 # App bootstrap (ReactDOM + i18n import)
-└── i18n.js                  # (optional) alternate entry for i18n if not inside src/i18n/
+└── main.jsx                 # App bootstrap (ReactDOM + i18n import)
 ```
 
 ### Summary

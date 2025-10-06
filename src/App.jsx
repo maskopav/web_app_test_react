@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import VoiceRecorder from './components/VoiceRecorder';
 import CompletionScreen from "./components/CompletionScreen";
+import ModeSwitchButton from "./components/ModeSwitchButton";
 import { TASKS as TASK_DEFS } from "./tasks";
 import { resolveTranslationParams } from "./utils/translation";
+import AdminTaskEditor from "./components/AdminTaskEditor";
+import enJson from "./i18n/en.json";   // pass translations to Admin UI
 import './App.css';
 
 // App.jsx
 function App() {
   const { t } = useTranslation();
   const [taskIndex, setTaskIndex] = useState(0);
+  const [adminMode, setAdminMode] = useState(true); // start in admin mode
 
   // Expand tasks with repeat count
   const rawTasks = TASK_DEFS;
@@ -94,22 +98,34 @@ function App() {
     .slice(0, taskIndex + 1)
     .filter(t => t.type === currentType).length;
 
-  return (
-    <div className="app-container">
-      <div className="task-wrapper">
-        {taskIndex < expandedTasks.length && (
-          <div className="task-progress">
-            {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType}
-          </div>
-        )}
-  
-        <div className="card">
-          {renderCurrentTask()}
+return (
+  <div className="app-container">
+    {adminMode ? (
+      <>
+        <AdminTaskEditor
+          i18nJson={enJson}
+          initialTasks={TASK_DEFS}
+          onSave={(tasks) => console.log("Admin saved tasks:", tasks)}
+        />
+        <ModeSwitchButton
+          adminMode={adminMode}
+          onToggle={() => setAdminMode(false)}
+        />
+      </>
+    ) : (
+      <>
+        <div className="task-wrapper">
+          {taskIndex < expandedTasks.length && (
+            <div className="task-progress">
+              {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType}
+            </div>
+          )}
+          <div className="card">{renderCurrentTask()}</div>
         </div>
-      </div>
-        
-    </div>
-  );
+      </>
+    )}
+  </div>
+);
 }
 
 export { App as default };

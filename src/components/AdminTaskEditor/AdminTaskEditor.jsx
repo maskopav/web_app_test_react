@@ -1,6 +1,8 @@
+// components/AdminTaskEditor/AdminTaskEditor.jsx - Main component
 import React, { useState, useMemo } from "react";
 import { collectInputPaths } from "./helpers";
 import Modal from "./Modal";
+import taskParams from "../../config/taskParams.json";
 import "./AdminTaskEditor.css";
 
 export const TASK_FIELD_SCHEMA = {
@@ -17,15 +19,6 @@ export const TASK_FIELD_SCHEMA = {
   ],
 };
 
-export const DEFAULTS = {
-  phonation: { duration: 10 },
-  syllableRepeating: { repeats: 5, syllable: "syllables.default" },
-  retelling: { story: "stories.default" },
-  reading: { text: "texts.default" },
-  monologue: { topic: "topics.default", duration: 60 },
-};
-
-
 
 export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () => {} }) {
   const inputOptions = useMemo(() => collectInputPaths(i18nJson), [i18nJson]);
@@ -35,7 +28,7 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
   const [dragIndex, setDragIndex] = useState(null);
 
   function addTask(category) {
-    const defaults = DEFAULTS[category];
+    const defaults = taskParams[category]?.defaults || {};
     const task = {
       type: "voice",
       category,
@@ -73,11 +66,14 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
         {/* Left column */}
         <div className="task-list">
           <h3>Available tasks:</h3>
-          {Object.keys(DEFAULTS).map((cat) => (
-            <div key={cat} className="task-item" onClick={() => addTask(cat)}>
-              {cat}
+          {Object.keys(taskParams).map((cat) => (
+          <div key={cat} className="task-option" onClick={() => addTask(cat)}>
+            <div className="task-title">{cat}</div>
+            <div className="task-params">
+              ({(taskParams[cat].params || []).join(", ")})
             </div>
-          ))}
+          </div>
+        ))}
         </div>
 
         {/* Right column */}
@@ -121,50 +117,47 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
             <button onClick={() => setReorderMode(!reorderMode)}>
               {reorderMode ? "Finish Reordering" : "Reorder Tasks"}
             </button>
-            <button onClick={() => onSave(tasks)}>Done</button>
+            <button className="button-done" onClick={() => onSave(tasks)}>Done</button>
           </div>
         </div>
       </div>
 
       {/* Edit Modal */}
-      <Modal open={editingTask != null} onClose={() => setEditingTask(null)}>
-        {editingTask != null && (
-          <>
-            <h2>Edit task: {tasks[editingTask].category}</h2>
-            {(TASK_FIELD_SCHEMA[tasks[editingTask].category] || []).map((field) => (
-              <div key={field.name} className="form-group">
-                <label>{field.label}</label>
-                {field.type === "int" && (
-                  <input
-                    type="number"
-                    value={tasks[editingTask][field.name] ?? ""}
-                    onChange={(e) =>
-                      updateTask(editingTask, { [field.name]: Number(e.target.value) })
-                    }
-                  />
-                )}
-                {field.type === "translation" && (
-                  <select
-                    value={tasks[editingTask][field.name] ?? ""}
-                    onChange={(e) =>
-                      updateTask(editingTask, { [field.name]: e.target.value })
-                    }
-                  >
-                    <option value="">-- select --</option>
-                    {(inputOptions[field.path] || []).map((o) => (
-                      <option key={o.key} value={`${field.path}.${o.key}`}>
-                        {o.value}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-            ))}
-            <div className="modal-actions">
-              <button onClick={() => setEditingTask(null)}>Cancel</button>
+      <Modal
+        open={editingTask != null}
+        onClose={() => setEditingTask(null)}
+        onSave={() => setEditingTask(null)} // you can later replace with save logic if needed
+      >
+        {editingTask != null && (() => {
+          const category = tasks[editingTask].category;
+          const params = taskParams[category]?.params || [];
+          const defaults = taskParams[category]?.defaults || {};
+          const currentTask = tasks[editingTask];
+
+          return (
+            <div className="edit-window">
+              <h2>Edit task: {category}</h2>
+              {params.map((param) => {
+                const value = currentTask[param] ?? defaults[param] ?? "";
+                const isNumeric = typeof value === "number" || /^[0-9.]+$/.test(value);
+                return (
+                  <div key={param} className="form-group">
+                    <label>{param}</label>
+                    <input
+                      type={isNumeric ? "number" : "text"}
+                      value={value}
+                      onChange={(e) =>
+                        updateTask(editingTask, {
+                          [param]: isNumeric ? Number(e.target.value) : e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                );
+              })}
             </div>
-          </>
-        )}
+          );
+        })()}
       </Modal>
     </div>
   );

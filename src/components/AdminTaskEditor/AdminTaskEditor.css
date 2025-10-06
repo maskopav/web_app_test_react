@@ -1,6 +1,21 @@
+:root {
+    --bg: #f9fafb;
+    --card-bg: #b7c4ff;
+    --text: #333;
+    --border: #d6dfef;
+    --primary: #3764df;
+    --danger: #e74c3c;
+    --warning: #f39c12;
+    --success: #27ae60;
+    --purple: #7e3ff4;
+    --radius: 1rem;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --transition: all 0.2s ease;
+  }
+
 .admin-container {
     padding: 20px;
-    max-width: 1200px;
+    width: 90vw;
     margin: 0 auto;
   }
   
@@ -11,66 +26,126 @@
   }
   
   .task-list, .protocol-section {
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 10px;
+    background: var(--card-bg);
+    height: 70vh;
   }
   
   .task-list { flex: 1; }
   .protocol-section { flex: 2; }
-  
-  .task-item {
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 8px;
-    cursor: pointer;
-  }
-  
   .protocol-list { list-style: none; padding: 0; }
-  .protocol-item {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fafafa;
+  
+  .protocol-item, .task-option {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
     padding: 10px;
     margin-bottom: 12px;
   }
+  .task-option { cursor: pointer; }
+
+
   .protocol-item.dragging { background: #e0f7ff; opacity: 0.6; }
   
   .protocol-row { display: flex; justify-content: space-between; align-items: center; }
   .action-buttons span { cursor: pointer; font-size: 18px; margin-left: 8px; }
-  .edit-icon { color: #007acc; }
-  .delete-icon { color: red; }
+  
+  .edit-icon { color:  var(--primary); }
+  .delete-icon { color: var(--danger);}
   
   .button-row { margin-top: 15px; display: flex; gap: 10px; }
+  .button-done { background: var(--success);}
   
-  .form-group { margin-bottom: 10px; }
-  .form-group input, .form-group select { width: 100%; padding: 6px; margin-top: 4px; }
-  
-  .modal-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex; align-items: center; justify-content: center;
+
+  /* ===== MODAL STYLING ===== */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 1000;
   }
   
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 6px;
-    width: 500px;
+  .modal-box {
+    background: var(--bg);
+    border-radius:  var(--radius);
+    width: 600px;
+    max-width: 90vw;
     max-height: 80vh;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 2rem;
     position: relative;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
   }
   
   .modal-close {
     position: absolute;
-    top: 10px; right: 10px;
-    background: transparent;
+    top: 10px;
+    right: 15px;
+    background: var(--danger);
+    color: white;
     border: none;
-    font-size: 18px;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;              /* center horizontally + vertically */
+    align-items: center;        /* vertical */
+    justify-content: center;    /* horizontal */
+  }
+  
+  .modal-close:hover {
+    background: #c0392b;
+  }
+  
+  .modal-content h2 {
+    margin-top: 0;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  
+  
+  .form-group input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  
+  
+  .btn-cancel {
+    background: #ccc;
+    color: #333;
+  }
+  
+  .btn-save {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .btn-save:hover {
+    background: #0069d9;
   }
   

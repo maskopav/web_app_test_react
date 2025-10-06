@@ -55,7 +55,7 @@ Diagram 2 – Task Parameters: concrete overridable arguments for each task type
 | `subtitleKey`       | string                           | ✅        | i18n key for subtitle shown before recording starts.                                                        |
 | `subtitleActiveKey` | string                           | ❌        | i18n key for subtitle shown *after* recording starts.                                                       |
 | `translationParams` | object                           | ❌        | Key–value params passed into i18n translations.                                                             |
-| `audioExample`      | string                           | ❌        | Path to an example audio file (`/public/audio/...`).                                                        |
+| `illustration`      | string                           | ❌        | Path to an example audio file (`/public/audio/...`).                                                        |
 | `repeat`            | number                           | ❌        | How many times the task should repeat. Defaults depend on factory.                                          |
 | `recording`         | `RecordingMode`                  | ✅        | Defines how recording starts/stops.                                                                         |
 
@@ -69,11 +69,11 @@ Instead of manually writing the full BaseTask + RecordingMode, you should use th
 Factories hide internal details (like mode) and only expose the arguments relevant for each task.
 | Task type              | Factory Function        | Overridable Arguments                               | Fixed Behavior (internal) |
 | ---------------------- | ----------------------- | --------------------------------------------------- | ------------------------- |
-| **Phonation**          | `phonationTask`         | `phoneme`, `maxDuration`, `repeat`, `audioExample`  | Recording = `delayedStop` |
-| **Syllable Repeating** | `syllableRepeatingTask` | `syllable`, `maxDuration`, `repeat`, `audioExample` | Recording = `countDown`   |
-| **Retelling**          | `retellingTask`         | `fairytale`, `repeat`, `audioExample`               | Recording = `basicStop`   |
-| **Reading**            | `readingTask`           | `reading`, `repeat`, `audioExample`                 | Recording = `basicStop`   |
-| **Monologue**          | `monologueTask`         | `topic`, `repeat`, `audioExample`                   | Recording = `basicStop`   |
+| **Phonation**          | `phonationTask`         | `phoneme`, `maxDuration`, `repeat`, `illustration`  | Recording = `delayedStop` |
+| **Syllable Repeating** | `syllableRepeatingTask` | `syllable`, `maxDuration`, `repeat`, `illustration` | Recording = `countDown`   |
+| **Retelling**          | `retellingTask`         | `fairytale`, `repeat`, `illustration`               | Recording = `basicStop`   |
+| **Reading**            | `readingTask`           | `reading`, `repeat`, `illustration`                 | Recording = `basicStop`   |
+| **Monologue**          | `monologueTask`         | `topic`, `repeat`, `illustration`                   | Recording = `basicStop`   |
 
 Example Usage
 ```ts
@@ -87,25 +87,12 @@ export const TASKS: Task[] = [
 ];
 ```
 
-### Adding a New Language
-1. Open `src/tasks.js`
-2. Add a new entry:
-```js
-{
-  type: "voice",
-  i18nKey: "tasks.newTaskKey",
-  audioExample: "/audio/example.mp3"
-}
+#### Adjusting the Tasks.ts file
+If you update the tasks.ts file - adjust arguments of the tasks, add new task,.. - the default values and key shown in Admin Task Editor interface have to be updated (concretely file src/config/taskParams.json). Just run 
+```bash
+node scripts/generateTaskParams.js
 ```
-3. Update all language files in `src/i18n/` with translations:
-```json
-"newTaskKey": {
-  "title": "New Task",
-  "subtitle": "Instructions before recording...",
-  "subtitleActive": "Instructions after pressing START"
-}
-```
-4. Done! The task appears automatically in the flow.
+and json would be updated with correct parameters...
 
 ## Internationalization (i18n)
 This project uses react-i18next to support multiple languages.

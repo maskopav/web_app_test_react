@@ -1,0 +1,73 @@
+{
+    "_meta": {
+      "description": "Unified task and parameter definitions"
+    },
+  
+    "phonation": {
+      "name": "Sustained phonation",
+      "title": "Prolonged phonation /{{phoneme}}/",
+      "subtitle": "Press START and sustain /{{phoneme}}/ for at least {{duration}} seconds.",
+      "params": {
+        "phoneme": {
+          "label": "Phoneme",
+          "values": {
+            "a": "aaa",
+            "e": "eee",
+            "i": "iii",
+            "o": "ooo",
+            "u": "uuu"
+          }
+        },
+        "maxDuration": {
+          "label": "Maximum Duration"
+        },
+        "repeat": {
+          "label": "Repetitions"
+        }
+      }
+    },
+  
+    "syllableRepeating": {
+      "type": "voice",
+      "name": "Syllable repetition",
+      "title": "{{syllable}} repetition",
+      "subtitle": "Press START and repeat /{{syllable}}/ as quickly and accurately as possible.",
+      "params": {
+        "syllable": {
+          "label": "Syllable",
+          "values": {
+            "pataka": "pa-ta-ka",
+            "ta": "ta-ta-ta",
+            "ka": "ka-ka-ka"
+          },
+          "default": "pataka"
+        },
+        "maxDuration": {
+          "label": "Maximum Duration",
+          "default": 5
+        },
+        "repeat": {
+          "label": "Repetitions",
+          "default": 1
+        }
+      }
+    },
+  
+    "retelling": {
+      "type": "voice",
+      "name": "Fairytale retelling",
+      "title": "Retelling {{fairytale}}",
+      "subtitle": "Press START and retell the fairytale: {{fairytale}}.",
+      "params": {
+        "fairytale": {
+          "label": "Fairytale",
+          "values": {
+            "hanselAndGretel": "Hansel and Gretel",
+            "snowWhite": "Snow White"
+          },
+          "default": "snowWhite"
+        }
+      }
+    }
+  }
+  

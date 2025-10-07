@@ -1,18 +1,45 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import en from "./en.json";
-import de from "./de.json";
-import cs from "./cs.json";
 
-i18n.use(initReactI18next).init({
-  resources: {
-    en: { translation: en },
-    de: { translation: de },
-    cs: { translation: cs },
-  },
-  lng: "en", // default language
-  fallbackLng: "en",
-  interpolation: { escapeValue: false }
-});
+// Import namespaces
+import enCommon from "./en/common.json";
+import enTasks from "./en/tasks.json";
+import enInputs from "./en/inputs.json";
+import enRecorder from "./en/recorder.json";
+import enAdmin from "./en/admin.json";
+
+import csCommon from "./cs/common.json";
+import csTasks from "./cs/tasks.json";
+import csInputs from "./cs/inputs.json";
+import csRecorder from "./cs/recorder.json";
+import csAdmin from "./cs/admin.json";
+
+i18n
+  .use(initReactI18next)
+  .init({
+    fallbackLng: "en",
+    lng: "cs",
+    ns: ["common", "tasks", "inputs", "recorder", "admin"],
+    defaultNS: "common",
+    resources: {
+      en: {
+        common: enCommon,
+        tasks: enTasks,
+        inputs: enInputs,
+        recorder: enRecorder,
+        admin: enAdmin
+      },
+      cs: {
+        common: csCommon,
+        tasks: csTasks,
+        inputs: csInputs,
+        recorder: csRecorder,
+        admin: csAdmin
+      }
+    },
+    interpolation: {
+      escapeValue: false
+    }
+  });
 
 export default i18n;

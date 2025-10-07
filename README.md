@@ -99,16 +99,20 @@ This project uses react-i18next to support multiple languages.
 Translations are stored in `src/i18n/` as JSON files, one per language.
 ```bash
 src/
-└── i18n/
-    ├── en.json
-    ├── cs.json
-    ├── de.json
-    ├── # add a new language with the same components and keys as in other language files
-    └── index.js  # i18n setup
+├── i18n/
+│ |── en
+│ | ├── common.json       # shared buttons, status, general UI
+│ | ├── tasks.json        # user-facing labels for tasks (title, subtitle), names & descriptions of parameters, possible values
+│ | ├── admin.json        # AdminTaskEditor & modal texts
+│ | └── recorder.json     # labels & states for recording UI
+│ |── cs
+│ |── de
+│ |── # add a new language folder with the same components and keys as in other language files (copy paste the whole ofolder and rewrite it)
+| └── index.js  # i18n setup
 ```
 ### Adding a New Language
-1. Copy an existing file (e.g. `en.json`) → `fr.json`
-2. Translate the values, keeping keys identical
+1. Copy an existing folder (e.g. `en`) → `fr`
+2. Translate the values in all files, keeping keys identical
 3. Register the language in `src/i18n/index.js`
 
 ## Project Architecture & File Structure
@@ -138,7 +142,7 @@ src/
 │ │
 │ |── ModeSwitchButton.jsx     # 
 │ └── CompletionScreen.jsx     # Dedicated UI for final screen
-|
+│
 ├── hooks/
 │ └── useVoiceRecorder.js    # Logic layer: manages state, MediaRecorder, AudioContext
 │                            # Exposes API: startRecording, pauseRecording, resumeRecording, stopRecording, resetRecording

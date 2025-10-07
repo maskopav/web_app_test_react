@@ -1,39 +1,34 @@
-// components/AdminTaskEditor/AdminTaskEditor.jsx - Main component
+// src/components/AdminTaskEditor/AdminTaskEditor.jsx
 import React, { useState, useMemo } from "react";
 import { collectInputPaths } from "./helpers";
 import Modal from "./Modal";
-import taskParams from "../../config/taskParams.json";
+import { useTranslation } from "react-i18next";
+import {
+  translateTaskName,
+  translateParamName,
+  getDefaultParams,
+} from "../../utils/taskTranslations";
+import { taskBaseConfig } from "../../tasks.ts" with { type: "json" };
 import "./AdminTaskEditor.css";
 
-export const TASK_FIELD_SCHEMA = {
-  phonation: [{ name: "duration", label: "Duration (seconds)", type: "int" }],
-  syllableRepeating: [
-    { name: "repeats", label: "Number of repeats", type: "int" },
-    { name: "syllable", label: "Syllable", type: "translation", path: "syllables" },
-  ],
-  retelling: [{ name: "story", label: "Story", type: "translation", path: "stories" }],
-  reading: [{ name: "text", label: "Text", type: "translation", path: "texts" }],
-  monologue: [
-    { name: "topic", label: "Topic", type: "translation", path: "topics" },
-    { name: "duration", label: "Duration (seconds)", type: "int" },
-  ],
-};
-
-
 export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () => {} }) {
+  const { t } = useTranslation(["admin", "tasks", "common"]); // use all namespaces
   const inputOptions = useMemo(() => collectInputPaths(i18nJson), [i18nJson]);
+
   const [tasks, setTasks] = useState(initialTasks);
   const [editingTask, setEditingTask] = useState(null);
   const [reorderMode, setReorderMode] = useState(false);
   const [dragIndex, setDragIndex] = useState(null);
 
   function addTask(category) {
-    const defaults = taskParams[category]?.defaults || {};
+    const defaults = getDefaultParams(category);
+    const base = taskBaseConfig[category];
+    if (!base) return;
+
     const task = {
-      type: "voice",
+      type: base.type,
       category,
-      titleKey: `tasks.${category}.title`,
-      subtitleKey: `tasks.${category}.subtitle`,
+      recording: base.recording,
       ...defaults,
     };
     setTasks((prev) => [...prev, task]);
@@ -46,6 +41,7 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
   function handleDragStart(index) {
     setDragIndex(index);
   }
+
   function handleDrop(targetIndex) {
     if (dragIndex === null || dragIndex === targetIndex) return;
     setTasks((prev) => {
@@ -56,30 +52,41 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
     });
     setDragIndex(null);
   }
-  function handleDragOver(e) { e.preventDefault(); }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+  }
 
   return (
     <div className="admin-container">
-      <h2>Admin Task Editor</h2>
+      <h2>{t("title")}</h2>
 
       <div className="admin-grid">
         {/* Left column */}
         <div className="task-list">
-          <h3>Available tasks:</h3>
-          {Object.keys(taskParams).map((cat) => (
-          <div key={cat} className="task-option" onClick={() => addTask(cat)}>
-            <div className="task-title">{cat}</div>
-            <div className="task-params">
-              ({(taskParams[cat].params || []).join(", ")})
-            </div>
-          </div>
-        ))}
+          <h3>{t("availableTasks")}</h3>
+          {Object.keys(taskBaseConfig).map((cat) => {
+            const translatedName = translateTaskName(cat);
+            const paramLabels = Object.keys(taskBaseConfig[cat].params || {}).map((p) =>
+              translateParamName(cat, p)
+            );
+
+            return (
+              <div key={cat} className="task-option" onClick={() => addTask(cat)}>
+                <div className="task-title">{translatedName}</div>
+                <div className="task-params">
+                  ({paramLabels.join(", ")})
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Right column */}
         <div className="protocol-section">
-          <h3>Current protocol:</h3>
-          {tasks.length === 0 && <p className="empty-text">No tasks added yet.</p>}
+          <h3>{t("currentProtocol")}</h3>
+          {tasks.length === 0 && <p className="empty-text">{t("noTasks")}</p>}
+
           <ul className="protocol-list">
             {tasks.map((task, idx) => (
               <li
@@ -91,17 +98,17 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
                 className={`protocol-item ${dragIndex === idx ? "dragging" : ""}`}
               >
                 <div className="protocol-row">
-                  <strong>{idx + 1}. {task.category}</strong>
+                  <strong>{idx + 1}. {translateTaskName(task.category)}</strong>
                   {!reorderMode && (
                     <div className="action-buttons">
                       <span
                         className="edit-icon"
-                        title="Edit task"
+                        title={t("tooltips.edit")}
                         onClick={() => setEditingTask(idx)}
                       >✎</span>
                       <span
                         className="delete-icon"
-                        title="Remove task"
+                        title={t("tooltips.delete")}
                         onClick={() =>
                           setTasks((prev) => prev.filter((_, i) => i !== idx))
                         }
@@ -115,9 +122,9 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
 
           <div className="button-row">
             <button onClick={() => setReorderMode(!reorderMode)}>
-              {reorderMode ? "Finish Reordering" : "Reorder Tasks"}
+              {reorderMode ? t("finishReordering") : t("reorderTasks")}
             </button>
-            <button className="button-done" onClick={() => onSave(tasks)}>Done</button>
+            <button className="button-done" onClick={() => onSave(tasks)}>{t("done")}</button>
           </div>
         </div>
       </div>
@@ -126,23 +133,22 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
       <Modal
         open={editingTask != null}
         onClose={() => setEditingTask(null)}
-        onSave={() => setEditingTask(null)} // you can later replace with save logic if needed
+        onSave={() => setEditingTask(null)}
       >
         {editingTask != null && (() => {
           const category = tasks[editingTask].category;
-          const params = taskParams[category]?.params || [];
-          const defaults = taskParams[category]?.defaults || {};
+          const params = taskBaseConfig[category]?.params || {};
           const currentTask = tasks[editingTask];
 
           return (
             <div className="edit-window">
-              <h2>Edit task: {category}</h2>
-              {params.map((param) => {
-                const value = currentTask[param] ?? defaults[param] ?? "";
+              <h2>{t("editTask", { category: translateTaskName(category) })}</h2>
+              {Object.keys(params).map((param) => {
+                const value = currentTask[param] ?? params[param].default ?? "";
                 const isNumeric = typeof value === "number" || /^[0-9.]+$/.test(value);
                 return (
                   <div key={param} className="form-group">
-                    <label>{param}</label>
+                    <label>{translateParamName(category, param)}</label>
                     <input
                       type={isNumeric ? "number" : "text"}
                       value={value}

@@ -1,0 +1,25 @@
+{
+    "title": "Admin Task Editor",
+    "availableTasks": "Available Tasks:",
+    "currentProtocol": "Current Protocol:",
+    "noTasks": "No tasks added yet.",
+    "editTask": "Edit Task: {{category}}",
+    "reorderTasks": "Reorder Tasks",
+    "finishReordering": "Finish Reordering",
+    "done": "Done",
+    "params": "Parameters",
+    "tooltips": {
+      "edit": "Edit this task",
+      "delete": "Remove this task"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "save": "Save Changes"
+    },
+    "modal": {
+      "title": "Edit Task",
+      "cancel": "Cancel",
+      "save": "Save Changes"
+    }
+  }
+  

@@ -4,13 +4,11 @@ import { initReactI18next } from "react-i18next";
 // Import namespaces
 import enCommon from "./en/common.json";
 import enTasks from "./en/tasks.json";
-import enInputs from "./en/inputs.json";
 import enRecorder from "./en/recorder.json";
 import enAdmin from "./en/admin.json";
 
 import csCommon from "./cs/common.json";
 import csTasks from "./cs/tasks.json";
-import csInputs from "./cs/inputs.json";
 import csRecorder from "./cs/recorder.json";
 import csAdmin from "./cs/admin.json";
 
@@ -19,20 +17,18 @@ i18n
   .init({
     fallbackLng: "en",
     lng: "cs",
-    ns: ["common", "tasks", "inputs", "recorder", "admin"],
+    ns: ["common", "tasks", "recorder", "admin"],
     defaultNS: "common",
     resources: {
       en: {
         common: enCommon,
         tasks: enTasks,
-        inputs: enInputs,
         recorder: enRecorder,
         admin: enAdmin
       },
       cs: {
         common: csCommon,
         tasks: csTasks,
-        inputs: csInputs,
         recorder: csRecorder,
         admin: csAdmin
       }

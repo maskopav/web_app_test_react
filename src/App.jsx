@@ -4,7 +4,11 @@ import VoiceRecorder from './components/VoiceRecorder';
 import CompletionScreen from "./components/CompletionScreen";
 import ModeSwitchButton from "./components/ModeSwitchButton";
 import { TASKS as TASK_DEFS } from "./tasks";
-import { resolveTranslationParams } from "./utils/translation";
+import {
+  translateTaskTitle,
+  translateTaskSubtitle,
+  translateTaskSubtitleActive
+} from "./utils/translations";
 import AdminTaskEditor from "./components/AdminTaskEditor";
 import enJson from "./i18n/en.json";   // pass translations to Admin UI
 import './App.css';
@@ -65,12 +69,12 @@ function App() {
           <VoiceRecorder
             key={taskIndex} // Key ensures the component remounts for each new task
             title={currentTask._repeatTotal > 1
-              ? `${t(currentTask.titleKey, params)} #${currentTask._repeatIndex}`
-              : t(currentTask.titleKey, params)
+              ? `${translateTaskTitle(currentTask.category, params)} #${currentTask._repeatIndex}`
+              :translateTaskTitle(currentTask.category, params)
             }
-            subtitle={t(currentTask.subtitleKey, params)}
+            subtitle={translateTaskSubtitle(currentTask.category, params)}
             subtitleActive={currentTask.subtitleActiveKey
-              ? t(currentTask.subtitleActiveKey, params)
+              ? translateTaskSubtitleActive(currentTask.category, params)
               : undefined
             }
             audioExample={currentTask.audioExample}

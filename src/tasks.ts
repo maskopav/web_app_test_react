@@ -1,5 +1,5 @@
 // src/tasks.ts
-import tasksBaseRaw from "./config/tasksBase.json" with { type: "json" };
+import baseConfigRaw from "./config/tasksBase.json" with { type: "json" };
 
 export type RecordingMode =
   | { mode: "basicStop" }
@@ -11,24 +11,20 @@ export interface TaskParamDef {
   values?: any[];
 }
 
-export interface TaskDef {
+export interface TaskBase {
   type: string;
   recording: RecordingMode;
   params: Record<string, TaskParamDef>;
+  repeat?: number;
+  illustration?: string;
 }
 
-type TaskBase = {
-  type: string;
-  recording: { mode: string; maxDuration?: number };
-  params: Record<string, { default?: any; values?: any[] }>;
-};
+const raw = baseConfigRaw as Record<string, any>;
+export const taskBaseConfig: Record<string, TaskBase> = Object.fromEntries(
+  Object.entries(raw).filter(([key]) => key !== "_meta")
+);
 
-// treat imported JSON as unknown, strip _meta, then cast
-const _raw = tasksBaseRaw as unknown as Record<string, any>;
-const { _meta, ..._rest } = _raw;
-export const taskBaseConfig = _rest as Record<string, TaskBase>;
-
-export interface Task {
+export interface TaskInstance {
   category: string;
   type: string;
   recording: RecordingMode;
@@ -36,8 +32,8 @@ export interface Task {
   repeat?: number;
 }
 
-/** Create a task instance with optional overrides */
-export function createTask(category: string, overrides: Record<string, any> = {}): Task {
+/** Factory to create a task instance with overrides */
+export function createTask(category: string, overrides: Record<string, any> = {}): TaskInstance {
   const def = taskBaseConfig[category];
   if (!def) throw new Error(`Unknown task category: ${category}`);
 
@@ -50,12 +46,13 @@ export function createTask(category: string, overrides: Record<string, any> = {}
     type: def.type,
     recording: def.recording,
     params,
-    repeat: params.repeat ?? 1
+    repeat: def.repeat ?? params.repeat ?? 1
   };
 }
 
-// Example usage:
-export const TASKS = [
-  createTask("phonation", { phoneme: "a" }),
-  createTask("retelling", { fairytale: "snowWhite" })
+// Example usage: 
+export const TASKS = [ 
+  createTask("phonation", { phoneme: "a" }), 
+  createTask("retelling", { fairytale: "snowWhite" }),
+  createTask("reading", { topic: "seedling"})
 ];

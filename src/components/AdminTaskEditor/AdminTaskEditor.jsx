@@ -6,8 +6,9 @@ import { useTranslation } from "react-i18next";
 import {
   translateTaskName,
   translateParamName,
+  translateParamValue,
   getDefaultParams,
-} from "../../utils/taskTranslations";
+} from "../../utils/translations";
 import { taskBaseConfig } from "../../tasks.ts" with { type: "json" };
 import "./AdminTaskEditor.css";
 
@@ -151,7 +152,7 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
                     <label>{translateParamName(category, param)}</label>
                     <input
                       type={isNumeric ? "number" : "text"}
-                      value={value}
+                      value={translateParamValue(category, param, String(value))}
                       onChange={(e) =>
                         updateTask(editingTask, {
                           [param]: isNumeric ? Number(e.target.value) : e.target.value,

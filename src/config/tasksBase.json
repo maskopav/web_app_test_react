@@ -3,29 +3,90 @@
 
   "phonation": {
     "type": "voice",
-    "recording": { "mode": "delayedStop", "maxDuration": 5 },
+    "recording": { 
+      "mode": "delayedStop", 
+      "maxDuration": 5 
+    },
     "params": {
-      "phoneme": { "default": "a", "values": ["a", "e", "i", "o", "u"] },
-      "repeat": { "default": 1 },
-      "maxDuration": { "default": 5 }
+      "phoneme": { 
+        "default": "a", 
+        "values": ["a", "e", "i", "o", "u"] 
+      },
+      "repeat": { 
+        "default": 1 
+      },
+      "maxDuration": { 
+        "default": 5 
+      }
     }
   },
 
   "syllableRepeating": {
     "type": "voice",
-    "recording": { "mode": "countDown", "maxDuration": 5 },
+    "recording": { 
+      "mode": "countDown", 
+      "maxDuration": 5 
+    },
     "params": {
-      "syllable": { "default": "pataka", "values": ["pataka", "ta", "ka"] },
-      "repeat": { "default": 1 },
-      "maxDuration": { "default": 5 }
+      "syllable": { 
+        "default": "pataka", 
+        "values": ["pataka", "ta", "ka"] 
+      },
+      "repeat": { 
+        "default": 1 
+      },
+      "maxDuration": { 
+        "default": 5 
+      }
     }
   },
 
   "retelling": {
     "type": "voice",
-    "recording": { "mode": "basicStop" },
+    "recording": { 
+      "mode": "basicStop" 
+    },
     "params": {
-      "fairytale": { "default": "snowWhite", "values": ["snowWhite", "hanselAndGretel"] }
+      "fairytale": { 
+        "default": "snowWhite", 
+        "values": ["snowWhite", "hanselAndGretel"] 
+      },
+      "repeat": { 
+        "default": 1 
+      }
+    }
+  },
+
+  "reading": {
+    "type": "voice",
+    "recording": { 
+      "mode": "basicStop" 
+    },
+    "params": {
+      "topic": {
+        "default":"seedling",
+        "values": ["seedling", "dog", "raining"]
+      },
+      "repeat": {
+        "default":1
+      }
+    }
+  },
+
+  "monologue": {
+    "type": "voice",
+    "recording": { 
+      "mode": "basicStop" 
+    },
+    "params": {
+      "topic": {
+        "default":"hobbies",
+        "values": ["hobbies", "any", "family"]
+      },
+      "repeat": {
+        "default":1
+      }
     }
   }
+
 }

@@ -18,17 +18,16 @@
             "u": "uuu"
           }
         },
-        "maxDuration": {
-          "label": "Maximum Duration"
-        },
         "repeat": {
           "label": "Repetitions"
+        },
+        "maxDuration": {
+          "label": "Maximum Duration"
         }
       }
     },
   
     "syllableRepeating": {
-      "type": "voice",
       "name": "Syllable repetition",
       "title": "{{syllable}} repetition",
       "subtitle": "Press START and repeat /{{syllable}}/ as quickly and accurately as possible.",
@@ -39,22 +38,18 @@
             "pataka": "pa-ta-ka",
             "ta": "ta-ta-ta",
             "ka": "ka-ka-ka"
-          },
-          "default": "pataka"
+          }
         },
         "maxDuration": {
-          "label": "Maximum Duration",
-          "default": 5
+          "label": "Maximum Duration"
         },
         "repeat": {
-          "label": "Repetitions",
-          "default": 1
+          "label": "Repetitions"
         }
       }
     },
   
     "retelling": {
-      "type": "voice",
       "name": "Fairytale retelling",
       "title": "Retelling {{fairytale}}",
       "subtitle": "Press START and retell the fairytale: {{fairytale}}.",
@@ -64,8 +59,67 @@
           "values": {
             "hanselAndGretel": "Hansel and Gretel",
             "snowWhite": "Snow White"
-          },
-          "default": "snowWhite"
+          }
+        },
+        "repeat": {
+          "label": "Repetitions"
+        }
+      }
+    },
+
+    "reading": {
+      "name": "Reading text",
+      "title": "Reading {{topic}}",
+      "subtitle": "Press START to read the text on screen at a comfortable pace. Press STOP at the end.",
+      "subtitleActive": "{{text}}",
+      "params": {
+        "topic": {
+          "label":"Text topic",
+          "values": {
+            "seedling": {
+              "label":"Seedling",
+              "text": "When you first put a seedling in the ground..."
+            },
+            "dog": {
+              "label":"Dog",
+              "text": "I have a dog and I like to play with it..."
+            },
+            "raining": {
+              "label":"Raining",
+              "text": "It is November..."
+            }
+          }
+        },
+        "repeat": {
+          "label": "Repetitions"
+        }
+      }
+    },
+  
+    "monologue": {
+      "name": "Monologue on topic",
+      "title": "Monologue on: {{topic}}",
+      "subtitle": "Press START and talk about {{topicDescription}} until the timer runs out.",
+      "params": {
+        "topic": {
+          "label":"Monologue topic",
+          "values": {
+            "hobbies": {
+              "label":"Hobbies",
+              "topicDescription": "hobbies (sport, music, reading, gardening, pets, etc.)"
+            },
+            "any": {
+              "label":"Any topic",
+              "topicDescription": "anythinq which come to your mind"
+            },
+            "family": {
+              "label":"Family",
+              "topicDescription": "family"
+            }
+          }
+        },
+        "repeat": {
+          "label": "Repetitions"
         }
       }
     }

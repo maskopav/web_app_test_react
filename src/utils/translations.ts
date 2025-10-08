@@ -68,6 +68,27 @@ export function translateParamValue(category: string, param: string, value: stri
   return translated as string;
 }
 
+export function getAllParams(category: string): Record<string, any> {
+  const params = taskBaseConfig[category]?.params;
+  if (!params) return {};
+
+  return Object.fromEntries(
+    Object.entries(params).map(([paramKey, paramDef]) => [
+      paramKey,
+      {
+        key: paramKey,
+        label: translateParamName(category, paramKey),
+        values: paramDef.values
+          ? Object.keys(paramDef.values).map((vKey) => ({
+              key: vKey,
+              label: translateParamValue(category, paramKey, vKey),
+            }))
+          : [],
+      },
+    ])
+  );
+}
+
 export function getDefaultParams(category: string): Record<string, any> {
   const params = taskBaseConfig[category]?.params || {};
   return Object.fromEntries(Object.entries(params).map(([k, v]) => [k, v.default]));

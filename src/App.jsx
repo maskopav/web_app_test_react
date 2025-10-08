@@ -7,7 +7,8 @@ import { TASKS as TASK_DEFS } from "./tasks";
 import {
   translateTaskTitle,
   translateTaskSubtitle,
-  translateTaskSubtitleActive
+  translateTaskSubtitleActive,
+  getAllParams
 } from "./utils/translations";
 import AdminTaskEditor from "./components/AdminTaskEditor";
 import enJson from "./i18n/en.json";   // pass translations to Admin UI
@@ -60,7 +61,7 @@ function App() {
     if (!currentTask) return <CompletionScreen />;
 
     // auto-resolve all params once
-    const params = resolveTranslationParams(currentTask.translationParams);
+    const params = getAllParams(currentTask.translationParams);
 
     // Render the appropriate component based on task type
     switch (currentTask.type) {

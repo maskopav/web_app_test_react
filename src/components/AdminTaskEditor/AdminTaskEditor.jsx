@@ -7,6 +7,7 @@ import {
   translateTaskName,
   translateParamName,
   translateParamValue,
+  getAllParams,
   getDefaultParams,
 } from "../../utils/translations";
 import { taskBaseConfig } from "../../tasks.ts" with { type: "json" };
@@ -68,9 +69,8 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
           <h3>{t("availableTasks")}</h3>
           {Object.keys(taskBaseConfig).map((cat) => {
             const translatedName = translateTaskName(cat);
-            const paramLabels = Object.keys(taskBaseConfig[cat].params || {}).map((p) =>
-              translateParamName(cat, p)
-            );
+            const params = getAllParams(cat);
+            const paramLabels = Object.values(params).map((p) => p.label);
 
             return (
               <div key={cat} className="task-option" onClick={() => addTask(cat)}>

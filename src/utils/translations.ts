@@ -1,18 +1,6 @@
 //src/utils/translations.ts
 import i18next from "i18next";
-import { useTranslation } from "react-i18next";
 import { taskBaseConfig } from "../tasks.js";
-
-// -----------------------------
-// TRANSLATION TYPES
-// -----------------------------
-export interface TaskTranslation {
-  name: string;
-  title: string;
-  subtitle?: string;
-  subtitleActive?: string;
-  params?: Record<string, any>;
-}
 
 // -----------------------------
 // TRANSLATION HELPERS
@@ -26,6 +14,7 @@ export function translateTaskTitle(category: string, params: Record<string, any>
   return i18next.t(`${category}.title`, { ns: "tasks", ...params, defaultValue: category });
 }
 
+
 export function translateTaskSubtitle(category: string, params: Record<string, any> = {}): string {
   return i18next.t(`${category}.subtitle`, { ns: "tasks", ...params, defaultValue: "" });
 }
@@ -36,14 +25,8 @@ export function translateTaskSubtitleActive(category: string, params: Record<str
 
 export function translateParamName(category: string, param: string): string {
   const key = `${category}.params.${param}.label`;
-  const commonKey = `common.params.${param}`;
-
   const taskLabel = i18next.t(key, { ns: "tasks", defaultValue: "" });
   if (taskLabel) return taskLabel as string;
-
-  const commonLabel = i18next.t(commonKey, { ns: "common", defaultValue: "" });
-  if (commonLabel) return commonLabel as string;
-
   return param;
 }
 
@@ -68,6 +51,7 @@ export function translateParamValue(category: string, param: string, value: stri
   return translated as string;
 }
 
+// Returns all params with translated labels and values - detailed structure for Admin UI lists
 export function getAllParams(category: string): Record<string, any> {
   const params = taskBaseConfig[category]?.params;
   if (!params) return {};
@@ -89,25 +73,58 @@ export function getAllParams(category: string): Record<string, any> {
   );
 }
 
+//  Returns parameter metadata + actual values for a specific task.
+/**
+ * Deeply resolves all parameters for a given task category,
+ * including nested definitions like label + topicDescription
+ * from the translation JSON (not just base config).
+ */
+export function getResolvedParams(category: string, actualParams: Record<string, any> = {}): Record<string, any> {
+  // Translation tree for the given task (from en.json or loaded i18n)
+  const translationTree = i18next.t(category, { ns: "tasks", returnObjects: true });
+
+  if (!translationTree || typeof translationTree !== "object" || !translationTree.params) {
+    console.warn(`⚠️ No translation structure found for category: ${category}`);
+    return { ...actualParams };
+  }
+
+  const result: Record<string, any> = { ...actualParams };
+
+  for (const [paramKey, actualValue] of Object.entries(actualParams)) {
+    const paramTranslation = translationTree.params[paramKey];
+    if (!paramTranslation) continue;
+
+    // If parameter has value map, try to find the entry for the current value
+    if (paramTranslation.values && typeof paramTranslation.values === "object") {
+      const valueDef = paramTranslation.values[actualValue];
+      if (typeof valueDef === "string") {
+        // simple case (like phonation: "a": "aaa")
+        result[paramKey] = valueDef;
+      } else if (typeof valueDef === "object" && valueDef !== null) {
+        // deep object (like monologue.topic.any)
+        // flatten into result (topic label, topicDescription, etc.)
+        for (const [k, v] of Object.entries(valueDef)) {
+          if (k === "label") {
+            result[paramKey] = v; // main param label replaces original value
+          } else {
+            result[k] = v; // other nested info (topicDescription, text, etc.)
+          }
+        }
+      }
+    } else {
+      // No values map — use label if available
+      if (paramTranslation.label) {
+        result[paramKey] = paramTranslation.label;
+      }
+    }
+  }
+
+  return result;
+}
+
+// Returns default params
 export function getDefaultParams(category: string): Record<string, any> {
   const params = taskBaseConfig[category]?.params || {};
   return Object.fromEntries(Object.entries(params).map(([k, v]) => [k, v.default]));
 }
 
-// -----------------------------
-// HOOK VARIANT
-// -----------------------------
-export function useTaskTranslation(category: string, params: Record<string, any> = {}): TaskTranslation {
-  const { t } = useTranslation("tasks");
-
-  const safeString = (val: any): string =>
-    typeof val === "string" ? val : JSON.stringify(val);
-
-  return {
-    name: safeString(t(`${category}.name`)),
-    title: safeString(t(`${category}.title`, params)),
-    subtitle: safeString(t(`${category}.subtitle`, params)),
-    subtitleActive: safeString(t(`${category}.subtitleActive`, params)),
-    params: t(`${category}.params`, { returnObjects: true }) as Record<string, any>,
-  };
-}

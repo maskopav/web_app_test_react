@@ -16,7 +16,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: "en",
-    lng: "cs",
+    lng: "en",
     ns: ["common", "tasks", "recorder", "admin"],
     defaultNS: "common",
     resources: {

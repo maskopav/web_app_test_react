@@ -6,7 +6,7 @@
     "phonation": {
       "name": "Sustained phonation",
       "title": "Prolonged phonation /{{phoneme}}/",
-      "subtitle": "Press START and sustain /{{phoneme}}/ for at least {{duration}} seconds.",
+      "subtitle": "Press START and sustain /{{phoneme}}/ for at least {{maxDuration}} seconds.",
       "params": {
         "phoneme": {
           "label": "Phoneme",
@@ -110,7 +110,7 @@
             },
             "any": {
               "label":"Any topic",
-              "topicDescription": "anythinq which come to your mind"
+              "topicDescription": "anything which come to your mind"
             },
             "family": {
               "label":"Family",

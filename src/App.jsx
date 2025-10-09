@@ -8,7 +8,7 @@ import {
   translateTaskTitle,
   translateTaskSubtitle,
   translateTaskSubtitleActive,
-  getAllParams
+  getResolvedParams
 } from "./utils/translations";
 import AdminTaskEditor from "./components/AdminTaskEditor";
 import enJson from "./i18n/en.json";   // pass translations to Admin UI
@@ -16,7 +16,7 @@ import './App.css';
 
 // App.jsx
 function App() {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["tasks", "common"]);
   const [taskIndex, setTaskIndex] = useState(0);
   const [adminMode, setAdminMode] = useState(true); // start in admin mode
 
@@ -61,7 +61,8 @@ function App() {
     if (!currentTask) return <CompletionScreen />;
 
     // auto-resolve all params once
-    const params = getAllParams(currentTask.translationParams);
+    const params = getResolvedParams(currentTask.category, currentTask.params);
+    console.log(params)
 
     // Render the appropriate component based on task type
     switch (currentTask.type) {
@@ -102,6 +103,9 @@ function App() {
   const currentOfType = expandedTasks
     .slice(0, taskIndex + 1)
     .filter(t => t.type === currentType).length;
+    
+  // Translated label for the task type (voice, motor, camera)
+  const taskLabel = t(`taskLabels.${currentType}`, { ns: "common"});
 
 return (
   <div className="app-container">
@@ -122,7 +126,7 @@ return (
         <div className="task-wrapper">
           {taskIndex < expandedTasks.length && (
             <div className="task-progress">
-              {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType}
+              {taskLabel || "Task"} {currentOfType}/{totalOfType}
             </div>
           )}
           <div className="card">{renderCurrentTask()}</div>

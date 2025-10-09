@@ -52,7 +52,8 @@ export function createTask(category: string, overrides: Record<string, any> = {}
 
 // Example usage: 
 export const TASKS = [ 
-  createTask("phonation", { phoneme: "a" }), 
+  createTask("phonation", { phoneme: "a", maxDuration: 3}), 
   createTask("retelling", { fairytale: "snowWhite" }),
-  createTask("reading", { topic: "seedling"})
+  createTask("reading", { topic: "dog"}),
+  createTask("monologue", { topic: "any"})
 ];

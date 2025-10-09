@@ -20,6 +20,11 @@
     "completion": {
       "title": "All Tasks Completed!",
       "message": "You have successfully finished all assignments."
+    },
+    "taskLabels": {
+      "voice": "Vocal Task",
+      "motor": "Motor Task",
+      "camera": "Camera Task"
     }
   }
   

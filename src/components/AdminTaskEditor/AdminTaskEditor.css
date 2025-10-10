@@ -9,6 +9,7 @@
     --success: #27ae60;
     --purple: #7e3ff4;
     --radius: 1rem;
+    --sharp-radius: 4px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     --transition: all 0.2s ease;
   }
@@ -59,8 +60,8 @@
   .button-done { background: var(--success);}
   
 
-  /* ===== MODAL STYLING ===== */
-.modal-backdrop {
+/* ===== MODAL STYLING ===== */
+  .modal-backdrop {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
@@ -73,15 +74,15 @@
   .modal-box {
     background: var(--bg);
     border-radius:  var(--radius);
-    width: 600px;
-    max-width: 90vw;
-    max-height: 80vh;
+    max-width: 50vw;
+    max-height: 85vh;
     display: flex;
     flex-direction: column;
     padding: 1.5rem 2rem;
     position: relative;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow); 
     overflow-y: auto;
+    font-size: 18px;
   }
   
   .modal-close {
@@ -91,7 +92,7 @@
     background: var(--danger);
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--sharp-radius);
     width: 28px;
     height: 28px;
     cursor: pointer;
@@ -107,31 +108,53 @@
   }
   
   .modal-content h2 {
-    margin-top: 0;
     font-size: 1.4rem;
     margin-bottom: 1rem;
     text-align: center;
   }
-  
+
+  /* Make form fields align neatly */
   .form-group {
     display: flex;
-    flex-direction: column;
-    margin-bottom: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    gap: 0.6rem;
   }
-  
-  
-  .form-group input {
-    padding: 0.5rem;
+
+  /* Consistent label sizing */
+  .form-group label {
+    flex: 0 0 180px;          /* fixed label width for alignment */
+    text-align: right;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .form-group input,
+  .form-group select {
+    flex: 1; 
+    margin: 0.3rem;
+    padding: 0.3rem 0.6rem;
     border: 1px solid #ccc;
-    border-radius: 6px;
+    border-radius: var(--sharp-radius);
     font-size: 1rem;
+    transition: var(--transition);
+    background: white;
   }
-  
+
+  /* Subtle hover/focus effect */
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(55, 100, 223, 0.25);
+    outline: none;
+  }
+    
   .modal-actions {
     display: flex;
+    flex-direction: column;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 1rem;
+    margin-top: 0.6rem;
   }
   
   
@@ -147,5 +170,17 @@
   
   .btn-save:hover {
     background: #0069d9;
+  }
+  
+  /* Narrow screens */
+  @media (max-width: 600px) {
+    .form-group {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .form-group label {
+      text-align: left;
+      flex: none;
+    }
   }
   

@@ -140,27 +140,43 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
       >
         {editingTask != null && (() => {
           const category = tasks[editingTask].category;
-          const params = taskBaseConfig[category]?.params || {};
+          const params = getAllParams(category);
           const currentTask = tasks[editingTask];
 
           return (
             <div className="edit-window">
               <h2>{t("editTask", { category: translateTaskName(category) })}</h2>
               {Object.keys(params).map((param) => {
-                const value = currentTask[param] ?? params[param].default ?? "";
+                const paramInfo = params[param];
+                const value = currentTask[param] ?? "";
+                const hasEnumValues = paramInfo.values && paramInfo.values.length > 0;
                 const isNumeric = typeof value === "number" || /^[0-9.]+$/.test(value);
+
                 return (
                   <div key={param} className="form-group">
-                    <label>{translateParamName(category, param)}</label>
-                    <input
-                      type={isNumeric ? "number" : "text"}
-                      value={translateParamValue(category, param, String(value))}
-                      onChange={(e) =>
-                        updateTask(editingTask, {
-                          [param]: isNumeric ? Number(e.target.value) : e.target.value,
-                        })
-                      }
-                    />
+                    <label>{paramInfo.label}</label>
+                    {hasEnumValues ? (
+                      <select
+                        value={value}
+                        onChange={(e) => updateTask(editingTask, { [param]: e.target.value })}
+                      >
+                        {paramInfo.values.map((v) => (
+                          <option key={v.key} value={v.key}>
+                            {v.label}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={isNumeric ? "number" : "text"}
+                        value={value}
+                        onChange={(e) =>
+                          updateTask(editingTask, {
+                            [param]: isNumeric ? Number(e.target.value) : e.target.value,
+                          })
+                        }
+                      />
+                    )}
                   </div>
                 );
               })}

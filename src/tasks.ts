@@ -1,28 +1,5 @@
 // src/tasks.ts
-import baseConfigRaw from "./config/tasksBase.json" with { type: "json" };
-
-export type RecordingMode =
-  | { mode: "basicStop" }
-  | { mode: "countDown"; maxDuration: number }
-  | { mode: "delayedStop"; maxDuration: number };
-
-export interface TaskParamDef {
-  default: any;
-  values?: any[];
-}
-
-export interface TaskBase {
-  type: string;
-  recording: RecordingMode;
-  params: Record<string, TaskParamDef>;
-  repeat?: number;
-  illustration?: string;
-}
-
-const raw = baseConfigRaw as Record<string, any>;
-export const taskBaseConfig: Record<string, TaskBase> = Object.fromEntries(
-  Object.entries(raw).filter(([key]) => key !== "_meta")
-);
+import { taskBaseConfig, type RecordingMode } from "./config/tasksBase.js"
 
 export interface TaskInstance {
   category: string;
@@ -30,6 +7,7 @@ export interface TaskInstance {
   recording: RecordingMode;
   params: Record<string, any>;
   repeat?: number;
+  illustration?: string;
 }
 
 /** Factory to create a task instance with overrides */
@@ -55,5 +33,6 @@ export const TASKS = [
   createTask("phonation", { phoneme: "a", maxDuration: 3}), 
   createTask("retelling", { fairytale: "snowWhite" }),
   createTask("reading", { topic: "dog"}),
-  createTask("monologue", { topic: "any"})
+  createTask("monologue", { topic: "any"}),
+  createTask("syllableRepeating", { syllable: "ta", repeat: 2, maxDuration: 7})
 ];

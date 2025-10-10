@@ -10,7 +10,7 @@ import {
   getAllParams,
   getDefaultParams,
 } from "../../utils/translations";
-import { taskBaseConfig } from "../../tasks.ts" with { type: "json" };
+import { taskBaseConfig} from "../../config/tasksBase.js"
 import "./AdminTaskEditor.css";
 
 export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () => {} }) {
@@ -70,6 +70,8 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
           {Object.keys(taskBaseConfig).map((cat) => {
             const translatedName = translateTaskName(cat);
             const params = getAllParams(cat);
+            console.log("All params - getAllParams method.")
+            console.log(params);
             const paramLabels = Object.values(params).map((p) => p.label);
 
             return (

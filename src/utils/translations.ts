@@ -1,6 +1,6 @@
 //src/utils/translations.ts
 import i18next from "i18next";
-import { taskBaseConfig } from "../tasks.js";
+import { taskBaseConfig } from "../config/tasksBase.js";
 
 // -----------------------------
 // TRANSLATION HELPERS
@@ -56,20 +56,28 @@ export function getAllParams(category: string): Record<string, any> {
   const params = taskBaseConfig[category]?.params;
   if (!params) return {};
 
+  // load translations for this category
+  const translationTree = i18next.t(category, { ns: "tasks", returnObjects: true }) as Record<string, any>;
+
   return Object.fromEntries(
-    Object.entries(params).map(([paramKey, paramDef]) => [
-      paramKey,
-      {
-        key: paramKey,
-        label: translateParamName(category, paramKey),
-        values: paramDef.values
-          ? Object.keys(paramDef.values).map((vKey) => ({
-              key: vKey,
-              label: translateParamValue(category, paramKey, vKey),
-            }))
-          : [],
-      },
-    ])
+    Object.entries(params).map(([paramKey, paramDef]) => {
+      const paramTranslation = translationTree?.params?.[paramKey];
+      const translatedValues = paramTranslation?.values || {};
+
+      const values = Object.keys(translatedValues).map((vKey) => ({
+        key: vKey,
+        label: translateParamValue(category, paramKey, vKey),
+      }));
+
+      return [
+        paramKey,
+        {
+          key: paramKey,
+          label: translateParamName(category, paramKey),
+          values,
+        },
+      ];
+    })
   );
 }
 
@@ -81,7 +89,7 @@ export function getAllParams(category: string): Record<string, any> {
  */
 export function getResolvedParams(category: string, actualParams: Record<string, any> = {}): Record<string, any> {
   // Translation tree for the given task (from en.json or loaded i18n)
-  const translationTree = i18next.t(category, { ns: "tasks", returnObjects: true });
+  const translationTree = i18next.t(category, { ns: "tasks", returnObjects: true }) as Record<string, any>;
 
   if (!translationTree || typeof translationTree !== "object" || !translationTree.params) {
     console.warn(`⚠️ No translation structure found for category: ${category}`);
@@ -91,7 +99,7 @@ export function getResolvedParams(category: string, actualParams: Record<string,
   const result: Record<string, any> = { ...actualParams };
 
   for (const [paramKey, actualValue] of Object.entries(actualParams)) {
-    const paramTranslation = translationTree.params[paramKey];
+    const paramTranslation = translationTree.params[paramKey]; 
     if (!paramTranslation) continue;
 
     // If parameter has value map, try to find the entry for the current value
@@ -111,10 +119,15 @@ export function getResolvedParams(category: string, actualParams: Record<string,
           }
         }
       }
+    // Parameter has no translation values (keep numeric / literal values)
     } else {
-      // No values map — use label if available
-      if (paramTranslation.label) {
+      // Only override with label if the original value is a string
+      // and label is explicitly provided (e.g. "fairytale": { label: "Fairytale" })
+      if (typeof actualValue === "string" && paramTranslation.label) {
         result[paramKey] = paramTranslation.label;
+      } else {
+        // Otherwise, preserve the numeric / literal value
+        result[paramKey] = actualValue;
       }
     }
   }
@@ -125,6 +138,17 @@ export function getResolvedParams(category: string, actualParams: Record<string,
 // Returns default params
 export function getDefaultParams(category: string): Record<string, any> {
   const params = taskBaseConfig[category]?.params || {};
-  return Object.fromEntries(Object.entries(params).map(([k, v]) => [k, v.default]));
+  const translationTree = i18next.t(category, { ns: "tasks", returnObjects: true }) as Record<string, any>;
+
+    return Object.fromEntries(
+    Object.entries(params).map(([key, def]) => {
+      let defaultValue = def.default;
+      const possibleValues = Object.keys(translationTree?.params?.[key]?.values || {});
+      if (defaultValue === undefined && possibleValues.length > 0) {
+        defaultValue = possibleValues[0]; // fallback
+      }
+      return [key, defaultValue];
+    })
+  );
 }
 

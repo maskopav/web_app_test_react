@@ -6,22 +6,23 @@ Built around a Voice Recorder, Admin Task Editor, and a configurable task system
 
 ## Overview
 
-This project is not only a voice recording component, but a complete **interactive framework** for defining and running guided recording tasks.
+This is more than a voice recorder — it’s a full **framework for guided recording tasks**, with dynamic parameters, translations, and standardized workflows.
 
-It consists of two main parts:
+It consists of two main parts (interfaces):
 
-| Component                   | Description                                                                                                                                    |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🎧 **Voice Recorder**       | User-facing module for performing guided recording tasks with dynamic instructions and translations.                                           |
+| Component                | Description                                                                                                                                    |
+| -------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🎧 **Voice Recorder**    | User-facing module for performing guided recording tasks with dynamic instructions and translations.                                           |
 | 🧑‍💼 **Admin Task Editor** | Interface for researchers or clinicians to modify or design task protocols — defining task order, repetitions, parameters, and allowed values. |
 
-
+## Goal of the System
 The long-term goal is to build a **standardized protocol system**, where:
-- Task instructions (titles, subtitles) remain consistent and standardized.
-- Admins can customize only specific parameters (like the topic for monologue or the phoneme for phonation).
-- Protocols can be easily saved, shared, and reused for different studies or sessions.
+- Maintain *standardized* instructions across studies.
+- Admins can *customize only specific parameters* via User Interface (like the topic for monologue or the phoneme for phonation) - without breaking task structure or standard wording.
+- Make protocols *shareable and reusable* across sessions and languages => cross-language consistency.
+- Flexible for researchers, consistent for users.
 
-## Quick Start
+## ⚙️ Quick Start
 ```bash
 git clone https://github.com/yourusername/react-voice-recorder.git
 cd react-voice-recorder
@@ -32,32 +33,17 @@ npm run dev -- --host # To run the app with network acess
 ```
 Open `http://localhost:5173` in your browser, or use the Network URL (e.g. `http://192.168.87.184:5173/`) shown in your terminal to test on nobile (same Wi-Fi required).
 
-## Architecture Overview
-| Layer                       | Purpose                                                       |
-| --------------------------- | ------------------------------------------------------------- |
-| `VoiceRecorder`             | Recording logic and UI for users                              |
-| `AdminTaskEditor`           | Interface for creating/modifying task protocols               |
-| `taskBase.json`             | Defines technical defaults and allowed parameters             |
-| `tasks.json` (per language) | Defines translated titles, subtitles, labels                  |
-| `translations.ts`           | Recursively resolves parameters and translations              |
-| `tasks.ts`                  | Combines all into ready-to-run task definitions               |
-| `App.jsx`                   | Manages the execution flow and mode switching (Admin ↔️ User) |
 
-
-## Task Definition Overview
-Tasks are defined in two files:
+## Task Definition 
+Tasks are defined in **two files only**:
 | File                         | Purpose                                                                                    |
 | ---------------------------- | ------------------------------------------------------------------------------------------ |
-| `src/config/taskBase.json`   | Defines all technical parameters and default values (used by Admin interface).             |
+| `src/config/taskBase.json`   | Defines all technical parameters and parameter types (used by Admin interface).            |
 | `src/i18n/[lang]/tasks.json` | Defines user-facing names, titles, subtitles, and localized parameter labels/descriptions. |
 
-🟢 When adding a new task, you must update both files.
+🟢 When adding a new task, you must update both files:
 
 ### 1. src/config/taskBase.json – Technical Configuration
-
-This file defines **how the task behaves**:
-recording mode, default parameter values, maximum duration, and other settings. (used by AdminTaskEditor)
-
 Example:
 ```json
 {
@@ -71,11 +57,7 @@ Example:
   }
 }
 ```
-### 2. src/i18n/en/tasks.json – Translations and Labels
-
-This file defines **how the task appears to the user**.
-It includes titles, subtitles, and parameter descriptions in the selected language.
-
+### 2. src/i18n/[lang]/tasks.json – Translations and Labels
 Example:
 ```json
 {
@@ -109,22 +91,10 @@ Example:
 }
 ```
 
-The logic will:
-- Insert any parameter wrapped in {{ }} (e.g. {{topic}}, {{topicDescription}})
-- Recursively flatten nested parameters, so "any" returns:
-```js
-{ 
-  topic: "Any topic", 
-  topicDescription: "anything that comes to your mind",
-  repeat: 1
-}
-```
-
 ## Dynamic Translations and Recursive Parameters
-- Parameters wrapped in {{ }} (e.g. {{topic}}) are automatically replaced using the current task’s parameters.
-- The function getResolvedParams() (in translations.ts) recursively explores nested parameter structures to resolve:
+- Parameters wrapped in `{{ }}` (e.g. `{{topic}}`) are automatically replaced with their resolved values.
+- The function `getResolvedParams()` (in `translations.ts`) recursively explores nested parameter structures to resolve:
   - label
-  - description
   - or any other custom keys (topicDescription, phonemeLabel, etc.)
 - The result is a fully flattened object ready for dynamic insertion into titles and subtitles.
 
@@ -132,7 +102,6 @@ Example:
 ```js
 createTask("monologue", { topic: "any" });
 ```
-
 Resolves to:
 ```js
 {
@@ -147,11 +116,9 @@ Then used in translation:
 "subtitle": "Press START and talk about {{topicDescription}}"
 ```
 
-## Task Logic
+## Task Factory
 
-Tasks are created using a factory pattern via src/tasks.ts.
-Factories automatically apply defaults and recording modes, and merge with translated parameters.
-
+All tasks are created through a single factory
 Example:
 ```js
 export const TASKS = [
@@ -164,8 +131,8 @@ export const TASKS = [
 
 Each task will:
 1. Pull default behavior from taskBase.json
-2. Merge overrides (e.g. maxDuration: 3)
-3. Load localized labels/descriptions from tasks.json
+2. Merge overrides
+3. Applies localized labels and resolved parameters
 
 ## Available Task Parameters
 TODO:
@@ -201,7 +168,7 @@ but not task instructions (titles and subtitles remain standardized).
 - { mode: "delayedStop", maxDuration: number } → starts immediately, auto-stops after duration
 
 ## Internationalization (i18n)
-This project uses react-i18next to support multiple languages.
+This project uses *react-i18next* to support multiple languages.
 Translations are stored in `src/i18n/` in per-language folders:
 ```bash
 src/
@@ -217,11 +184,22 @@ src/
 | └── index.js  # i18n setup
 ```
 ### Adding a New Language
-1. Copy an existing folder (e.g. `en`) → `fr`
+1. Copy an existing folder (e.g. `en` → `fr`)
 2. Translate the values in all files, keeping keys identical
 3. Register the language in `src/i18n/index.js`
 
 ## Project Architecture & File Structure
+Main architecture:
+| Layer                       | Purpose                                                       |
+| --------------------------- | ------------------------------------------------------------- |
+| `VoiceRecorder`             | Recording logic and UI for users                              |
+| `AdminTaskEditor`           | Interface for creating/modifying task protocols               |
+| `config/taskBase.ts`        | Typed task definitions (technical behavior, defaults, params) |
+| `i18n/[lang]/tasks.json`    | Defines translated titles, subtitles, and parameter labels    |
+| `utils/translation.ts`      | Recursively resolves parameters and translations              |
+| `tasks.ts`                  | Factory combining base + translations into runtime task definitions  |
+| `App.jsx`                   | Manages the execution flow and mode switching (Admin ↔️ User) |
+
 The project follows a **Container / Presentation pattern**, separating **logic** from **UI components**.  
 Below is the file structure with inline notes describing each file’s role:
 ```bash
@@ -252,51 +230,30 @@ src/
 ├── hooks/
 │ └── useVoiceRecorder.js    # Logic layer: manages state, MediaRecorder, AudioContext
 │                            # Exposes API: startRecording, pauseRecording, resumeRecording, stopRecording, resetRecording
+├── config/
+│ └── taskBase.ts            # Typed task definitions (modes, durations, params)   
+│
 ├── utils/
-│ └── translation.ts         # Translation function 
+│ └── translation.ts         # Translation function, auto-extract possible values
 │
-├── i18n/                    # Internationalization setup
-│ ├── en/                    # English translations folder
-│ ├── cs/                    # Czech translations folder
-│ └── index.js               # i18n configuration (react-i18next setup)
+├── i18n/                    # Multilingual configuration (see in Internationalization chapter)
 │
-├── tasks.ts                 # All task definitions in one place
+├── tasks.ts                 # Task creation factory (no editing needed)
 ├── App.jsx                  # Orchestrates main flow
 ├── App.css                  # Global styles
 └── main.jsx                 # App bootstrap (ReactDOM + i18n import)
 ```
 
-### Summary
-- **Logic lives in `hooks/useVoiceRecorder.js`**: manages browser APIs, timers, state, and cleanup.  
-- **Presentation lives in `components/VoiceRecorder/`**: small, focused UI components that consume the hook.  
-- **Tasks live in `App.jsx`**: configurable set of exercises with titles, subtitles, and audio examples.  
-- **i18n lives in `src/i18n/`**: JSON files per language + `index.js` setup with `react-i18next`.  
-| Layer                 | Purpose                                                   |
-| --------------------- | --------------------------------------------------------- |
-| `taskBase.json`       | Technical definitions (modes, durations, params)          |
-| `tasks.json`          | Translated names, subtitles, labels, and dynamic text     |
-| `translations.ts`     | Recursive resolver — merges technical + translated params |
-| `tasks.ts`            | Combines both into runtime tasks for React app            |
-| `useVoiceRecorder.js` | Controls actual recording behavior                        |
-| `App.jsx`             | Manages task sequence and user flow                       |
-
+### Design principles
+- Typed taskBase.ts → type safety when defining new tasks
+- Translation-driven parameters → single source of truth for values
+- No redundancy → developers define parameters once (in translations)
+- Separation of concerns → config defines behavior, translations define UI text
+- Reproducibility → standardized task instructions, flexible parameters
 
 ### Styling
 - **Global styles**: `App.css`
 - **Component-specific styles**: colocated `.css` files inside each folder
-
-
-## Goal of the System
-
-This project is designed to:
-- **Standardize** task definitions and user instructions
-- **Centralize** all translations and behaviors in configuration
-- **Enable reproducibility** and **cross-language consistency**
-- **Empower admins** to design new protocols via the UI —
-without breaking task structure or standard wording
-
-Ultimately, the goal is a **configurable, multilingual testing platform**
-for speech and cognitive tasks — flexible for researchers, consistent for users.
 
 ## Installation & Usage
 
@@ -323,9 +280,12 @@ Open the Network URL on your phone (connected to the same Wi‑Fi) to test on mo
 
 
 ## Deployment (running on the server)
-- App needs to be build at first -> static files are generated inside the folder `dist` using command `npm run build`
-- Upload `dist` folder to the filemanager server
-- Open `https://malenia.feld.cvut.cz/test/dist/`
+- 1. Build the app -> static files are generated inside the folder `dist` using command:
+```bash
+npm run build
+```
+- 2. Upload `dist` folder to your web server (e.g. filemanager server).
+- 3. Access via: `https://yourdomain.com/path/to/dist/` (e.g. `https://malenia.feld.cvut.cz/test/dist/`)
 
 
 

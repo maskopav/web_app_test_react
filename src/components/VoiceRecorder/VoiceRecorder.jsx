@@ -11,8 +11,8 @@ import { AudioExampleButton } from './AudioExampleButton';
 // components/VoiceRecorder/VoiceRecorder.jsx - Main component
 export const VoiceRecorder = ({ 
     title = "🎙️ Voice Recorder",
-    subtitle = "Record, pause, resume, and save your audio with real-time visualization",
-    subtitleActive,
+    instructions = "Record, pause, resume, and save your audio with real-time visualization",
+    instructionsActive,
     audioExample,
     mode,
     maxDuration,
@@ -27,8 +27,8 @@ export const VoiceRecorder = ({
     const voiceRecorder = useVoiceRecorder({
         onRecordingComplete,
         onError,
-        subtitle,
-        subtitleActive,
+        instructions,
+        instructionsActive,
         audioExample,
         mode,
         maxDuration
@@ -40,7 +40,7 @@ export const VoiceRecorder = ({
         audioURL,
         recordingTime,
         audioLevels,
-        activeSubtitle,
+        activeInstructions,
         getMicrophonePermission,
         startRecording,
         pauseRecording,
@@ -78,7 +78,7 @@ export const VoiceRecorder = ({
     return (
         <div className={`task-container ${className}`}>
             <h1>{title}</h1>
-            <p>{activeSubtitle}</p>
+            <p>{activeInstructions}</p>
 
             <RecordingTimer
             time={recordingTime}

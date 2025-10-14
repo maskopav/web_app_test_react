@@ -6,10 +6,11 @@ import ModeSwitchButton from "./components/ModeSwitchButton";
 import { TASKS as TASK_DEFS } from "./tasks";
 import {
   translateTaskTitle,
-  translateTaskSubtitle,
-  translateTaskSubtitleActive,
+  translateTaskInstructions,
+  translateTaskInstructionsActive,
   getResolvedParams
 } from "./utils/translations";
+import { resolveTasks, resolveTask } from "./utils/taskResolver";
 import AdminTaskEditor from "./components/AdminTaskEditor";
 import enJson from "./i18n/en.json";   // pass translations to Admin UI
 import './App.css';
@@ -21,24 +22,7 @@ function App() {
   const [adminMode, setAdminMode] = useState(true); // start in admin mode
 
   // Expand tasks with repeat count
-  const rawTasks = TASK_DEFS;
-  const expandedTasks = rawTasks.flatMap(task => {
-    if (task.repeat && task.repeat > 1) {
-      return Array.from({length: task.repeat }, (_, i) => ({
-        ...task,
-        _repeatIndex: i + 1,
-        _repeatTotal: task.repeat,
-
-      }));
-    }
-    return {...task, _repeatIndex: 1, _repeatTotal: 1}
-  });
-
-  const TASK_LABELS = {
-    voice: t("taskLabels.voice"),
-    motor: t("taskLabels.motor"),
-    camera: t("taskLabels.camera"),
-  };
+  const expandedTasks = resolveTasks(TASK_DEFS);
 
   const handleNextTask = (taskData) => {
     // This is where you would process the data from the completed task
@@ -53,37 +37,25 @@ function App() {
   };
 
   const renderCurrentTask = () => {
-    const currentTask = expandedTasks[taskIndex];
-    console.log(currentTask)
-
-
-    // If all tasks are completed, show a final message
-    if (!currentTask) return <CompletionScreen />;
-
-    // auto-resolve all params once
-    const params = getResolvedParams(currentTask.category, currentTask.params);
-    console.log(params)
+    const rawTask = expandedTasks[taskIndex];
+    if (!rawTask) return <CompletionScreen />;
+  
+    const currentTask = resolveTask(rawTask, t);
+    console.log("🧭 Prepared task:", currentTask);
 
     // Render the appropriate component based on task type
     switch (currentTask.type) {
       case 'voice':
         return (
           <VoiceRecorder
-            key={taskIndex} // Key ensures the component remounts for each new task
-            title={currentTask._repeatTotal > 1
-              ? `${translateTaskTitle(currentTask.category, params)} #${currentTask._repeatIndex}`
-              :translateTaskTitle(currentTask.category, params)
-            }
-            subtitle={translateTaskSubtitle(currentTask.category, params)}
-            subtitleActive={currentTask.subtitleActiveKey
-              ? translateTaskSubtitleActive(currentTask.category, params)
-              : undefined
-            }
+            key={taskIndex}
+            title={currentTask.title}
+            instructions={currentTask.instructions}
+            instructionsActive={currentTask.instructionsActive}
             audioExample={currentTask.audioExample}
             mode={currentTask.recording.mode}
             maxDuration={currentTask.recording.maxDuration}
             onNextTask={handleNextTask}
-            //showNextButton={true} // Hide next button on last task
           />
         );
       case 'camera':

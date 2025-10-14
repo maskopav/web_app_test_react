@@ -7,7 +7,7 @@ export type RecordingMode =
 
 export interface TaskParamDef {
   default: any;
-  // ⚠️ `values` now optional because they’ll be dynamically extracted from translations
+  // `values` now optional because they’ll be dynamically extracted from translations
   values?: string[];
 }
 

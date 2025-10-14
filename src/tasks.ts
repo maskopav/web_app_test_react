@@ -4,10 +4,14 @@ import { taskBaseConfig, type RecordingMode } from "./config/tasksBase.js"
 export interface TaskInstance {
   category: string;
   type: string;
+  title?: string;
+  instructionsActive?: string;
   recording: RecordingMode;
   params: Record<string, any>;
   repeat?: number;
   illustration?: string;
+  _repeatIndex?: number;
+  _repeatTotal?: number;
 }
 
 /** Factory to create a task instance with overrides */
@@ -15,16 +19,29 @@ export function createTask(category: string, overrides: Record<string, any> = {}
   const def = taskBaseConfig[category];
   if (!def) throw new Error(`Unknown task category: ${category}`);
 
+  // Compute param values
   const params = Object.fromEntries(
     Object.entries(def.params).map(([k, v]) => [k, overrides[k] ?? v.default])
   );
 
+    // Merge recording config with param-defined maxDuration (if relevant)
+    let recording = { ...def.recording };
+    if ("maxDuration" in params && "maxDuration" in recording) {
+      recording = { ...recording, maxDuration: params.maxDuration };
+    }
+
+  // Extract known non-param overrides
+  const { title, instructionsActive, illustration} = overrides;
+
   return {
     category,
     type: def.type,
-    recording: def.recording,
+    title,
+    instructionsActive,
+    recording: recording,
     params,
-    repeat: def.repeat ?? params.repeat ?? 1
+    repeat: def.repeat ?? params.repeat ?? 1,
+    illustration
   };
 }
 

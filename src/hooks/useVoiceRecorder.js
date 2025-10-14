@@ -6,8 +6,8 @@ export const useVoiceRecorder = (options = {}) => {
         onRecordingComplete = () => {},
         onError = () => {},
         audioFormat = "audio/webm",
-        subtitle,           // initial subtitle
-        subtitleActive,     // subtitle after START
+        instructions,           // initial instructions
+        instructionsActive,     // instructions after START
         audioExample,       // optional audio example URL
         mode = "basicStop",  // "basicStop" | "countDown" | "delayedStop"
         maxDuration         // optional duration of task in seconds
@@ -27,7 +27,7 @@ export const useVoiceRecorder = (options = {}) => {
     const [recordingTime, setRecordingTime] = useState(0);
     const [remainingTime, setRemainingTime] = useState(maxDuration || null);
     const [audioLevels, setAudioLevels] = useState(new Array(12).fill(0));
-    const [activeSubtitle, setActiveSubtitle] = useState(subtitle);
+    const [activeInstructions, setActiveInstructions] = useState(instructions);
     const [exampleAudio, setExampleAudio] = useState(null);
 
     // Refs
@@ -118,8 +118,8 @@ export const useVoiceRecorder = (options = {}) => {
             setRecordingTime(0);
         }
 
-        if (subtitleActive) {
-            setActiveSubtitle(subtitleActive); // switch subtitle
+        if (instructionsActive) {
+            setActiveInstructions(instructionsActive); // switch instructions
         }
         
         const recorder = new MediaRecorder(stream, { mimeType: audioFormat });
@@ -324,7 +324,7 @@ return {
     recordingTime,
     remainingTime,
     audioLevels,
-    activeSubtitle,
+    activeInstructions,
     exampleAudio,
     
     // Actions

@@ -15,12 +15,12 @@ export function translateTaskTitle(category: string, params: Record<string, any>
 }
 
 
-export function translateTaskSubtitle(category: string, params: Record<string, any> = {}): string {
-  return i18next.t(`${category}.subtitle`, { ns: "tasks", ...params, defaultValue: "" });
+export function translateTaskInstructions(category: string, params: Record<string, any> = {}): string {
+  return i18next.t(`${category}.instructions`, { ns: "tasks", ...params, defaultValue: "" });
 }
 
-export function translateTaskSubtitleActive(category: string, params: Record<string, any> = {}): string {
-  return i18next.t(`${category}.subtitleActive`, { ns: "tasks", ...params, defaultValue: "" });
+export function translateTaskInstructionsActive(category: string, params: Record<string, any> = {}): string {
+  return i18next.t(`${category}.instructionsActive`, { ns: "tasks", ...params, defaultValue: "" });
 }
 
 export function translateParamName(category: string, param: string): string {

@@ -1,12 +1,8 @@
 {
-    "_meta": {
-      "description": "Unified task and parameter definitions"
-    },
-  
     "phonation": {
       "name": "Sustained phonation",
       "title": "Prolonged phonation /{{phoneme}}/",
-      "subtitle": "Press START and sustain /{{phoneme}}/ for at least {{maxDuration}} seconds.",
+      "instructions": "Press START and sustain /{{phoneme}}/ for at least {{maxDuration}} seconds.",
       "params": {
         "phoneme": {
           "label": "Phoneme",
@@ -30,7 +26,7 @@
     "syllableRepeating": {
       "name": "Syllable repetition",
       "title": "{{syllable}} repetition",
-      "subtitle": "Press START and repeat /{{syllable}}/ as quickly and accurately as possible.",
+      "instructions": "Press START and repeat /{{syllable}}/ as quickly and accurately as possible.",
       "params": {
         "syllable": {
           "label": "Syllable",
@@ -52,7 +48,7 @@
     "retelling": {
       "name": "Fairytale retelling",
       "title": "Retelling {{fairytale}}",
-      "subtitle": "Press START and retell the fairytale: {{fairytale}}.",
+      "instructions": "Press START and retell the fairytale: {{fairytale}}.",
       "params": {
         "fairytale": {
           "label": "Fairytale",
@@ -70,8 +66,8 @@
     "reading": {
       "name": "Reading text",
       "title": "Reading {{topic}}",
-      "subtitle": "Press START to read the text on screen at a comfortable pace. Press STOP at the end.",
-      "subtitleActive": "{{text}}",
+      "instructions": "Press START to read the text on screen at a comfortable pace. Press STOP at the end.",
+      "instructionsActive": "{{text}}",
       "params": {
         "topic": {
           "label":"Text topic",
@@ -99,7 +95,7 @@
     "monologue": {
       "name": "Monologue on topic",
       "title": "Monologue on: {{topic}}",
-      "subtitle": "Press START and talk about {{topicDescription}} until the timer runs out.",
+      "instructions": "Press START and talk about {{topicDescription}} until the timer runs out.",
       "params": {
         "topic": {
           "label":"Monologue topic",

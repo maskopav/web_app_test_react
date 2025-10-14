@@ -5,8 +5,6 @@ import Modal from "./Modal";
 import { useTranslation } from "react-i18next";
 import {
   translateTaskName,
-  translateParamName,
-  translateParamValue,
   getAllParams,
   getDefaultParams,
 } from "../../utils/translations";
@@ -70,8 +68,6 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
           {Object.keys(taskBaseConfig).map((cat) => {
             const translatedName = translateTaskName(cat);
             const params = getAllParams(cat);
-            console.log("All params - getAllParams method.")
-            console.log(params);
             const paramLabels = Object.values(params).map((p) => p.label);
 
             return (
@@ -148,9 +144,17 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
               <h2>{t("editTask", { category: translateTaskName(category) })}</h2>
               {Object.keys(params).map((param) => {
                 const paramInfo = params[param];
-                const value = currentTask[param] ?? "";
+
+                // Use either current value or fallback to default from params
+                const currentValue = currentTask[param];
+                const value =
+                  currentValue !== undefined && currentValue !== null
+                    ? currentValue
+                    : paramInfo.default ?? "";
+
+
                 const hasEnumValues = paramInfo.values && paramInfo.values.length > 0;
-                const isNumeric = typeof value === "number" || /^[0-9.]+$/.test(value);
+                const isNumeric = paramInfo.type === "number";
 
                 return (
                   <div key={param} className="form-group">

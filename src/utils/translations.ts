@@ -64,17 +64,39 @@ export function getAllParams(category: string): Record<string, any> {
       const paramTranslation = translationTree?.params?.[paramKey];
       const translatedValues = paramTranslation?.values || {};
 
-      const values = Object.keys(translatedValues).map((vKey) => ({
-        key: vKey,
-        label: translateParamValue(category, paramKey, vKey),
-      }));
+      // Check if parameter has translated possible values (string list)
+      const hasEnumValues = Object.keys(translatedValues).length > 0;
+
+      // --- CASE 1: translated string-based options (e.g. phoneme, fairytale, topic)
+      if (hasEnumValues) {
+        const values = Object.keys(translatedValues).map((vKey) => ({
+          key: vKey,
+          label: translateParamValue(category, paramKey, vKey),
+        }));
+
+        return [
+          paramKey,
+          {
+            key: paramKey,
+            label: translateParamName(category, paramKey),
+            values,
+            type: "enum",
+          },
+        ];
+      }
+
+      // --- CASE 2: numeric or literal parameters (e.g. repeat, maxDuration)
+      const defaultValue = paramDef.default;
+      const isNumeric = typeof defaultValue === "number";
 
       return [
         paramKey,
         {
           key: paramKey,
           label: translateParamName(category, paramKey),
-          values,
+          values: [], // no enum list
+          type: isNumeric ? "number" : "text",
+          default: defaultValue,
         },
       ];
     })

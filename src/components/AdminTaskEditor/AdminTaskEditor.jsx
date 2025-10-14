@@ -17,6 +17,7 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
 
   const [tasks, setTasks] = useState(initialTasks);
   const [editingTask, setEditingTask] = useState(null);
+  const [editingData, setEditingData] = useState(null);
   const [reorderMode, setReorderMode] = useState(false);
   const [dragIndex, setDragIndex] = useState(null);
 
@@ -131,13 +132,31 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
       {/* Edit Modal */}
       <Modal
         open={editingTask != null}
-        onClose={() => setEditingTask(null)}
-        onSave={() => setEditingTask(null)}
+        onClose={() => {
+          // just close without saving
+          setEditingTask(null);
+          setEditingData(null);
+        }}
+        onSave={() => {
+          if (editingTask != null && editingData) {
+            setTasks(prev =>
+              prev.map((t, i) => (i === editingTask ? { ...t, ...editingData } : t))
+            );
+          }
+          setEditingTask(null);
+          setEditingData(null);
+        }}
       >
         {editingTask != null && (() => {
           const category = tasks[editingTask].category;
           const params = getAllParams(category);
-          const currentTask = tasks[editingTask];
+
+          // Initialize editing data when modal opens
+          if (!editingData) {
+            const currentTask = tasks[editingTask];
+            setEditingData({ ...currentTask });
+            return null; // prevent rendering until initialized
+          }
 
           return (
             <div className="edit-window">
@@ -146,7 +165,7 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
                 const paramInfo = params[param];
 
                 // Use either current value or fallback to default from params
-                const currentValue = currentTask[param];
+                const currentValue = editingData[param];
                 const value =
                   currentValue !== undefined && currentValue !== null
                     ? currentValue
@@ -162,7 +181,12 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
                     {hasEnumValues ? (
                       <select
                         value={value}
-                        onChange={(e) => updateTask(editingTask, { [param]: e.target.value })}
+                        onChange={(e) => 
+                          setEditingData((prev) => ({
+                            ...prev,
+                            [param]: e.target.value,
+                          }))
+                        }
                       >
                         {paramInfo.values.map((v) => (
                           <option key={v.key} value={v.key}>
@@ -175,9 +199,12 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
                         type={isNumeric ? "number" : "text"}
                         value={value}
                         onChange={(e) =>
-                          updateTask(editingTask, {
-                            [param]: isNumeric ? Number(e.target.value) : e.target.value,
-                          })
+                          setEditingData((prev) => ({
+                            ...prev,
+                            [param]: isNumeric
+                              ? Number(e.target.value)
+                              : e.target.value,
+                          }))
                         }
                       />
                     )}

@@ -64,68 +64,117 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
 
       <div className="admin-grid">
         {/* Left column */}
-        <div className="task-list">
+        <div className="task-section">
           <h3>{t("availableTasks")}</h3>
+
+          <ul className="task-list">
           {Object.keys(taskBaseConfig).map((cat) => {
             const translatedName = translateTaskName(cat);
             const params = getAllParams(cat);
             const paramLabels = Object.values(params).map((p) => p.label);
+            const defaults = getDefaultParams(cat);
 
             return (
               <div key={cat} className="task-option" onClick={() => addTask(cat)}>
-                <div className="task-title">{translatedName}</div>
+                <div className="task-title">
+                  {translatedName}</div>
                 <div className="task-params">
-                  ({paramLabels.join(", ")})
+                  {/* Inline parameter summary (compact like in Current Protocol) */}
+                  <div className="param-inline">
+                    {Object.entries(params).map(([pKey, pInfo], i) => {
+                      const defaultVal = defaults?.[pKey] ?? pInfo.default ?? "";
+                      return (
+                        <span key={pKey}>
+                          {i > 0 && " • "}
+                          <strong>{pInfo.label}:</strong>{" "}
+                          <em>{String(defaultVal)}</em>
+                        </span>
+                      );
+                    })}
+                  </div>
+
                 </div>
               </div>
             );
           })}
+          </ul>
         </div>
 
         {/* Right column */}
         <div className="protocol-section">
-          <h3>{t("currentProtocol")}</h3>
-          {tasks.length === 0 && <p className="empty-text">{t("noTasks")}</p>}
-
-          <ul className="protocol-list">
-            {tasks.map((task, idx) => (
-              <li
-                key={idx}
-                draggable={reorderMode}
-                onDragStart={() => handleDragStart(idx)}
-                onDragOver={handleDragOver}
-                onDrop={() => handleDrop(idx)}
-                className={`protocol-item ${dragIndex === idx ? "dragging" : ""}`}
-              >
-                <div className="protocol-row">
-                  <strong>{idx + 1}. {translateTaskName(task.category)}</strong>
-                  {!reorderMode && (
-                    <div className="action-buttons">
-                      <span
-                        className="edit-icon"
-                        title={t("tooltips.edit")}
-                        onClick={() => setEditingTask(idx)}
-                      >✎</span>
-                      <span
-                        className="delete-icon"
-                        title={t("tooltips.delete")}
-                        onClick={() =>
-                          setTasks((prev) => prev.filter((_, i) => i !== idx))
-                        }
-                      >✖</span>
-                    </div>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          <div className="button-row">
-            <button onClick={() => setReorderMode(!reorderMode)}>
+          <div className="protocol-header">
+            <h3>{t("currentProtocol")}</h3>
+            <button
+              className={`reorder-btn ${reorderMode ? "active" : ""}`}
+              onClick={() => setReorderMode(!reorderMode)}
+            >
               {reorderMode ? t("finishReordering") : t("reorderTasks")}
             </button>
-            <button className="button-done" onClick={() => onSave(tasks)}>{t("done")}</button>
           </div>
+
+          <ul className="protocol-list">
+            {tasks.map((task, idx) => {
+              const params = getAllParams(task.category);
+              return (
+                <li
+                  key={idx}
+                  draggable={reorderMode}
+                  onDragStart={() => handleDragStart(idx)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(idx)}
+                  className={`protocol-item ${dragIndex === idx ? "dragging" : ""}`}
+                >
+                  <div className="protocol-row">
+                    <div className="task-title">
+                      {idx + 1}. {translateTaskName(task.category)}
+                    </div>
+                    {!reorderMode && (
+                      <div className="action-buttons">
+                        <span
+                          className="edit-icon"
+                          title={t("tooltips.edit")}
+                          onClick={() => setEditingTask(idx)}
+                        >
+                          ✎
+                        </span>
+                        <span
+                          className="delete-icon"
+                          title={t("tooltips.delete")}
+                          onClick={() =>
+                            setTasks((prev) => prev.filter((_, i) => i !== idx))
+                          }
+                        >
+                          ✖
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Inline parameter summary */}
+                  <div className="param-inline">
+                    {Object.entries(params).map(([pKey, pInfo], i) => {
+                      const val =
+                        task[pKey] !== undefined && task[pKey] !== null
+                          ? task[pKey]
+                          : pInfo.default ?? "";
+
+                      return (
+                        <span key={pKey}>
+                          {i > 0 && " • "}
+                          <strong>{pInfo.label}:</strong>{" "}
+                          <em>{String(val)}</em>
+                        </span>
+                      );
+                    })}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+
+          { /* <div className="button-row">
+            <button className="button-done" onClick={() => onSave(tasks)}>{t("done")}</button>
+          </div> */}
         </div>
       </div>
 

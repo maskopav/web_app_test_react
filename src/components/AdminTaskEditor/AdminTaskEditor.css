@@ -26,7 +26,7 @@
     align-items: flex-start;
   }
   
-  .task-list, .protocol-section {
+  .task-section, .protocol-section {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 10px;
@@ -34,19 +34,33 @@
     height: 70vh;
   }
   
-  .task-list { flex: 1; }
+  .task-section { flex: 1; }
   .protocol-section { flex: 2; }
-  .protocol-list { list-style: none; padding: 0; }
+
+  .protocol-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .protocol-list, .task-list { 
+    list-style: none; 
+    padding: 0; 
+    height: 60vh;
+    overflow-y: auto;      /* <— Enables scrolling */
+    overflow-x: hidden;
+  }
   
   .protocol-item, .task-option {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--bg);
-    padding: 10px;
-    margin-bottom: 12px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
   }
   .task-option { cursor: pointer; }
-
+  .task-title { font-weight: 500; }
 
   .protocol-item.dragging { background: #e0f7ff; opacity: 0.6; }
   
@@ -58,9 +72,29 @@
   
   .button-row { margin-top: 15px; display: flex; gap: 10px; }
   .button-done { background: var(--success);}
+
+/* Parameter preview styling */
+  .param-inline {
+    font-size: 0.85rem;
+    color: #444;
+    margin-top: 4px;
+    font-style: italic;
+    line-height: 1.2;
+    white-space: normal;
+  }
+  
+  .param-inline strong {
+    font-weight: 400;
+    font-style: normal;
+  }
+    
+  .param-default {
+    color: #555;
+    font-style: italic;
+  }
   
 
-/* ===== MODAL STYLING ===== */
+/* Modal styling */
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -157,6 +191,17 @@
     margin-top: 0.6rem;
   }
   
+  /* Buttons*/
+  .reorder-btn {
+    padding: 10px 12px;
+    cursor: pointer;
+    max-height: min-content;
+    max-width: fit-content;
+  }
+
+  .reorder-btn.active {
+    background: var(--success); 
+  }
   
   .btn-cancel {
     background: #ccc;
@@ -171,7 +216,9 @@
   .btn-save:hover {
     background: #0069d9;
   }
-  
+
+/* Compact inline parameters */
+
   /* Narrow screens */
   @media (max-width: 600px) {
     .form-group {

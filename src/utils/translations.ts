@@ -10,6 +10,10 @@ export function translateTaskName(category: string): string {
   return i18next.t(`${category}.name`, { ns: "tasks", defaultValue: category });
 }
 
+export function translateTaskDescription(category: string): string {
+  return i18next.t(`${category}.description`, { ns: "tasks", defaultValue: "" });
+}
+
 export function translateTaskTitle(category: string, params: Record<string, any> = {}): string {
   return i18next.t(`${category}.title`, { ns: "tasks", ...params, defaultValue: category });
 }
@@ -85,7 +89,7 @@ export function getAllParams(category: string): Record<string, any> {
         ];
       }
 
-      // --- CASE 2: numeric or literal parameters (e.g. repeat, maxDuration)
+      // --- CASE 2: numeric or literal parameters (e.g. repeat, duration)
       const defaultValue = paramDef.default;
       const isNumeric = typeof defaultValue === "number";
 

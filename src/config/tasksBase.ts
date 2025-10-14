@@ -2,8 +2,8 @@
 
 export type RecordingMode =
   | { mode: "basicStop" }
-  | { mode: "countDown"; maxDuration: number }
-  | { mode: "delayedStop"; maxDuration: number };
+  | { mode: "countDown"; duration: number }
+  | { mode: "delayedStop"; duration: number };
 
 export interface TaskParamDef {
   default: any;
@@ -23,21 +23,21 @@ export interface TaskBase {
 export const taskBaseConfig: Record<string, TaskBase> = {
   phonation: {
     type: "voice",
-    recording: { mode: "delayedStop", maxDuration: 5 },
+    recording: { mode: "delayedStop", duration: 5 },
     params: {
       phoneme: { default: "a" },
       repeat: { default: 1 },
-      maxDuration: { default: 5 },
+      duration: { default: 5 },
     },
   },
 
   syllableRepeating: {
     type: "voice",
-    recording: { mode: "countDown", maxDuration: 5 },
+    recording: { mode: "countDown", duration: 5 },
     params: {
       syllable: { default: "pataka" },
       repeat: { default: 1 },
-      maxDuration: { default: 3 },
+      duration: { default: 3 },
     },
   },
 

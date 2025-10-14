@@ -1,8 +1,9 @@
 {
     "phonation": {
       "name": "Sustained phonation",
+      "description": "The participant sustains a vowel sound for a few seconds to analyze voice stability.",
       "title": "Prolonged phonation /{{phoneme}}/",
-      "instructions": "Press START and sustain /{{phoneme}}/ for at least {{maxDuration}} seconds.",
+      "instructions": "Press START and sustain /{{phoneme}}/ for at least {{duration}} seconds.",
       "params": {
         "phoneme": {
           "label": "Phoneme",
@@ -17,14 +18,15 @@
         "repeat": {
           "label": "Repetitions"
         },
-        "maxDuration": {
-          "label": "Maximum Duration"
+        "duration": {
+          "label": "Duration"
         }
       }
     },
   
     "syllableRepeating": {
       "name": "Syllable repetition",
+      "description": "Repeat syllables like pa-ta-ka to assess articulation speed and precision.",
       "title": "{{syllable}} repetition",
       "instructions": "Press START and repeat /{{syllable}}/ as quickly and accurately as possible.",
       "params": {
@@ -36,8 +38,8 @@
             "ka": "ka-ka-ka"
           }
         },
-        "maxDuration": {
-          "label": "Maximum Duration"
+        "duration": {
+          "label": "Duration"
         },
         "repeat": {
           "label": "Repetitions"

@@ -54,7 +54,7 @@ function App() {
             instructionsActive={currentTask.instructionsActive}
             audioExample={currentTask.audioExample}
             mode={currentTask.recording.mode}
-            maxDuration={currentTask.recording.maxDuration}
+            duration={currentTask.recording.duration}
             onNextTask={handleNextTask}
           />
         );

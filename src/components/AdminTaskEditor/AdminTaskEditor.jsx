@@ -7,7 +7,10 @@ import {
   translateTaskName,
   getAllParams,
   getDefaultParams,
+  getResolvedParams,
+  translateTaskDescription,
 } from "../../utils/translations";
+import InfoTooltip from "./InfoTooltip";
 import { taskBaseConfig} from "../../config/tasksBase.js"
 import "./AdminTaskEditor.css";
 
@@ -70,14 +73,15 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
           <ul className="task-list">
           {Object.keys(taskBaseConfig).map((cat) => {
             const translatedName = translateTaskName(cat);
+            const description = translateTaskDescription(cat);
             const params = getAllParams(cat);
-            const paramLabels = Object.values(params).map((p) => p.label);
             const defaults = getDefaultParams(cat);
-
             return (
               <div key={cat} className="task-option" onClick={() => addTask(cat)}>
                 <div className="task-title">
-                  {translatedName}</div>
+                  {translatedName}
+                  <InfoTooltip text={description} /> 
+                </div>
                 <div className="task-params">
                   {/* Inline parameter summary (compact like in Current Protocol) */}
                   <div className="param-inline">
@@ -115,6 +119,9 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
           <ul className="protocol-list">
             {tasks.map((task, idx) => {
               const params = getAllParams(task.category);
+              console.log(`Params for task ${idx} (${task.category}):`, params);
+              const resolvedParams = getResolvedParams(task.category, task);
+              console.log(`Resolved params for task ${idx} (${task.category}):`, resolvedParams);
               return (
                 <li
                   key={idx}
@@ -153,11 +160,7 @@ export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () 
                   {/* Inline parameter summary */}
                   <div className="param-inline">
                     {Object.entries(params).map(([pKey, pInfo], i) => {
-                      const val =
-                        task[pKey] !== undefined && task[pKey] !== null
-                          ? task[pKey]
-                          : pInfo.default ?? "";
-
+                      const val = resolvedParams.params?.[pKey] ?? task[pKey] ?? pInfo.default ?? "";
                       return (
                         <span key={pKey}>
                           {i > 0 && " • "}

@@ -15,8 +15,8 @@
   }
 
 .admin-container {
-    padding: 20px;
-    width: 90vw;
+    padding: 10px;
+    width: 92vw;
     margin: 0 auto;
   }
   
@@ -29,13 +29,16 @@
   .task-section, .protocol-section {
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 10px;
+    padding: 15px;
     background: var(--card-bg);
     height: 70vh;
   }
   
   .task-section { flex: 1; }
-  .protocol-section { flex: 2; }
+  .protocol-section { 
+    flex: 2; 
+    background: #c0e3ce;
+  }
 
   .protocol-header {
     display: flex;
@@ -217,7 +220,39 @@
     background: #0069d9;
   }
 
-/* Compact inline parameters */
+  /* Info tooltip*/
+  .info-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 6px;
+    cursor: help;
+    color: #3a7ad9;
+    font-weight: bold;
+  }
+  
+  .info-tooltip-text {
+    visibility: hidden;
+    position: fixed; /* instead of absolute */
+    background-color: #333;
+    color: #fff;
+    border-radius: 8px;
+    padding: 8px 10px;
+    z-index: 99999; /* guaranteed on top */
+    max-width: 260px;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    text-align: left;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+  }
+  
+  .info-tooltip:hover .info-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+  
 
   /* Narrow screens */
   @media (max-width: 600px) {

@@ -15,7 +15,7 @@ export const VoiceRecorder = ({
     instructionsActive,
     audioExample,
     mode,
-    maxDuration,
+    duration,
     onNextTask,
     onRecordingComplete = () => {},
     onError = (err) => console.error(err),
@@ -31,7 +31,7 @@ export const VoiceRecorder = ({
         instructionsActive,
         audioExample,
         mode,
-        maxDuration
+        duration
     });
 
     const {
@@ -98,7 +98,7 @@ export const VoiceRecorder = ({
 
             <RecordingControls
             recordingStatus={recordingStatus}
-            disableControls={!!maxDuration}
+            disableControls={!!duration}
             permission={permission}
             onStart={startRecording}
             onPause={pauseRecording}

@@ -24,10 +24,10 @@ export function createTask(category: string, overrides: Record<string, any> = {}
     Object.entries(def.params).map(([k, v]) => [k, overrides[k] ?? v.default])
   );
 
-    // Merge recording config with param-defined maxDuration (if relevant)
+    // Merge recording config with param-defined duration (if relevant)
     let recording = { ...def.recording };
-    if ("maxDuration" in params && "maxDuration" in recording) {
-      recording = { ...recording, maxDuration: params.maxDuration };
+    if ("duration" in params && "duration" in recording) {
+      recording = { ...recording, duration: params.duration };
     }
 
   // Extract known non-param overrides
@@ -47,9 +47,9 @@ export function createTask(category: string, overrides: Record<string, any> = {}
 
 // Example usage: 
 export const TASKS = [ 
-  createTask("phonation", { phoneme: "a", maxDuration: 3}), 
+  createTask("phonation", { phoneme: "a", duration: 3}), 
   createTask("retelling", { fairytale: "snowWhite" }),
   createTask("reading", { topic: "dog"}),
   createTask("monologue", { topic: "any"}),
-  createTask("syllableRepeating", { syllable: "ta", repeat: 2, maxDuration: 7})
+  createTask("syllableRepeating", { syllable: "ta", repeat: 2, duration: 7})
 ];

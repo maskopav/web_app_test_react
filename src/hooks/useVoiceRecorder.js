@@ -10,7 +10,7 @@ export const useVoiceRecorder = (options = {}) => {
         instructionsActive,     // instructions after START
         audioExample,       // optional audio example URL
         mode = "basicStop",  // "basicStop" | "countDown" | "delayedStop"
-        maxDuration         // optional duration of task in seconds
+        duration         // optional duration of task in seconds
     } = options;
 
     // Recording states
@@ -25,7 +25,7 @@ export const useVoiceRecorder = (options = {}) => {
     const [stream, setStream] = useState(null);
     const [audioURL, setAudioURL] = useState(null);
     const [recordingTime, setRecordingTime] = useState(0);
-    const [remainingTime, setRemainingTime] = useState(maxDuration || null);
+    const [remainingTime, setRemainingTime] = useState(duration || null);
     const [audioLevels, setAudioLevels] = useState(new Array(12).fill(0));
     const [activeInstructions, setActiveInstructions] = useState(instructions);
     const [exampleAudio, setExampleAudio] = useState(null);
@@ -84,11 +84,11 @@ export const useVoiceRecorder = (options = {}) => {
                     return prev - 1;
                 });
             } else if (mode === "delayedStop") {
-                // Count up until maxDuration, then stop
+                // Count up until duration, then stop
                 setRecordingTime(prev => {
-                  if (maxDuration && prev + 1 >= maxDuration) {
+                  if (duration && prev + 1 >= duration) {
                     stopRecording();
-                    return maxDuration;
+                    return duration;
                   }
                   return prev + 1;
                 });
@@ -113,7 +113,7 @@ export const useVoiceRecorder = (options = {}) => {
         setRecordingStatus(RECORDING);
 
         if (mode === "countDown") {
-            setRemainingTime(maxDuration || 10);
+            setRemainingTime(duration || 10);
         } else {
             setRecordingTime(0);
         }

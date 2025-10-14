@@ -39,7 +39,7 @@ Tasks are defined in **two files only**:
 | File                         | Purpose                                                                                    |
 | ---------------------------- | ------------------------------------------------------------------------------------------ |
 | `src/config/taskBase.json`   | Defines all technical parameters and parameter types (used by Admin interface).            |
-| `src/i18n/[lang]/tasks.json` | Defines user-facing names, titles, subtitles, and localized parameter labels/descriptions. |
+| `src/i18n/[lang]/tasks.json` | Defines user-facing names, titles,  instructions, and localized parameter labels/descriptions. |
 
 🟢 When adding a new task, you must update both files:
 
@@ -64,7 +64,7 @@ Example:
   "monologue": {
     "name": "Monologue on topic",
     "title": "Monologue on: {{topic}}",
-    "subtitle": "Press START and talk about {{topicDescription}} until the timer runs out.",
+    "instructions": "Press START and talk about {{topicDescription}} until the timer runs out.",
     "params": {
       "topic": {
         "label": "Monologue topic",
@@ -96,7 +96,7 @@ Example:
 - The function `getResolvedParams()` (in `translations.ts`) recursively explores nested parameter structures to resolve:
   - label
   - or any other custom keys (topicDescription, phonemeLabel, etc.)
-- The result is a fully flattened object ready for dynamic insertion into titles and subtitles.
+- The result is a fully flattened object ready for dynamic insertion into titles and instructions.
 
 Example:
 ```js
@@ -113,7 +113,7 @@ Resolves to:
 Then used in translation:
 ```json
 "title": "Monologue on: {{topic}}"
-"subtitle": "Press START and talk about {{topicDescription}}"
+"instructions": "Press START and talk about {{topicDescription}}"
 ```
 
 ## Task Factory
@@ -122,7 +122,7 @@ All tasks are created through a single factory
 Example:
 ```js
 export const TASKS = [
-  createTask("phonation", { phoneme: "a", maxDuration: 3 }),
+  createTask("phonation", { phoneme: "a", duration: 3 }),
   createTask("retelling", { fairytale: "snowWhite" }),
   createTask("reading", { topic: "seedling" }),
   createTask("monologue", { topic: "any" })
@@ -147,10 +147,10 @@ To keep the protocol standardized yet flexible, only selected parameters are mea
 | Key              | Description                              | Editable by Admin  | Supports `{{ }}` placeholders |
 | ---------------- | ---------------------------------------- | ------------------ | ----------------------------- |
 | `title`          | Displayed before recording starts        | ❌ (standardized)   | ✅                             |
-| `subtitle`       | Instruction text before recording        | ❌ (standardized)   | ✅                             |
-| `subtitleActive` | Instruction during recording             | ❌ (standardized)   | ✅                             |
+| `instructions`   | Instructions before recording            | ❌ (standardized)   | ✅                             |
+| `instructionsActive` | Instructions during recording        | ❌ (standardized)   | ✅                             |
 | `repeat`         | Number of repetitions                    | ✅                  | ❌                             |
-| `maxDuration`    | Recording duration limit                 | ✅                  | ❌                             |
+| `duration`       | Recording duration limit                 | ✅                  | ❌                             |
 | `phoneme`        | Phonation target (e.g., “a”, “i”)        | ✅                  | ✅                             |
 | `syllable`       | Repetition target for articulatory tasks | ✅                  | ✅                             |
 | `topic`          | Monologue/reading topic                  | ✅                  | ✅                             |
@@ -160,12 +160,12 @@ To keep the protocol standardized yet flexible, only selected parameters are mea
 
 🟢 Rule of thumb:
 Admins can adjust task content (topics, phonemes, durations),
-but not task instructions (titles and subtitles remain standardized).
+but not task instructions (titles and instructions remain standardized).
 
 ### RecordingMode variants:
 - { mode: "basicStop" } → manual start/stop
-- { mode: "countDown", maxDuration: number } → countdown timer, stops automatically
-- { mode: "delayedStop", maxDuration: number } → starts immediately, auto-stops after duration
+- { mode: "countDown", duration: number } → countdown timer, stops automatically
+- { mode: "delayedStop", duration: number } → starts immediately, auto-stops after duration
 
 ## Internationalization (i18n)
 This project uses *react-i18next* to support multiple languages.
@@ -175,7 +175,7 @@ src/
 ├── i18n/
 │ |── en
 │ | ├── common.json       # shared buttons, status, general UI
-│ | ├── tasks.json        # user-facing labels for tasks (title, subtitle), names & descriptions of parameters, possible values
+│ | ├── tasks.json        # user-facing labels for tasks (title,  instructions), names & descriptions of parameters, possible values
 │ | ├── admin.json        # AdminTaskEditor & modal texts
 │ | └── recorder.json     # labels & states for recording UI
 │ |── cs
@@ -195,7 +195,7 @@ Main architecture:
 | `VoiceRecorder`             | Recording logic and UI for users                              |
 | `AdminTaskEditor`           | Interface for creating/modifying task protocols               |
 | `config/taskBase.ts`        | Typed task definitions (technical behavior, defaults, params) |
-| `i18n/[lang]/tasks.json`    | Defines translated titles, subtitles, and parameter labels    |
+| `i18n/[lang]/tasks.json`    | Defines translated titles,  instructionss, and parameter labels    |
 | `utils/translation.ts`      | Recursively resolves parameters and translations              |
 | `tasks.ts`                  | Factory combining base + translations into runtime task definitions  |
 | `App.jsx`                   | Manages the execution flow and mode switching (Admin ↔️ User) |

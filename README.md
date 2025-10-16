@@ -16,16 +16,15 @@ It consists of two main parts (interfaces):
 | 🧑‍💼 **Admin Task Editor** | Interface for researchers or clinicians to modify or design task protocols — defining task order, repetitions, parameters, and allowed values. |
 
 ## Goal of the System
-The long-term goal is to build a **standardized protocol system**, where:
-- Maintain *standardized* instructions across studies.
-- Admins can *customize only specific parameters* via User Interface (like the topic for monologue or the phoneme for phonation) - without breaking task structure or standard wording.
-- Make protocols *shareable and reusable* across sessions and languages => cross-language consistency.
-- Flexible for researchers, consistent for users.
+To build a standardized and shareable protocol system that is:
+- **Consistent**: standardized task wording across studies and languages.
+- **Flexible**: admins can change only task parameters (e.g., topic, phoneme, duration) — not the structure or core instructions.
+- **Reusable**: protocols can be shared across sessions, languages, and research groups.
+- **Transparent**: configuration-driven, type-safe, and easy to maintain.
 
 ## ⚙️ Quick Start
 ```bash
-git clone https://github.com/yourusername/react-voice-recorder.git
-cd react-voice-recorder
+git clone https://github.com/maskopav/web_app_test_react.git 
 npm install
 npm run dev
 # or
@@ -38,26 +37,33 @@ Open `http://localhost:5173` in your browser, or use the Network URL (e.g. `http
 Tasks are defined in **two files only**:
 | File                         | Purpose                                                                                    |
 | ---------------------------- | ------------------------------------------------------------------------------------------ |
-| `src/config/taskBase.json`   | Defines all technical parameters and parameter types (used by Admin interface).            |
-| `src/i18n/[lang]/tasks.json` | Defines user-facing names, titles,  instructions, and localized parameter labels/descriptions. |
+| `src/config/taskBase.ts`     | Defines all technical parameters, modes, and defaults (used by logic and Admin UI).        |
+| `src/i18n/[lang]/tasks.json` | Defines user-facing text — names, instructions, labels, and parameter values.              |
 
-🟢 When adding a new task, you must update both files:
+### Adding a New Task
+When adding a new task, you must update both files:
 
-### 1. src/config/taskBase.json – Technical Configuration
+ 1. src/config/taskBase.ts – Technical Configuration
 Example:
 ```json
-{
-  "monologue": {
-    "type": "voice",
-    "recording": { "mode": "basicStop" },
-    "params": {
-      "topic": { "default": "any" },
-      "repeat": { "default": 1 }
+export const taskBaseConfig = {
+  ...: {
+    .....
+  },
+  monologue: {
+    type: "voice",
+    recording: { mode: "basicStop" },
+    params: {
+      topic: { default: "any" },
+      repeat: { default: 1 }
     }
   }
-}
+};
 ```
-### 2. src/i18n/[lang]/tasks.json – Translations and Labels
+💡 Note: `duration` is only required when the recording.mode is `countDown` or `delayedStop`.
+All parameters editable by the admins in Admin interface **need** to appear in params.
+
+2. src/i18n/[lang]/tasks.json – Translations and Labels
 Example:
 ```json
 {
@@ -90,13 +96,13 @@ Example:
   }
 }
 ```
+💡 Note: See next chapter for explanation to dynamic parameters `{{ }}`..
 
-## Dynamic Translations and Recursive Parameters
-- Parameters wrapped in `{{ }}` (e.g. `{{topic}}`) are automatically replaced with their resolved values.
-- The function `getResolvedParams()` (in `translations.ts`) recursively explores nested parameter structures to resolve:
-  - label
-  - or any other custom keys (topicDescription, phonemeLabel, etc.)
-- The result is a fully flattened object ready for dynamic insertion into titles and instructions.
+### Dynamic Translations and Recursive Parameters
+Parameters wrapped in `{{ }}` are automatically resolved and replaced with translated values.
+The helper `getResolvedParams()` (in `translations.ts`) recursively traverses all nested structures to extract:
+  - Labels (`label`)
+  - Custom text fields (`topicDescription`, etc.)
 
 Example:
 ```js
@@ -110,7 +116,7 @@ Resolves to:
   repeat: 1
 }
 ```
-Then used in translation:
+Then used dynamically in:
 ```json
 "title": "Monologue on: {{topic}}"
 "instructions": "Press START and talk about {{topicDescription}}"
@@ -130,8 +136,8 @@ export const TASKS = [
 ```
 
 Each task will:
-1. Pull default behavior from taskBase.json
-2. Merge overrides
+1. Pull default behavior from `taskBase.ts`
+2. Merge parameter overrides
 3. Applies localized labels and resolved parameters
 
 ## Available Task Parameters
@@ -158,14 +164,14 @@ To keep the protocol standardized yet flexible, only selected parameters are mea
 | `text`           | Reading material reference               | ✅                  | ✅                             |
 | `recording.mode` | Recording mode type                      | ❌ (fixed per task) | ❌                             |
 
-🟢 Rule of thumb:
+🟢 Rule:
 Admins can adjust task content (topics, phonemes, durations),
 but not task instructions (titles and instructions remain standardized).
 
-### RecordingMode variants:
-- { mode: "basicStop" } → manual start/stop
-- { mode: "countDown", duration: number } → countdown timer, stops automatically
-- { mode: "delayedStop", duration: number } → starts immediately, auto-stops after duration
+#### RecordingMode variants:
+- `{ mode: "basicStop" }` → manual start/stop
+- `{ mode: "countDown", duration: number }` → countdown timer, stops automatically
+- `{ mode: "delayedStop", duration: number }` → starts immediately, auto-stops after duration
 
 ## Internationalization (i18n)
 This project uses *react-i18next* to support multiple languages.

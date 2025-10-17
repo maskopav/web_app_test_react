@@ -169,9 +169,9 @@ Admins can adjust task content (topics, phonemes, durations),
 but not task instructions (titles and instructions remain standardized).
 
 #### RecordingMode variants:
-- `{ mode: "basicStop" }` → manual start/stop
+- `{ mode: "basicStop" }` → manual stop
 - `{ mode: "countDown", duration: number }` → countdown timer, stops automatically
-- `{ mode: "delayedStop", duration: number }` → starts immediately, auto-stops after duration
+- `{ mode: "delayedStop", duration: number }` → stop button appears after time of duration runs out, then manual stop
 
 ## Internationalization (i18n)
 This project uses *react-i18next* to support multiple languages.

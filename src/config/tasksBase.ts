@@ -61,10 +61,11 @@ export const taskBaseConfig: Record<string, TaskBase> = {
 
   monologue: {
     type: "voice",
-    recording: { mode: "basicStop" },
+    recording: { mode: "delayedStop", duration: 10 },
     params: {
       topic: { default: "hobbies" },
       repeat: { default: 1 },
+      duration: { default: 10 },
     },
   },
 };

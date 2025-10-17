@@ -1,7 +1,7 @@
 {
     "phonation": {
       "name": "Sustained phonation",
-      "description": "The participant sustains a vowel sound for a few seconds to analyze voice stability.",
+      "description": "The participant sustains a single vowel sound (e.g., /a/, /e/, /i/, /o/, /u/) to analyze voice stability and control. Recording uses *delayed stop mode* — the STOP button becomes available only after the set duration expires. The administrator should set the vowel to be produced ('phoneme'), the number of repetitions ('repeat'), and the time interval after which the STOP button appears ('duration').",
       "title": "Prolonged phonation /{{phoneme}}/",
       "instructions": "Press START and sustain /{{phoneme}}/ for at least {{duration}} seconds.",
       "params": {
@@ -26,7 +26,7 @@
   
     "syllableRepeating": {
       "name": "Syllable repetition",
-      "description": "Repeat syllables like pa-ta-ka to assess articulation speed and precision.",
+      "description": "The participant repeatedly produces given syllables (e.g., 'pa-ta-ka', 'ta', 'ka') as fast and clearly as possible to assess articulation speed and precision. Recording uses *countdown mode* — it automatically stops after the specified duration. The administrator should define the syllable sequence ('syllable'), total recording time ('duration'), and the number of repetitions ('repeat') if applicable.",
       "title": "{{syllable}} repetition",
       "instructions": "Press START and repeat /{{syllable}}/ as quickly and accurately as possible.",
       "params": {
@@ -49,6 +49,7 @@
   
     "retelling": {
       "name": "Fairytale retelling",
+      "description": "The participant retells a known fairytale from memory (e.g., Snow White, Hansel and Gretel) to evaluate spontaneous connected speech, fluency, and lexical richness. Recording uses *manual stop mode* — the administrator or participant manually stops the recording when finished. The administrator should select the fairytale ('fairytale') and the number of repetitions ('repeat').",
       "title": "Retelling {{fairytale}}",
       "instructions": "Press START and retell the fairytale: {{fairytale}}.",
       "params": {
@@ -67,6 +68,7 @@
 
     "reading": {
       "name": "Reading text",
+      "description": "The participant reads a short text displayed on the screen aloud to assess reading fluency, articulation, and prosody. Recording uses *manual stop mode* — it starts when START is pressed and stops when the participant or administrator presses STOP. The administrator should choose the text topic ('topic') and number of repetitions ('repeat').",
       "title": "Reading {{topic}}",
       "instructions": "Press START to read the text on screen at a comfortable pace. Press STOP at the end.",
       "instructionsActive": "{{text}}",
@@ -96,6 +98,7 @@
   
     "monologue": {
       "name": "Monologue on topic",
+      "description": "The participant talks freely about a given topic (e.g., hobbies, family, or any chosen subject) to assess speech fluency and coherence. Recording uses *delayed stop mode* — the STOP button appears only after the set time interval has passed. The administrator should define the topic ('topic'), the number of repetitions ('repeat'), and the duration after which the STOP button becomes available ('duration').",
       "title": "Monologue on: {{topic}}",
       "instructions": "Press START and talk about {{topicDescription}} until the timer runs out.",
       "params": {

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import VoiceRecorder from './components/VoiceRecorder';
 import CompletionScreen from "./components/CompletionScreen";
 import ModeSwitchButton from "./components/ModeSwitchButton";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 import { TASKS as TASK_DEFS } from "./tasks";
 import {
   translateTaskTitle,
@@ -12,7 +13,6 @@ import {
 } from "./utils/translations";
 import { resolveTasks, resolveTask } from "./utils/taskResolver";
 import AdminTaskEditor from "./components/AdminTaskEditor";
-import enJson from "./i18n/en.json";   // pass translations to Admin UI
 import './App.css';
 
 // App.jsx
@@ -80,11 +80,11 @@ function App() {
   const taskLabel = t(`taskLabels.${currentType}`, { ns: "common"});
 
 return (
-  <div className="app-container">
+  <div className="app-container" style={{ position: "relative" }}>
+    <LanguageSwitcher /> 
     {adminMode ? (
       <>
         <AdminTaskEditor
-          i18nJson={enJson}
           initialTasks={TASK_DEFS}
           onSave={(tasks) => console.log("Admin saved tasks:", tasks)}
         />

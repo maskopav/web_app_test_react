@@ -1,0 +1,25 @@
+{
+    "title": "Editor úloh",
+    "availableTasks": "Dostupné úlohy:",
+    "currentProtocol": "Aktuální protokol:",
+    "noTasks": "Zatím nejsou přidány žádné úlohy.",
+    "editTask": "Upravit úlohu: {{category}}",
+    "reorderTasks": "Změnit pořadí",
+    "finishReordering": "Dokončit změnu pořadí",
+    "done": "Hotovo",
+    "params": "Parametery",
+    "tooltips": {
+      "edit": "Upravit tuto úlohu",
+      "delete": "Odstranit tuto úlohu"
+    },
+    "buttons": {
+      "cancel": "Zrušit",
+      "save": "Uložit změny"
+    },
+    "modal": {
+      "title": "Úprava úlohy",
+      "cancel": "Zrušit",
+      "save": "Uložit změny"
+    }
+  }
+  

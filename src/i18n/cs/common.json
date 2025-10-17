@@ -1,0 +1,30 @@
+{
+    "buttons": {
+      "next": "➡️ Další",
+      "repeat": "🔄 Opakovat",
+      "start": "🔴 START",
+      "pause": "⏸️ POZASTAVIT",
+      "resume": "▶️ POKRAČOVAT",
+      "stop": "⏹️ STOP",
+      "permission": "🎤 Povolit mikrofon",
+      "cancel": "Zrušit",
+      "save": "Uložit",
+      "done": "Hotovo"
+    },
+    "status": {
+      "ready": "⚪ Připraveno",
+      "recording": "🔴 Nahrávání...",
+      "paused": "⏸️ Pozastaveno",
+      "recorded": "✅ Nahráno"
+    },
+    "completion": {
+      "title": "Všechny úkoly dokončeny!",
+      "message": "Úspěšně jste dokončili všechny zadání. Děkujeme Vám za účast!"
+    },
+    "taskLabels": {
+      "voice": "Řečová úloha",
+      "motor": "Motorická úloha",
+      "camera": "Kamerová úloha"
+    }
+  }
+  

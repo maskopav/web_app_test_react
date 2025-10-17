@@ -14,9 +14,8 @@ import InfoTooltip from "./InfoTooltip";
 import { taskBaseConfig} from "../../config/tasksBase.js"
 import "./AdminTaskEditor.css";
 
-export function AdminTaskEditor({ i18nJson = {}, initialTasks = [], onSave = () => {} }) {
+export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
   const { t } = useTranslation(["admin", "tasks", "common"]); // use all namespaces
-  const inputOptions = useMemo(() => collectInputPaths(i18nJson), [i18nJson]);
 
   const [tasks, setTasks] = useState(initialTasks);
   const [editingTask, setEditingTask] = useState(null);

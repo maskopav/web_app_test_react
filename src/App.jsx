@@ -4,7 +4,7 @@ import VoiceRecorder from './components/VoiceRecorder';
 import CompletionScreen from "./components/CompletionScreen";
 import ModeSwitchButton from "./components/ModeSwitchButton";
 import LanguageSwitcher from "./components/LanguageSwitcher";
-import { TASKS as TASK_DEFS } from "./tasks";
+import { TASKS as TASK_DEFS, createTask } from "./tasks";
 import {
   translateTaskTitle,
   translateTaskInstructions,
@@ -20,9 +20,11 @@ function App() {
   const { t } = useTranslation(["tasks", "common"]);
   const [taskIndex, setTaskIndex] = useState(0);
   const [adminMode, setAdminMode] = useState(true); // start in admin mode
+  const [configuredTasks, setConfiguredTasks] = useState(TASK_DEFS);
 
-  // Expand tasks with repeat count
-  const expandedTasks = resolveTasks(TASK_DEFS);
+  // Convert admin-configured tasks to runtime TaskInstances, then expand with repeat
+  const runtimeTasks = configuredTasks.map((t) => createTask(t.category, t));
+  const expandedTasks = resolveTasks(runtimeTasks);
 
   const handleNextTask = (taskData) => {
     // This is where you would process the data from the completed task
@@ -85,8 +87,13 @@ return (
     {adminMode ? (
       <>
         <AdminTaskEditor
-          initialTasks={TASK_DEFS}
-          onSave={(tasks) => console.log("Admin saved tasks:", tasks)}
+          initialTasks={configuredTasks}
+          onChange={(tasks) => setConfiguredTasks(tasks)}
+          onSave={(tasks) => {
+            setConfiguredTasks(tasks);
+            setAdminMode(false);
+            setTaskIndex(0);
+          }}
         />
         <ModeSwitchButton
           adminMode={adminMode}

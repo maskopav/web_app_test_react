@@ -14,7 +14,7 @@ import InfoTooltip from "./InfoTooltip";
 import { taskBaseConfig} from "../../config/tasksBase.js"
 import "./AdminTaskEditor.css";
 
-export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
+export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange = () => {} }) {
   const { t } = useTranslation(["admin", "tasks", "common"]); // use all namespaces
 
   const [tasks, setTasks] = useState(initialTasks);
@@ -34,11 +34,19 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
       recording: base.recording,
       ...defaults,
     };
-    setTasks((prev) => [...prev, task]);
+    setTasks((prev) => {
+      const next = [...prev, task];
+      onChange(next);
+      return next;
+    });
   }
 
   function updateTask(index, patch) {
-    setTasks((prev) => prev.map((t, i) => (i === index ? { ...t, ...patch } : t)));
+    setTasks((prev) => {
+      const next = prev.map((t, i) => (i === index ? { ...t, ...patch } : t));
+      onChange(next);
+      return next;
+    });
   }
 
   function handleDragStart(index) {
@@ -51,6 +59,7 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
       const updated = [...prev];
       const [moved] = updated.splice(dragIndex, 1);
       updated.splice(targetIndex, 0, moved);
+      onChange(updated);
       return updated;
     });
     setDragIndex(null);
@@ -86,11 +95,14 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
                   <div className="param-inline">
                     {Object.entries(params).map(([pKey, pInfo], i) => {
                       const defaultVal = defaults?.[pKey] ?? pInfo.default ?? "";
+                      // If enum, show the translated label for the default key; else show the literal value
+                      const enumOption = (pInfo.values || []).find((v) => v.key === defaultVal);
+                      const shown = enumOption ? enumOption.label : String(defaultVal);
                       return (
                         <span key={pKey}>
                           {i > 0 && " • "}
                           <strong>{pInfo.label}:</strong>{" "}
-                          <em>{String(defaultVal)}</em>
+                          <em>{shown}</em>
                         </span>
                       );
                     })}
@@ -119,7 +131,19 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
             {tasks.map((task, idx) => {
               const params = getAllParams(task.category);
               console.log(`Params for task ${idx} (${task.category}):`, params);
-              const resolvedParams = getResolvedParams(task.category, task);
+
+              // Build live params reflecting in-progress edits for this row
+              const paramKeys = Object.keys(params);
+              const liveParams = Object.fromEntries(
+                paramKeys.map((k) => [
+                  k,
+                  (idx === editingTask && editingData && editingData[k] !== undefined)
+                    ? editingData[k]
+                    : (task[k] !== undefined ? task[k] : params[k].default)
+                ])
+              );
+
+              const resolvedParams = getResolvedParams(task.category, liveParams);
               console.log(`Resolved params for task ${idx} (${task.category}):`, resolvedParams);
               return (
                 <li
@@ -147,7 +171,11 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
                           className="delete-icon"
                           title={t("tooltips.delete")}
                           onClick={() =>
-                            setTasks((prev) => prev.filter((_, i) => i !== idx))
+                            setTasks((prev) => {
+                              const next = prev.filter((_, i) => i !== idx);
+                              onChange(next);
+                              return next;
+                            })
                           }
                         >
                           ✖
@@ -159,7 +187,8 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
                   {/* Inline parameter summary */}
                   <div className="param-inline">
                     {Object.entries(params).map(([pKey, pInfo], i) => {
-                      const val = resolvedParams.params?.[pKey] ?? task[pKey] ?? pInfo.default ?? "";
+                      // Prefer translated/expanded live value; fall back to raw live value or default
+                      const val = resolvedParams[pKey] ?? liveParams[pKey] ?? pInfo.default ?? "";
                       return (
                         <span key={pKey}>
                           {i > 0 && " • "}
@@ -174,9 +203,14 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {} }) {
             })}
           </ul>
 
-          { /* <div className="button-row">
-            <button className="button-done" onClick={() => onSave(tasks)}>{t("done")}</button>
-          </div> */}
+      <div className="button-row">
+        <button
+          className="button-done"
+          onClick={() => onSave(tasks)}
+        >
+          {t("done")}
+        </button>
+      </div>
         </div>
       </div>
 

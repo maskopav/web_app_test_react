@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from "react-i18next";
-import { useVoiceRecorder } from '../../hooks/useVoiceRecorder';
 
 // components/VoiceRecorder/RecordingControls.jsx - Control buttons component
 export const RecordingControls = ({
@@ -14,10 +13,11 @@ export const RecordingControls = ({
     disableControls = false,
     disableStop,
     showPause = true, // Pause button is shown by default
+    RECORDING_STATES,
     className = ""
 }) => {
     const { t } = useTranslation();
-    const { IDLE, RECORDING, PAUSED } = useVoiceRecorder().RECORDING_STATES;
+    const { IDLE, RECORDING, PAUSED } = RECORDING_STATES;
 
     return (
     <div className={`controls ${className}`}>

@@ -99,7 +99,7 @@ export const VoiceRecorder = ({
 
             <RecordingControls
             recordingStatus={recordingStatus}
-            disableControls={!!duration}
+            disableControls={mode === 'countDown'}
             permission={permission}
             onStart={startRecording}
             onPause={pauseRecording}
@@ -108,6 +108,7 @@ export const VoiceRecorder = ({
             onPermission={getMicrophonePermission}
             disableStop={mode === 'delayedStop' && !durationExpired}
             showPause={false}
+            RECORDING_STATES={RECORDING_STATES}
             />
 
             <PlaybackSection

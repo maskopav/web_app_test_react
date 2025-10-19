@@ -25,10 +25,11 @@ export const useVoiceRecorder = (options = {}) => {
     const [stream, setStream] = useState(null);
     const [audioURL, setAudioURL] = useState(null);
     const [recordingTime, setRecordingTime] = useState(0);
-    const [remainingTime, setRemainingTime] = useState(duration || null);
+    const [remainingTime, setRemainingTime] = useState(null);
     const [audioLevels, setAudioLevels] = useState(new Array(12).fill(0));
     const [activeInstructions, setActiveInstructions] = useState(instructions);
     const [exampleAudio, setExampleAudio] = useState(null);
+    const [durationExpired, setDurationExpired] = useState(false);
 
     // Refs
     const mediaRecorder = useRef(null);
@@ -84,13 +85,14 @@ export const useVoiceRecorder = (options = {}) => {
                     return prev - 1;
                 });
             } else if (mode === "delayedStop") {
-                // Count up until duration, then stop
+                // Count up normally, mark duration as expired when reached
                 setRecordingTime(prev => {
-                  if (duration && prev + 1 >= duration) {
-                    stopRecording();
-                    return duration;
+                  const newTime = prev + 1;
+                  if (duration && newTime >= duration) {
+                    // Mark duration as expired but keep counting
+                    setDurationExpired(true);
                   }
-                  return prev + 1;
+                  return newTime;
                 });
             } else if (mode === "basicStop") {
                 // Just count up, never auto-stop
@@ -111,11 +113,13 @@ export const useVoiceRecorder = (options = {}) => {
         if (!stream) return;
         stopExample(); // stop example playback if active
         setRecordingStatus(RECORDING);
+        setDurationExpired(false); // Reset duration expired state
 
         if (mode === "countDown") {
             setRemainingTime(duration || 10);
         } else {
             setRecordingTime(0);
+            setRemainingTime(null); // Clear remaining time for non-countdown modes
         }
 
         if (instructionsActive) {
@@ -192,6 +196,7 @@ export const useVoiceRecorder = (options = {}) => {
         setRecordingTime(0);
         setRecordingStatus(IDLE);
         setAudioLevels(new Array(12).fill(0));
+        setDurationExpired(false); // Reset duration expired state
         stopTimer();
         
         if (animationFrame.current) {
@@ -326,6 +331,7 @@ return {
     audioLevels,
     activeInstructions,
     exampleAudio,
+    durationExpired,
     
     // Actions
     getMicrophonePermission,

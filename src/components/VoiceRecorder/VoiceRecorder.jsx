@@ -41,6 +41,7 @@ export const VoiceRecorder = ({
         recordingTime,
         audioLevels,
         activeInstructions,
+        durationExpired,
         getMicrophonePermission,
         startRecording,
         pauseRecording,
@@ -105,6 +106,8 @@ export const VoiceRecorder = ({
             onResume={resumeRecording}
             onStop={stopRecording}
             onPermission={getMicrophonePermission}
+            disableStop={mode === 'delayedStop' && !durationExpired}
+            showPause={false}
             />
 
             <PlaybackSection

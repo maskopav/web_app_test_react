@@ -12,6 +12,8 @@ export const RecordingControls = ({
     onStop,
     onPermission,
     disableControls = false,
+    disableStop,
+    showPause = true, // Pause button is shown by default
     className = ""
 }) => {
     const { t } = useTranslation();
@@ -40,12 +42,16 @@ export const RecordingControls = ({
 
             {recordingStatus === RECORDING && !disableControls && (
                 <div className="button-group">
+                {showPause && (
                 <button onClick={onPause} className="btn-pause">
                 {t("buttons.pause")}
                 </button>
+                )}
+                {!disableStop && (
                 <button onClick={onStop} className="btn-stop">
                 {t("buttons.stop")}
                 </button>
+                )}
                 </div>
             )}
 
@@ -54,9 +60,12 @@ export const RecordingControls = ({
                 <button onClick={onResume} className="btn-resume">
                 {t("buttons.resume")}
                 </button>
+
+                {!disableStop && (
                 <button onClick={onStop} className="btn-stop">
                 {t("buttons.stop")}
                 </button>
+                )}
                 </div>
             )}
             </>

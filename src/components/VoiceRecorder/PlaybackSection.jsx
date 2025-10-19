@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { NextTaskButton } from "./NextTaskButton";
 
 // components/VoiceRecorder/PlaybackSection.jsx - Audio playback component
@@ -9,6 +10,7 @@ export const PlaybackSection = ({
     onNextTask,
     showNextButton = true
 }) => {
+    const { t } = useTranslation();
     // Only show playback section if recording is complete
     if (!audioURL) return null;
 
@@ -20,7 +22,7 @@ export const PlaybackSection = ({
         
         <div className="button-group">
             <button onClick={onRepeat} className="btn-repeat">
-            🔄 Repeat
+            {t("buttons.repeat")}
             </button>
 
             {showNextButton && (

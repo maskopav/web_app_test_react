@@ -20,10 +20,11 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
   const [tasks, setTasks] = useState(initialTasks);
   const [editingTask, setEditingTask] = useState(null);
   const [editingData, setEditingData] = useState(null);
+  const [creatingNewTask, setCreatingNewTask] = useState(false);
   const [reorderMode, setReorderMode] = useState(false);
   const [dragIndex, setDragIndex] = useState(null);
 
-  function addTask(category) {
+  function startCreatingTask(category) {
     const defaults = getDefaultParams(category);
     const base = taskBaseConfig[category];
     if (!base) return;
@@ -34,8 +35,14 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
       recording: base.recording,
       ...defaults,
     };
+    
+    setCreatingNewTask(true);
+    setEditingData(task);
+  }
+
+  function addTaskToProtocol(taskData) {
     setTasks((prev) => {
-      const next = [...prev, task];
+      const next = [...prev, taskData];
       onChange(next);
       return next;
     });
@@ -85,7 +92,7 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
             const params = getAllParams(cat);
             const defaults = getDefaultParams(cat);
             return (
-              <div key={cat} className="task-option" onClick={() => addTask(cat)}>
+              <div key={cat} className="task-option" onClick={() => startCreatingTask(cat)}>
                 <div className="task-title">
                   {translatedName}
                   <InfoTooltip text={description} /> 
@@ -128,7 +135,12 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
           </div>
 
           <ul className="protocol-list">
-            {tasks.map((task, idx) => {
+            {tasks.length === 0 ? (
+              <li className="empty-protocol">
+                <em>{t("noTasks")}</em>
+              </li>
+            ) : (
+              tasks.map((task, idx) => {
               const params = getAllParams(task.category);
               console.log(`Params for task ${idx} (${task.category}):`, params);
 
@@ -200,13 +212,15 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
                   </div>
                 </li>
               );
-            })}
+            })
+            )}
           </ul>
 
       <div className="button-row">
         <button
           className="button-done"
           onClick={() => onSave(tasks)}
+          disabled={tasks.length === 0}
         >
           {t("done")}
         </button>
@@ -216,28 +230,37 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
 
       {/* Edit Modal */}
       <Modal
-        open={editingTask != null}
+        open={editingTask != null || creatingNewTask}
         onClose={() => {
           // just close without saving
           setEditingTask(null);
           setEditingData(null);
+          setCreatingNewTask(false);
         }}
         onSave={() => {
-          if (editingTask != null && editingData) {
+          if (creatingNewTask && editingData) {
+            // Add new task to protocol
+            addTaskToProtocol(editingData);
+            setCreatingNewTask(false);
+          } else if (editingTask != null && editingData) {
+            // Update existing task
             setTasks(prev =>
               prev.map((t, i) => (i === editingTask ? { ...t, ...editingData } : t))
             );
+            setEditingTask(null);
           }
-          setEditingTask(null);
           setEditingData(null);
         }}
       >
-        {editingTask != null && (() => {
-          const category = tasks[editingTask].category;
+        {(editingTask != null || creatingNewTask) && (() => {
+          const category = creatingNewTask ? editingData?.category : tasks[editingTask]?.category;
           const params = getAllParams(category);
 
           // Initialize editing data when modal opens
           if (!editingData) {
+            if (creatingNewTask) {
+              return null; // This shouldn't happen, but just in case
+            }
             const currentTask = tasks[editingTask];
             setEditingData({ ...currentTask });
             return null; // prevent rendering until initialized
@@ -245,7 +268,12 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
 
           return (
             <div className="edit-window">
-              <h2>{t("editTask", { category: translateTaskName(category) })}</h2>
+              <h2>
+                {creatingNewTask 
+                  ? t("addTask", { category: translateTaskName(category) })
+                  : t("editTask", { category: translateTaskName(category) })
+                }
+              </h2>
               {Object.keys(params).map((param) => {
                 const paramInfo = params[param];
 

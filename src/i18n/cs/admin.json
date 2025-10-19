@@ -4,6 +4,7 @@
     "currentProtocol": "Aktuální protokol:",
     "noTasks": "Zatím nejsou přidány žádné úlohy.",
     "editTask": "Upravit úlohu: {{category}}",
+    "addTask": "Přidat úlohu: {{category}}",
     "reorderTasks": "Změnit pořadí",
     "finishReordering": "Dokončit změnu pořadí",
     "done": "Hotovo",

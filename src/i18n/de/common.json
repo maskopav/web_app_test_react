@@ -1,0 +1,30 @@
+{
+    "buttons": {
+      "next": "➡️ Next",
+      "repeat": "🔄 Repeat",
+      "start": "🔴 START",
+      "pause": "⏸️ PAUSE",
+      "resume": "▶️ RESUME",
+      "stop": "⏹️ STOP",
+      "permission": "🎤 Get Microphone Permission",
+      "cancel": "Cancel",
+      "save": "Save",
+      "done": "Done"
+    },
+    "status": {
+      "ready": "⚪ Ready",
+      "recording": "🔴 Recording...",
+      "paused": "⏸️ Paused",
+      "recorded": "✅ Recorded"
+    },
+    "completion": {
+      "title": "All Tasks Completed!",
+      "message": "You have successfully finished all assignments."
+    },
+    "taskLabels": {
+      "voice": "Vocal Task",
+      "motor": "Motor Task",
+      "camera": "Camera Task"
+    }
+  }
+  

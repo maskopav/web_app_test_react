@@ -62,10 +62,31 @@
     padding: 6px 10px;
     margin-bottom: 8px;
   }
-  .task-option { cursor: pointer; }
+  .task-option { 
+    cursor: pointer; 
+    transition: var(--transition);
+    margin: 3px;
+  }
+  
+  .task-option:hover {
+    background: #e8f2ff;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
   .task-title { font-weight: 500; }
 
   .protocol-item.dragging { background: #e0f7ff; opacity: 0.6; }
+  
+  .empty-protocol {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    font-style: italic;
+    background: #f8f9fa;
+    border: 2px dashed #ccc;
+    border-radius: var(--radius);
+  }
   
   .protocol-row { display: flex; justify-content: space-between; align-items: center; }
   .action-buttons span { cursor: pointer; font-size: 18px; margin-left: 8px; }
@@ -74,7 +95,20 @@
   .delete-icon { color: var(--danger);}
   
   .button-row { margin-top: 15px; display: flex; gap: 10px; }
-  .button-done { background: var(--success);}
+  .button-done { 
+    background: var(--success);
+    cursor: pointer;
+  }
+  
+  .button-done:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  .button-done:not(:disabled):hover {
+    background: #229954;
+  }
 
 /* Parameter preview styling */
   .param-inline {

@@ -20,7 +20,7 @@ function App() {
   const { t } = useTranslation(["tasks", "common"]);
   const [taskIndex, setTaskIndex] = useState(0);
   const [adminMode, setAdminMode] = useState(true); // start in admin mode
-  const [configuredTasks, setConfiguredTasks] = useState(TASK_DEFS);
+  const [configuredTasks, setConfiguredTasks] = useState([]);
 
   // Convert admin-configured tasks to runtime TaskInstances, then expand with repeat
   const runtimeTasks = configuredTasks.map((t) => createTask(t.category, t));

@@ -10,7 +10,8 @@
     "addQuestionnaire": "Add Questionnaire",
     "reorderTasks": "Reorder Tasks",
     "finishReordering": "Finish Reordering",
-    "done": "Done",
+    "showProtocol": "Show designed protocol",
+    "saveProtocol": "Save protocol",
     "params": "Parameters",
     "tooltips": {
       "edit": "Edit this task",

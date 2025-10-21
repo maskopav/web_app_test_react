@@ -5,12 +5,6 @@ import CompletionScreen from "./components/CompletionScreen";
 import ModeSwitchButton from "./components/ModeSwitchButton";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import { TASKS as TASK_DEFS, createTask } from "./tasks";
-import {
-  translateTaskTitle,
-  translateTaskInstructions,
-  translateTaskInstructionsActive,
-  getResolvedParams
-} from "./utils/translations";
 import { resolveTasks, resolveTask } from "./utils/taskResolver";
 import AdminTaskEditor from "./components/AdminTaskEditor";
 import './App.css';
@@ -83,9 +77,9 @@ function App() {
 
 return (
   <div className="app-container" style={{ position: "relative" }}>
-    <LanguageSwitcher /> 
     {adminMode ? (
       <>
+        <LanguageSwitcher /> 
         <AdminTaskEditor
           initialTasks={configuredTasks}
           onChange={(tasks) => setConfiguredTasks(tasks)}
@@ -94,10 +88,6 @@ return (
             setAdminMode(false);
             setTaskIndex(0);
           }}
-        />
-        <ModeSwitchButton
-          adminMode={adminMode}
-          onToggle={() => setAdminMode(false)}
         />
       </>
     ) : (

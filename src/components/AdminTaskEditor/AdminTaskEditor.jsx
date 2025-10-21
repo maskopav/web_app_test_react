@@ -239,11 +239,18 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
 
       <div className="button-row">
         <button
-          className="button-done"
+          className="button-show-tasks"
           onClick={() => onSave(tasks)}
           disabled={tasks.length === 0}
         >
-          {t("done")}
+          {t("showProtocol")}
+        </button>
+        <button
+          className="button-save"
+          onClick={() => onSave()}
+          disabled={tasks.length === 0}
+        >
+          {t("saveProtocol")}
         </button>
       </div>
         </div>

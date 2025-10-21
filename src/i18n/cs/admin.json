@@ -10,7 +10,8 @@
     "addQuestionnaire": "Přidat dotazník",
     "reorderTasks": "Změnit pořadí",
     "finishReordering": "Dokončit změnu pořadí",
-    "done": "Hotovo",
+    "showProtocol": "Zobrazit navržený protokol",
+    "saveProtocol": "Uložit protokol",
     "params": "Parametery",
     "tooltips": {
       "edit": "Upravit tuto úlohu",

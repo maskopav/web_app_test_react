@@ -116,18 +116,18 @@
   .delete-icon { color: var(--danger);}
 
   .button-row { margin-top: 15px; display: flex; gap: 10px; }
-  .button-done { 
+  .button-save { 
     background: var(--success);
     cursor: pointer;
   }
   
-  .button-done:disabled {
+  .button-save:disabled {
     background: #ccc;
     cursor: not-allowed;
     opacity: 0.6;
   }
   
-  .button-done:not(:disabled):hover {
+  .button-save:not(:disabled):hover {
     background: #229954;
   }
 

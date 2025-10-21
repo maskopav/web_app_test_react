@@ -47,6 +47,27 @@
     margin-bottom: 10px;
   }
 
+  .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .protocol-language-label {
+    display: flex;
+    align-items: center;
+    max-width: fit-content;
+    gap: 6px;
+    font-weight: 500;
+  }
+  
+  .language-select {
+    padding: 6px 8px;
+    margin: 6px 4px;
+    border-radius: var(--sharp-radius);
+    cursor: pointer;
+  }  
+
   .protocol-list, .task-list { 
     list-style: none; 
     padding: 0; 
@@ -93,7 +114,7 @@
   
   .edit-icon { color:  var(--primary); }
   .delete-icon { color: var(--danger);}
-  
+
   .button-row { margin-top: 15px; display: flex; gap: 10px; }
   .button-done { 
     background: var(--success);
@@ -230,7 +251,7 @@
   
   /* Buttons*/
   .reorder-btn {
-    padding: 10px 12px;
+    padding: 8px 12px;
     cursor: pointer;
     max-height: min-content;
     max-width: fit-content;
@@ -240,6 +261,20 @@
     background: var(--success); 
   }
   
+  .btn-add-questionnaire {
+    background: var(--purple);
+    color: white;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+    max-width: fit-content;
+  }
+  
+  .btn-add-questionnaire:hover {
+    background: #6a2fd6;
+  }
+
   .btn-cancel {
     background: #ccc;
     color: #333;

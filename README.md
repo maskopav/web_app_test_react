@@ -124,7 +124,7 @@ Then used dynamically in:
 
 ## Task Factory
 
-All tasks are created through a single factory
+All tasks are created through a single factory - it is done automatically inside App.jsx
 Example:
 ```js
 export const TASKS = [
@@ -224,11 +224,20 @@ src/
 │ | └── index.js               # Barrel file for clean imports
 │ │
 │ ├── AdminTaskEditor/
-│ │ ├── AdminTaskEditor.jsx    # main container component
+│ │ ├── AdminTaskEditor.jsx    # main container (state + coordination)
+│ │ ├── TaskList.jsx           # left column - available tasks
+│ │ ├── ProtocolEditor.jsx     # right column - current protocol
+│ │ ├── TaskModal.jsx          # modal for editing/creating tasks
+│ │ ├── QuestionnaireModal.jsx # modal for questionnaires
+│ │ ├── InfoToolTip.jsx        # info tool tip component
 │ │ ├── Modal.jsx              # reusable modal component
-│ │ ├── index.js               # barrel export
 │ │ ├── AdminTaskEditor.css    # scoped styles
-│ │ └── helpers.js             # small helpers like collectInputPaths
+│ │ └── index.js               # barrel export
+│ │
+│ ├── LanguageSwitcher/
+│ │ ├── LanguageSwitcher.jsx    # Switching admin editor language, not protocol language
+│ │ ├── LanguageSwitcher.css    # scoped styles
+│ │ └── index.js             
 │ │
 │ |── ModeSwitchButton.jsx     # 
 │ └── CompletionScreen.jsx     # Dedicated UI for final screen
@@ -292,7 +301,4 @@ npm run build
 ```
 - 2. Upload `dist` folder to your web server (e.g. filemanager server).
 - 3. Access via: `https://yourdomain.com/path/to/dist/` (e.g. `https://malenia.feld.cvut.cz/test/dist/`)
-
-
-
 

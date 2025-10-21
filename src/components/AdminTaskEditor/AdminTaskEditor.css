@@ -166,7 +166,7 @@
   .modal-box {
     background: var(--bg);
     border-radius:  var(--radius);
-    max-width: 50vw;
+    max-width: 60vw;
     max-height: 85vh;
     display: flex;
     flex-direction: column;
@@ -198,11 +198,24 @@
   .modal-close:hover {
     background: #c0392b;
   }
+
+  .modal-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-top: 0.6rem;
+  }
   
   .modal-content h2 {
     font-size: 1.4rem;
     margin-bottom: 1rem;
     text-align: center;
+  }
+
+  .modal-title {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
   }
 
   /* Make form fields align neatly */
@@ -241,13 +254,7 @@
     box-shadow: 0 0 0 3px rgba(55, 100, 223, 0.25);
     outline: none;
   }
-    
-  .modal-actions {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    margin-top: 0.6rem;
-  }
+
   
   /* Buttons*/
   .reorder-btn {

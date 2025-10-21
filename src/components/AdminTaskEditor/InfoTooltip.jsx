@@ -1,3 +1,4 @@
+// src/components/AdminTaskEditor/InfoToolTip.jsx
 import React from "react";
 
 export default function InfoTooltip({ text }) {

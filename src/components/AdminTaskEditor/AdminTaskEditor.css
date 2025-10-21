@@ -166,7 +166,7 @@
   .modal-box {
     background: var(--bg);
     border-radius:  var(--radius);
-    max-width: 60vw;
+    max-width: 80vw;
     max-height: 85vh;
     display: flex;
     flex-direction: column;
@@ -327,8 +327,125 @@
     visibility: visible;
     opacity: 1;
   }
-  
-  
+
+  /* Questionnaire Modal Enhancements */
+.question-section {
+  margin: 0.3rem 0;
+  padding: 0.4rem 0;
+  overflow-y: auto;  
+}
+
+.question-block {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--sharp-radius);
+  padding: 0.5rem;
+  margin-bottom: 0.8em;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.265);
+}
+
+/* Top bar with remove icon */
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.2rem;
+}
+
+/* --- Questionnaire Modal Specific --- */
+.questionnaire-form {
+  display: flex;
+  flex-direction: column;
+  min-width: 60vw;
+  gap: 1rem;
+}
+
+/* Header section for title + description */
+.questionnaire-header {
+  background: #483dc279;
+  border-radius: var(--sharp-radius);
+  padding: 0.5rem;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.265);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.questionnaire-header label {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.questionnaire-header input,
+.questionnaire-header textarea {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--sharp-radius);
+  background: #fff;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.questionnaire-header input:focus,
+.questionnaire-header textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(55, 100, 223, 0.25);
+  outline: none;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  width: 95%;
+}
+
+.option-item input {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--sharp-radius);
+  border: 1px solid #ccc;
+  background: white;
+}
+
+.btn-add-option {
+  background: var(--warning);
+  color: white;
+  border-radius: var(--sharp-radius);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  margin-top: 0.3rem;
+  transition: var(--transition);
+  width: fit-content;
+}
+
+.btn-add-option:hover {
+  background: #b36500;
+}
+
+/* Remove question/ option icon */
+.btn-remove-option,
+.btn-remove-question-icon {
+  background: none;
+  border: none;
+  border-radius: var(--sharp-radius);
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 2px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  width: min-content;
+}
+
+.btn-remove-option:hover,
+.btn-remove-question-icon:hover {
+  color: #c0392b; /* darker red on hover */
+  transform: scale(1.1);
+}
 
   /* Narrow screens */
   @media (max-width: 600px) {

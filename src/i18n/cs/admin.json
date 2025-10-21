@@ -13,6 +13,25 @@
     "showProtocol": "Zobrazit navržený protokol",
     "saveProtocol": "Uložit protokol",
     "params": "Parametery",
+    "questionnaire": {
+      "questionnaireTitle": "Questionnaire Title",
+      "enterTitle": "Enter questionnaire title",
+      "questionnaireDescription": "Questionnaire Description",
+      "enterDescription": "Enter optional description",
+      "questions": "Questions",
+      "question": "Question",
+      "enterQuestionText": "Enter question text",
+      "answerType": "Answer Type",
+      "Open answer": "Open answer",
+      "Single choice": "Single choice (radio)",
+      "Multiple choice": "Multiple choice (checkbox)",
+      "Dropdown": "Dropdown",
+      "answerOptions": "Answer Options",
+      "Option": "Option",
+      "addOption": "Add option",
+      "addQuestion": "Add question",
+      "removeQuestion": "Remove question"
+    },
     "tooltips": {
       "edit": "Upravit tuto úlohu",
       "delete": "Odstranit tuto úlohu"

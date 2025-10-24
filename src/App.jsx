@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import VoiceRecorder from './components/VoiceRecorder';
 import CompletionScreen from "./components/CompletionScreen";
-import ModeSwitchButton from "./components/ModeSwitchButton";
 import LanguageSwitcher from "./components/LanguageSwitcher";
-import { TASKS as TASK_DEFS, createTask } from "./tasks";
+import { createTask } from "./tasks";
 import { resolveTasks, resolveTask } from "./utils/taskResolver";
 import AdminTaskEditor from "./components/AdminTaskEditor";
 import './App.css';
@@ -17,7 +16,7 @@ function App() {
   const [configuredTasks, setConfiguredTasks] = useState([]);
 
   // Convert admin-configured tasks to runtime TaskInstances, then expand with repeat
-  const runtimeTasks = configuredTasks.map((t) => createTask(t.category, t));
+  const runtimeTasks = (configuredTasks ?? []).map((t) => createTask(t.category, t));
   const expandedTasks = resolveTasks(runtimeTasks);
 
   const handleNextTask = (taskData) => {
@@ -48,7 +47,7 @@ function App() {
             title={currentTask.title}
             instructions={currentTask.instructions}
             instructionsActive={currentTask.instructionsActive}
-            audioExample={currentTask.audioExample}
+            audioExample={currentTask.illustration}
             mode={currentTask.recording.mode}
             duration={currentTask.recording.duration}
             onNextTask={handleNextTask}

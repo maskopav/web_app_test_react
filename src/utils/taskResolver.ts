@@ -1,5 +1,7 @@
 // src/utils/taskResolver.ts
 import type { TaskInstance } from "../tasks.js";
+import { getIllustrationPath } from "./getIllustrationPath.js";
+
 import {
     translateTaskTitle,
     translateTaskInstructions,
@@ -31,6 +33,9 @@ export function resolveTasks(tasks: TaskInstance[]) {
   
     const resolvedParams = getResolvedParams(task.category, task.params);
     const titleBase = translateTaskTitle(task.category, resolvedParams);
+
+    // Build static illustration path
+    const illustration = getIllustrationPath(task.category, task.params);
   
     return {
       ...task,
@@ -42,5 +47,6 @@ export function resolveTasks(tasks: TaskInstance[]) {
       instructions: translateTaskInstructions(task.category, resolvedParams),
       instructionsActive:
         translateTaskInstructionsActive(task.category, resolvedParams),
+      illustration,
     };
   }

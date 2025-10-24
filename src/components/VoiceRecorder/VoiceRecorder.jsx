@@ -60,6 +60,26 @@ export const VoiceRecorder = ({
         }
     }, [autoPermission]);
 
+    const [exampleExists, setExampleExists] = React.useState(false);
+
+    React.useEffect(() => {
+        async function checkExample() {
+          if (!audioExample) return;
+          try {
+            const res = await fetch(audioExample, { method: "HEAD" });
+            const type = res.headers.get("content-type") || "";
+            const ok = res.ok && type.includes("audio");
+            console.log(`Checking example: ${audioExample} → ${res.status} ${type} ok=${ok}`);
+            setExampleExists(ok);
+          } catch {
+            setExampleExists(false);
+          }
+        }
+        checkExample();
+      }, [audioExample]);
+      
+
+
     const handleNextTask = () => {
         if (!onNextTask) return;
 
@@ -88,11 +108,13 @@ export const VoiceRecorder = ({
             audioLevels={audioLevels}
             showVisualizer={showVisualizer}
             >
+            {exampleExists && (
                 <AudioExampleButton 
                 recordingStatus={recordingStatus}
                 audioExample={audioExample} 
                 playExample={playExample} 
                 />
+            )}
             </RecordingTimer>
             
             <StatusIndicator status={recordingStatus} />

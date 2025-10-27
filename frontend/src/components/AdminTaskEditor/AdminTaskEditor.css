@@ -424,8 +424,7 @@
 }
 
 /* Remove question/ option icon */
-.btn-remove-option,
-.btn-remove-question-icon {
+.btn-remove-option {
   background: none;
   border: none;
   border-radius: var(--sharp-radius);
@@ -441,10 +440,29 @@
   width: min-content;
 }
 
-.btn-remove-option:hover,
-.btn-remove-question-icon:hover {
+.btn-remove-option:hover{
   color: #c0392b; /* darker red on hover */
   transform: scale(1.1);
+}
+
+.btn-remove-question-icon {
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: var(--sharp-radius);
+  padding: 3px 5px;
+  width: min-content;
+  height: min-content;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+  display: flex;              /* center horizontally + vertically */
+  align-items: center;        /* vertical */
+  justify-content: center;    /* horizontal */
+}
+
+.btn-remove-question-icon:hover {
+  background: #c0392b;
 }
 
   /* Narrow screens */

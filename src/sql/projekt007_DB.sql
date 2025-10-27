@@ -17,7 +17,8 @@ CREATE TABLE `roles` (
 CREATE TABLE `user_projects` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `user_id` integer NOT NULL,
-  `project_id` integer NOT NULL
+  `project_id` integer NOT NULL,
+  `assigned_at` timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `projects` (
@@ -36,6 +37,14 @@ CREATE TABLE `projects` (
   `updated_by` integer
 );
 
+CREATE TABLE `project_subjects` (
+  `project_id` integer NOT NULL,
+  `subject_id` integer NOT NULL,
+  `enrolled_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `added_by` integer,
+  PRIMARY KEY (`project_id`, `subject_id`)
+);
+
 CREATE TABLE `protocols` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -51,19 +60,21 @@ CREATE TABLE `protocols` (
 
 CREATE TABLE `questionnaires` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `questions` JSON NOT NULL
+  `questions` JSON NOT NULL,
+  `version` integer DEFAULT 1,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `project_protocols` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
   `project_id` integer NOT NULL,
-  `protocols_id` integer NOT NULL
+  `protocol_id` integer NOT NULL,
+  PRIMARY KEY (project_id,protocol_id)
 );
 
 CREATE TABLE `protocol_tasks` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `protocol_id` integer NOT NULL,
-  `tasks_id` integer NOT NULL,
+  `task_id` integer NOT NULL,
   `task_order` integer NOT NULL,
   `params` JSON COMMENT 'Admin-defined overrides for duration, topic, phoneme, etc. vs each param as new column??'
 );
@@ -105,8 +116,9 @@ CREATE TABLE `subjects` (
 
 CREATE TABLE `participant_protocols` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
+  `project_id` integer NOT NULL,
   `subject_id` integer NOT NULL,
-  `project_protocol_id` integer NOT NULL,
+  `protocol_id` integer NOT NULL,
   `unique_token` varchar(255) UNIQUE NOT NULL COMMENT 'UUID or hash to reconstruct the URL on the backend',
   `start_date` date NOT NULL,
   `end_date` date,
@@ -138,7 +150,7 @@ CREATE UNIQUE INDEX `protocols_index_1` ON `protocols` (`name`, `version`);
 
 CREATE UNIQUE INDEX `protocol_tasks_index_2` ON `protocol_tasks` (`protocol_id`, `task_order`);
 
-CREATE UNIQUE INDEX `participant_protocols_index_3` ON `participant_protocols` (`project_protocol_id`, `subject_id`);
+CREATE UNIQUE INDEX `participant_protocols_index_3` ON `participant_protocols` (`project_id`, `subject_id`, `protocol_id`);
 
 CREATE UNIQUE INDEX `recordings_index_4` ON `recordings` (`session_id`, `protocol_task_id`, `repeat_index`);
 
@@ -152,6 +164,12 @@ ALTER TABLE `projects` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`);
 
 ALTER TABLE `projects` ADD FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`);
 
+ALTER TABLE `project_subjects` ADD FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`);
+
+ALTER TABLE `project_subjects` ADD FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`);
+
+ALTER TABLE `project_subjects` ADD FOREIGN KEY (`added_by`) REFERENCES `users` (`id`);
+
 ALTER TABLE `protocols` ADD FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`);
 
 ALTER TABLE `protocols` ADD FOREIGN KEY (`questionnaires_id`) REFERENCES `questionnaires` (`id`);
@@ -162,17 +180,19 @@ ALTER TABLE `protocols` ADD FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`)
 
 ALTER TABLE `project_protocols` ADD FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`);
 
-ALTER TABLE `project_protocols` ADD FOREIGN KEY (`protocols_id`) REFERENCES `protocols` (`id`);
+ALTER TABLE `project_protocols` ADD FOREIGN KEY (`protocol_id`) REFERENCES `protocols` (`id`);
 
 ALTER TABLE `protocol_tasks` ADD FOREIGN KEY (`protocol_id`) REFERENCES `protocols` (`id`);
 
-ALTER TABLE `protocol_tasks` ADD FOREIGN KEY (`tasks_id`) REFERENCES `tasks` (`id`);
+ALTER TABLE `protocol_tasks` ADD FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`);
 
 ALTER TABLE `tasks` ADD FOREIGN KEY (`type_id`) REFERENCES `task_types` (`id`);
 
-ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`);
+ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`);
 
-ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`project_protocol_id`) REFERENCES `project_protocols` (`id`);
+ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`project_id`, `subject_id`) REFERENCES `project_subjects` (`project_id`, `subject_id`);
+
+ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`project_id`, `protocol_id`) REFERENCES `project_protocols` (`project_id`, `protocol_id`);
 
 ALTER TABLE `sessions` ADD FOREIGN KEY (`participant_protocol_id`) REFERENCES `participant_protocols` (`id`);
 

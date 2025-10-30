@@ -5,6 +5,7 @@ import CompletionScreen from "./components/CompletionScreen";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import { createTask } from "./tasks";
 import { resolveTasks, resolveTask } from "./utils/taskResolver";
+import { MappingProvider } from "./context/MappingContext";
 import AdminTaskEditor from "./components/AdminTaskEditor";
 import './App.css';
 
@@ -14,6 +15,8 @@ function App() {
   const [taskIndex, setTaskIndex] = useState(0);
   const [adminMode, setAdminMode] = useState(true); // start in admin mode
   const [configuredTasks, setConfiguredTasks] = useState([]);
+
+  const DEFAULT_TABLES = ["task_types", "languages", "tasks"];
 
   // Convert admin-configured tasks to runtime TaskInstances, then expand with repeat
   const runtimeTasks = (configuredTasks ?? []).map((t) => createTask(t.category, t));
@@ -78,16 +81,17 @@ return (
   <div className="app-container" style={{ position: "relative" }}>
     {adminMode ? (
       <>
+      <MappingProvider tables={DEFAULT_TABLES}>
         <LanguageSwitcher /> 
         <AdminTaskEditor
           initialTasks={configuredTasks}
           onChange={(tasks) => setConfiguredTasks(tasks)}
-          onSave={(tasks) => {
-            setConfiguredTasks(tasks);
+          onSave={() => {
             setAdminMode(false);
             setTaskIndex(0);
           }}
         />
+      </MappingProvider>
       </>
     ) : (
       <>

@@ -1,20 +1,22 @@
+// src/components/AdminTaskEditor/AdminTaskEditor.jsx
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { taskBaseConfig } from "../../config/tasksBase";
-import {
-  getDefaultParams,
-} from "../../utils/translations";
+import { getDefaultParams } from "../../utils/translations"; 
 
 import TaskList from "./TaskList";
 import ProtocolEditor from "./ProtocolEditor";
 import TaskModal from "./TaskModal";
 import QuestionnaireModal from "./QuestionnaireModal";
 import { LanguageSwitcher } from "../LanguageSwitcher/LanguageSwitcher";
+import { useMappings } from "../../context/MappingContext";
+import { useProtocolManager } from "../../hooks/useProtocolManager";
 
 import "./AdminTaskEditor.css";
 
 export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange = () => {} }) {
   const { t } = useTranslation(["admin", "tasks", "common"]);
+  const { mappings, loading, error } = useMappings();
 
   const [tasks, setTasks] = useState(initialTasks);
   const [editingTask, setEditingTask] = useState(null);
@@ -24,6 +26,16 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
   const [dragIndex, setDragIndex] = useState(null);
   const [showQuestionnaireModal, setShowQuestionnaireModal] = useState(false);
   const [protocolLanguage, setProtocolLanguage] = useState("en");
+
+  const { saveNewProtocol } = useProtocolManager();
+
+  if (loading) {
+    return <p>Loading mappings...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error.message}</p>;
+  }
 
   function startCreatingTask(category) {
     const base = taskBaseConfig[category];
@@ -67,6 +79,18 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
     setDragIndex(null);
   };
 
+  // Save to backend
+  async function handleSave() {
+    const languageId = mappings.languages.find(l => l.code === protocolLanguage)?.id;
+    try {
+      const result = await saveNewProtocol(tasks, languageId, mappings);
+      alert("Protocol saved successfully!");
+      onSave(result);
+    } catch (err) {
+      alert("Failed to save protocol. Check console.");
+    }
+  }
+
   return (
     <div className="admin-container">
       <h2>{t("title")}</h2>
@@ -92,7 +116,7 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
           onDrop={handleDrop}
           dragIndex={dragIndex}
           onAddQuestionnaire={() => setShowQuestionnaireModal(true)}
-          onSave={onSave}
+          onSave={handleSave}
         />
       </div>
 

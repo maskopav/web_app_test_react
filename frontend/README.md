@@ -206,10 +206,25 @@ Main architecture:
 | `tasks.ts`                  | Factory combining base + translations into runtime task definitions  |
 | `App.jsx`                   | Manages the execution flow and mode switching (Admin ↔️ User) |
 
+| Folder            | Purpose                                                                 |
+| ----------------- | ----------------------------------------------------------------------- |
+| `src/api/`        | Contains all backend API calls (`mappings.js`, `protocols.js`)          |
+| `src/components/` | Reusable UI components (AdminTaskEditor, modals, etc.)                  |
+| `src/hooks/`      | Custom hooks for logic and data management (e.g., `useProtocolManager`) |
+| `src/context/`    | (Optional) Global state providers like `MappingContext`                 |
+| `src/config/`     | Static configuration (e.g., base task definitions)                      |
+| `src/utils/`      | Helper functions and translations                                       |
+
+
 The project follows a **Container / Presentation pattern**, separating **logic** from **UI components**.  
 Below is the file structure with inline notes describing each file’s role:
 ```bash
+frontend
 src/
+├── api/                       # Contains all backend API calls
+│ ├── mappings.js
+│ └── protocols.js
+│
 ├── components/
 │ |── VoiceRecorder/           # UI layer for recording feature
 │ | ├── VoiceRecorder.jsx      # Container: wires hook state/actions to subcomponents
@@ -243,8 +258,12 @@ src/
 │ └── CompletionScreen.jsx     # Dedicated UI for final screen
 │
 ├── hooks/
+│ ├── useProtocolManager.js  # Prepares the payload and calls the backend (api/protocols.js).
 │ └── useVoiceRecorder.js    # Logic layer: manages state, MediaRecorder, AudioContext
 │                            # Exposes API: startRecording, pauseRecording, resumeRecording, stopRecording, resetRecording
+├── context/                 # Global state providers like MappingContext
+│ └── MappingContext.js      # 
+│
 ├── config/
 │ └── taskBase.ts            # Typed task definitions (modes, durations, params)   
 │

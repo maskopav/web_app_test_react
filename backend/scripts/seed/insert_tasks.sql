@@ -1,29 +1,3 @@
--- scripts/initTasks.sql
--- roles
-
--- users
-INSERT INTO users (`email`,`email`,`email`,`email`,`email`,) VALUES
-('voice'),
-('camera'),
-('motoric');
-
-
--- task types
-INSERT INTO task_types (`type`) VALUES
-('voice'),
-('camera'),
-('motoric');
-
--- task types
-INSERT INTO languages (`code`,`name`) VALUES
-('en', 'english'),
-('cs', 'czech'),
-('de', 'german'),
-('fr', 'french'),
-('it', 'italian'),
-('es', 'spanish');
-
--- tasks (only param names)
 INSERT INTO tasks (`key`, `type_id`, `recording_mode`, `params`, `illustration`)
 VALUES
 ('phonation', 
@@ -56,6 +30,3 @@ VALUES
  JSON_ARRAY('topic', 'repeat', 'duration'),
  NULL
 );
-
-
--- FOR TRUNCATING TABLES, USE: DELETE FROM task_types; -> ALTER TABLE task_types AUTO_INCREMENT = 1;

@@ -37,21 +37,15 @@ CREATE TABLE `projects` (
   `updated_by` integer
 );
 
-CREATE TABLE `project_subjects` (
-  `project_id` integer NOT NULL,
-  `subject_id` integer NOT NULL,
-  `enrolled_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-  `added_by` integer,
-  PRIMARY KEY (`project_id`, `subject_id`)
-);
-
 CREATE TABLE `protocols` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
+  `protocol_group_id` integer NOT NULL,
   `name` varchar(255) NOT NULL,
   `language_id` integer NOT NULL,
   `description` text,
   `version` integer NOT NULL DEFAULT 1,
   `questionnaires_id` integer,
+  `is_current` boolean NOT NULL DEFAULT true,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` integer,
   `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -66,9 +60,9 @@ CREATE TABLE `questionnaires` (
 );
 
 CREATE TABLE `project_protocols` (
+  `id` integer PRIMARY KEY AUTO_INCREMENT,
   `project_id` integer NOT NULL,
-  `protocol_id` integer NOT NULL,
-  PRIMARY KEY (project_id,protocol_id)
+  `protocol_id` integer NOT NULL
 );
 
 CREATE TABLE `protocol_tasks` (
@@ -81,7 +75,7 @@ CREATE TABLE `protocol_tasks` (
 
 CREATE TABLE `tasks` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `key` varchar(255) UNIQUE NOT NULL COMMENT 'e.g. monologue, reading, phonation',
+  `category` varchar(255) UNIQUE NOT NULL COMMENT 'e.g. monologue, reading, phonation',
   `type_id` integer NOT NULL COMMENT 'id of voice, visual, cognitive',
   `recording_mode` JSON NOT NULL,
   `params` JSON COMMENT 'JSON schema of editable parameters - names not values',
@@ -101,7 +95,7 @@ CREATE TABLE `languages` (
   `name` varchar(255) NOT NULL
 );
 
-CREATE TABLE `subjects` (
+CREATE TABLE `participants` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `external_id` varchar(255) UNIQUE COMMENT 'Optional external ID if linked to hospital or registry',
   `full_name` varchar(255) NOT NULL,
@@ -116,11 +110,10 @@ CREATE TABLE `subjects` (
 
 CREATE TABLE `participant_protocols` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `project_id` integer NOT NULL,
-  `subject_id` integer NOT NULL,
-  `protocol_id` integer NOT NULL,
+  `participant_id` integer NOT NULL,
+  `project_protocol_id` integer NOT NULL,
   `unique_token` varchar(255) UNIQUE NOT NULL COMMENT 'UUID or hash to reconstruct the URL on the backend',
-  `start_date` date NOT NULL,
+  `start_date` date,
   `end_date` date,
   `is_active` BOOLEAN DEFAULT TRUE
 );
@@ -146,13 +139,15 @@ CREATE TABLE `recordings` (
 
 CREATE UNIQUE INDEX `user_projects_index_0` ON `user_projects` (`user_id`, `project_id`);
 
-CREATE UNIQUE INDEX `protocols_index_1` ON `protocols` (`name`, `version`);
+CREATE UNIQUE INDEX `protocols_index_1` ON `protocols` (`protocol_group_id`, `version`);
 
-CREATE UNIQUE INDEX `protocol_tasks_index_2` ON `protocol_tasks` (`protocol_id`, `task_order`);
+CREATE UNIQUE INDEX `protocols_index_2` ON `protocols` (`name`, `version`);
 
-CREATE UNIQUE INDEX `participant_protocols_index_3` ON `participant_protocols` (`project_id`, `subject_id`, `protocol_id`);
+CREATE UNIQUE INDEX `project_protocols_index_3` ON `project_protocols` (`project_id`, `protocol_id`);
 
-CREATE UNIQUE INDEX `recordings_index_4` ON `recordings` (`session_id`, `protocol_task_id`, `repeat_index`);
+CREATE UNIQUE INDEX `protocol_tasks_index_4` ON `protocol_tasks` (`protocol_id`, `task_order`);
+
+CREATE UNIQUE INDEX `recordings_index_5` ON `recordings` (`session_id`, `protocol_task_id`, `repeat_index`);
 
 ALTER TABLE `users` ADD FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`);
 
@@ -163,12 +158,6 @@ ALTER TABLE `user_projects` ADD FOREIGN KEY (`project_id`) REFERENCES `projects`
 ALTER TABLE `projects` ADD FOREIGN KEY (`created_by`) REFERENCES `users` (`id`);
 
 ALTER TABLE `projects` ADD FOREIGN KEY (`updated_by`) REFERENCES `users` (`id`);
-
-ALTER TABLE `project_subjects` ADD FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`);
-
-ALTER TABLE `project_subjects` ADD FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`);
-
-ALTER TABLE `project_subjects` ADD FOREIGN KEY (`added_by`) REFERENCES `users` (`id`);
 
 ALTER TABLE `protocols` ADD FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`);
 
@@ -188,11 +177,9 @@ ALTER TABLE `protocol_tasks` ADD FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id
 
 ALTER TABLE `tasks` ADD FOREIGN KEY (`type_id`) REFERENCES `task_types` (`id`);
 
-ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`);
+ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`participant_id`) REFERENCES `participants` (`id`);
 
-ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`project_id`, `subject_id`) REFERENCES `project_subjects` (`project_id`, `subject_id`);
-
-ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`project_id`, `protocol_id`) REFERENCES `project_protocols` (`project_id`, `protocol_id`);
+ALTER TABLE `participant_protocols` ADD FOREIGN KEY (`project_protocol_id`) REFERENCES `project_protocols` (`id`);
 
 ALTER TABLE `sessions` ADD FOREIGN KEY (`participant_protocol_id`) REFERENCES `participant_protocols` (`id`);
 

@@ -1,4 +1,4 @@
-# 🎙️ React Voice Recorder & Admin Task Editor
+# Frontend - TaskProtocoller Web App
 
 A modular, multilingual **React platform for standardized voice and cognitive tasks**.
 Built around a Voice Recorder, Admin Task Editor, and a configurable task system — designed to support standardized testing, flexible protocols, and multilingual deployment.

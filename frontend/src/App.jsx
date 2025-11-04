@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useTranslation } from "react-i18next";
 import VoiceRecorder from './components/VoiceRecorder';
 import CompletionScreen from "./components/CompletionScreen";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import { createTask } from "./tasks";
 import { resolveTasks, resolveTask } from "./utils/taskResolver";
-import { MappingProvider } from "./context/MappingContext";
 import AdminTaskEditor from "./components/AdminTaskEditor";
 import './App.css';
+import Protocols from './components/Protocols/Protocols';
+import { ProtocolContext } from "./context/ProtocolContext";
+
 
 // App.jsx
 function App() {
@@ -15,8 +17,7 @@ function App() {
   const [taskIndex, setTaskIndex] = useState(0);
   const [adminMode, setAdminMode] = useState(true); // start in admin mode
   const [configuredTasks, setConfiguredTasks] = useState([]);
-
-  const DEFAULT_TABLES = ["task_types", "languages", "tasks"];
+  const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
 
   // Convert admin-configured tasks to runtime TaskInstances, then expand with repeat
   const runtimeTasks = (configuredTasks ?? []).map((t) => createTask(t.category, t));
@@ -80,19 +81,21 @@ function App() {
 return (
   <div className="app-container" style={{ position: "relative" }}>
     {adminMode ? (
-      <>
-      <MappingProvider tables={DEFAULT_TABLES}>
-        <LanguageSwitcher /> 
-        <AdminTaskEditor
-          initialTasks={configuredTasks}
-          onChange={(tasks) => setConfiguredTasks(tasks)}
-          onSave={() => {
-            setAdminMode(false);
-            setTaskIndex(0);
-          }}
-        />
-      </MappingProvider>
-      </>
+        !selectedProtocol ? (
+           <Protocols onSelectProtocol={setSelectedProtocol} />
+         ) : (
+          <>
+          <LanguageSwitcher /> 
+          <AdminTaskEditor
+            initialTasks={configuredTasks}
+            onChange={(tasks) => setConfiguredTasks(tasks)}
+            onSave={() => {
+              setAdminMode(false);
+              setTaskIndex(0);
+            }}
+          />
+          </>
+         )
     ) : (
       <>
         <div className="task-wrapper">

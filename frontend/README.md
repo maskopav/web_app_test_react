@@ -262,7 +262,30 @@ src/
 │ └── useVoiceRecorder.js    # Logic layer: manages state, MediaRecorder, AudioContext
 │                            # Exposes API: startRecording, pauseRecording, resumeRecording, stopRecording, resetRecording
 ├── context/                 # Global state providers like MappingContext
-│ └── MappingContext.js      # 
+│ ├── MappingContext.jsx
+│ ├── ProtocolContext.jsx
+│ ├── UserContext.jsx
+│ ├── RecorderContext.jsx
+│ ├── UIStateContext.jsx
+│ └── AppProvider.jsx   ← composed provider for all contexts
+│
+├── pages/
+│ ├── AdminDashboard.jsx
+│ ├── ProjectDashboard.jsx
+│ ├── ProtocolEditor.jsx
+│ ├── ParticipantManager.jsx
+│ ├── ProtocolAssignment.jsx
+│ ├── DataExplorer.jsx
+│ ├── MasterDashboard.jsx
+│ ├── Login.jsx
+│ ├── ParticipantInterface.jsx
+│ └── NotFound.jsx
+│
+├── services/
+│ ├── protocols.js
+│ ├── projects.js
+│ ├── participants.js
+│ └── auth.js
 │
 ├── config/
 │ └── taskBase.ts            # Typed task definitions (modes, durations, params)   
@@ -277,6 +300,16 @@ src/
 ├── App.css                  # Global styles
 └── main.jsx                 # App bootstrap (ReactDOM + i18n import)
 ```
+### Context architecture
+All global state is managed through React Contexts, grouped into one parent provider called AppProvider.
+| Context           | Responsibility                                  | Example State                            |
+| ----------------- | ----------------------------------------------- | ---------------------------------------- |
+| `UserContext`     | Stores user info, role, and login session       | `{ user, role, isAuthenticated }`        |
+| `MappingContext`  | Holds available mappings/tables fetched from DB | `{ tables, selectedTable, mappingData }` |
+| `ProtocolContext` | Manages selected protocol and tasks             | `{ protocol, tasks, saveProtocol() }`    |
+| `RecorderContext` | Handles mic devices, recording, audio state     | `{ isRecording, audioBlob, deviceList }` |
+| `UIStateContext`  | Controls modals, navigation, and UI theme       | `{ modalOpen, sidebarVisible }`          |
+
 
 ### Design principles
 - Typed taskBase.ts → type safety when defining new tasks
@@ -321,3 +354,130 @@ npm run build
 - 2. Upload `dist` folder to your web server (e.g. filemanager server).
 - 3. Access via: `https://yourdomain.com/path/to/dist/` (e.g. `https://malenia.feld.cvut.cz/test/dist/`)
 
+
+
+Routing Structure
+
+Routing uses React Router v6+ and supports separate flows for Admin, Master, and Participants.
+
+src/App.jsx
+```jsx
+import { Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import AdminDashboard from "./pages/AdminDashboard";
+import ProjectDashboard from "./pages/ProjectDashboard";
+import ProtocolEditor from "./pages/ProtocolEditor";
+import ParticipantManager from "./pages/ParticipantManager";
+import ProtocolAssignment from "./pages/ProtocolAssignment";
+import DataExplorer from "./pages/DataExplorer";
+import MasterDashboard from "./pages/MasterDashboard";
+import ParticipantInterface from "./pages/ParticipantInterface";
+import NotFound from "./pages/NotFound";
+
+export default function App() {
+  return (
+    <Routes>
+      {/* Public routes */}
+      <Route path="/" element={<Login />} />
+      <Route path="/participant/:token" element={<ParticipantInterface />} />
+
+      {/* Admin routes */}
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/project/:id" element={<ProjectDashboard />} />
+      <Route path="/protocols" element={<ProtocolEditor />} />
+      <Route path="/participants" element={<ParticipantManager />} />
+      <Route path="/assignments" element={<ProtocolAssignment />} />
+      <Route path="/data" element={<DataExplorer />} />
+
+      {/* Master routes */}
+      <Route path="/master" element={<MasterDashboard />} />
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
+```
+
+🔐 User Authentication & Access Control
+Login Flow
+
+Admin or Master logs in via / route.
+
+Credentials are verified against the users table.
+
+A JWT token is stored in localStorage.
+
+UserContext keeps role and authentication state.
+
+Protected routes (e.g. /admin, /project/:id) check for authentication.
+
+Roles
+Role	Permissions
+Master	Full access: manage users, projects, and global settings
+Admin	Access to assigned projects only; manage participants, protocols
+Participant	No login; unique access via tokenized link
+🧮 Database Workflow Summaries
+3a) Participants
+
+Adding new participant
+
+Insert participant → participants
+
+Lookup protocol → project_protocols
+
+Link participant + protocol → participant_protocols
+
+Generate unique_token
+
+Editing participant
+
+Update participant fields
+
+Maintain participant_protocols link
+
+3b) Protocols
+
+Create new protocol
+
+Insert → protocols (new group ID, version=1, is_current=true)
+
+Insert → protocol_tasks (one per task, store params JSON)
+
+Clone protocol
+
+Duplicate previous tasks → new protocols record (new name → new group)
+
+protocol_tasks duplicated and linked to new protocol_id
+
+Edit existing protocol (versioning)
+
+Set old is_current = false
+
+Insert new version (version+1)
+
+Copy and modify protocol_tasks
+
+3c) Protocol Assignments
+
+Assign protocol
+
+Lookup project_protocols
+
+Update participant_protocols → is_active=true, start_date=now()
+
+End protocol
+
+Update participant_protocols → is_active=false, end_date=now()
+
+🧰 Key Frontend Services
+File	Purpose
+services/protocols.js	CRUD operations for protocols & protocol_tasks
+services/projects.js	Project metadata and statistics
+services/participants.js	Manage participant records
+services/auth.js	Login, JWT handling, role-based access
+🧱 Future Modules
+Feature	Description
+RecorderContext	Shared audio recording logic across tasks
+LanguageContext	Manage test language independent from UI language
+UIStateContext	Centralized modals, confirmations, and layout control
+DataExplorer	Interactive data analysis and visualizations

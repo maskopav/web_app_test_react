@@ -1,5 +1,5 @@
 // src/components/AdminTaskEditor/AdminTaskEditor.jsx
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { taskBaseConfig } from "../../config/tasksBase";
 import { getDefaultParams } from "../../utils/translations"; 
@@ -11,12 +11,14 @@ import QuestionnaireModal from "./QuestionnaireModal";
 import { LanguageSwitcher } from "../LanguageSwitcher/LanguageSwitcher";
 import { useMappings } from "../../context/MappingContext";
 import { useProtocolManager } from "../../hooks/useProtocolManager";
+import { ProtocolContext } from "../../context/ProtocolContext";
 
 import "./AdminTaskEditor.css";
 
 export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange = () => {} }) {
   const { t } = useTranslation(["admin", "tasks", "common"]);
   const { mappings, loading, error } = useMappings();
+  const { selectedProtocol } = useContext(ProtocolContext);
 
   const [tasks, setTasks] = useState(initialTasks);
   const [editingTask, setEditingTask] = useState(null);
@@ -81,9 +83,9 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
 
   // Save to backend
   async function handleSave() {
-    const languageId = mappings.languages.find(l => l.code === protocolLanguage)?.id;
     try {
-      const result = await saveNewProtocol(tasks, languageId, mappings);
+      console.log("Selected protocol name:", selectedProtocol)
+      const result = await saveNewProtocol(tasks, selectedProtocol, protocolLanguage);
       alert("Protocol saved successfully!");
       onSave(result);
     } catch (err) {

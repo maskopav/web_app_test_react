@@ -1,6 +1,6 @@
 // frontend/src/api/protocols.js
 
-export async function saveProtocol(protocolData) {
+export async function saveProtocolToBackend(protocolData) {
     try {
       const response = await fetch("http://localhost:4000/api/protocols/save", {
         method: "POST",

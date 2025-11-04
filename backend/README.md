@@ -29,41 +29,6 @@ To automate database setup — so no manual import in phpMyAdmin is needed.
 
 ```bash
 backend/
-├── package.json
-├── tsconfig.json               # optional if you use TypeScript
-├── README.md
-├── .env                        # stores DB credentials (ignored by git)
-│
-├── scripts/
-│   ├── DB_creation.sql         # create DB tables
-│   └── initTasks.sql           # insert scripts ( mapping tables,..)
-│
-├── src/
-│   ├── db/
-│   │   └── connection.js       # MariaDB connection pool
-│   ├── routes/
-│   │   ├── mappings.js         # get mapping tables from DB
-│   │   └── protocols.js        # endpoint for saving tasks - when user clicks on save in AdminTaskEditor
-│   ├── utils/
-│   │   └── runSqlFile.js       # executes .sql files programmatically
-│   ├── app.js                  # ? does not exist
-│   ├── server.js               # Entry point (starts the backend)
-│   │
-│   └── runInitTasks.js         # entry point for inserting mapping tables to DB (runs SQL insert automatically)
-
-```
-
-## Setup
-
-### Install dependencies
-```bash
-cd backend
-npm init -y
-npm install mysql2 dotenv
-```
-
-```bash
-backend/
 ├── scripts/
 │   ├── schema/                # creation scripts only (tables, constraints)
 │   │   ├── create_tables.sql
@@ -81,22 +46,22 @@ backend/
 │   ├── server.js              # starts the app (listens on PORT)
 │   │
 │   ├── db/
-│   │   ├── connection.js
+│   │   ├── connection.js      # MariaDB connection pool
 │   │   └── queryHelper.js     # reusable query executor
 │   │
 │   ├── controllers/           # main business logic (matches frontend api)
 │   │   ├── mappingController.js
 │   │   ├── protocolController.js
-│   │   └── genericController.js  # base class (optional)
+│   │   └── genericController.js  # base class (optional, NOT IMPLEMENTED)
 │   │
 │   ├── routes/                # routers only (thin)
 │   │   ├── mappings.js
 │   │   ├── protocols.js
 │   │   └── index.js           # exports all routers
 │   │
-│   ├── services/              # reusable logic not tied to express
-│   │   ├── protocolService.js
-│   │   └── mappingService.js
+│   ├── services/              # reusable logic not tied to express (NOT IMPLEMENTED YET)
+│   │   ├── protocolService.js # (NOT IMPLEMENTED YET)
+│   │   └── mappingService.js  # (NOT IMPLEMENTED YET)
 │   │
 │   ├── utils/
 │   │   ├── runSqlFile.js
@@ -106,4 +71,14 @@ backend/
 │   └── runInit.js             # runs all init SQLs (modular)
 │
 └── .env
+```
+
+
+## Setup
+
+### Install dependencies
+```bash
+cd backend
+npm init -y
+npm install mysql2 dotenv
 ```

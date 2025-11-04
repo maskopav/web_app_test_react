@@ -1,11 +1,21 @@
-import { saveProtocol } from "../api/protocols";
+// src/hooks/useProtocolManager.js
+import { saveProtocolToBackend } from "../api/protocols";
+import { useMappings } from "../context/MappingContext";
 
 export function useProtocolManager() {
-  async function saveNewProtocol(tasks, languageId, mappings) {
+  const { mappings } = useMappings();
+
+  async function saveNewProtocol(tasks, selectedProtocol, updatedLanguage) {
+    console.log(tasks);
+    console.log(selectedProtocol);
+    console.log(updatedLanguage);
+
+    const languageId = mappings.languages.find(l => l.code === updatedLanguage)?.id;
+
     const protocolData = {
-      name: "Placeholder protocol name 9",
+      name: selectedProtocol.name,
       language_id: languageId,
-      description: "Created via AdminTaskEditor",
+      description: selectedProtocol.description,
       created_by: 1,
       tasks: tasks.map((task, index) => ({
         task_id: mappings.tasks.find(t => t.key === task.category)?.id,
@@ -13,7 +23,9 @@ export function useProtocolManager() {
         params: task,
       })),
     };
-    return await saveProtocol(protocolData);
+    console.log("Saving protocol:", protocolData);
+    const result = await saveProtocolToBackend(protocolData);
+    return result;
   }
 
   return { saveNewProtocol };

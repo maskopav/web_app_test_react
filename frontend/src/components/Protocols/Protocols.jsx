@@ -12,6 +12,7 @@ export default function Protocols({ onSelectProtocol }) {
   const { t } = useTranslation(["admin", "common"]);
   const { mappings, loading, error } = useMappings(); 
   const [protocolName, setProtocolName] = useState("");
+  const [protocolDescription, setProtocolDescription] = useState("");
   const [language, setLanguage] = useState("en");
 
   const protocols = mappings?.protocols || [];
@@ -33,6 +34,12 @@ export default function Protocols({ onSelectProtocol }) {
           value={protocolName}
           onChange={(e) => setProtocolName(e.target.value)}
           placeholder={t("protocolsPage.namePlaceholder", "Enter protocol name")}
+        />
+        <input
+          type="text"
+          value={protocolDescription}
+          onChange={(e) => setProtocolDescription(e.target.value)}
+          placeholder={t("protocolsPage.descriptionPlaceholder", "Enter protocol description (optional)")}
         />
         <select
           value={language}
@@ -89,6 +96,9 @@ export default function Protocols({ onSelectProtocol }) {
                   <td>{p.updated_at}</td> 
                   <td>{p.updated_by}</td> 
                   <td>
+                  <button onClick={() => onSelectProtocol(p)}>
+                      {t("protocolsPage.show", "Show")}
+                    </button>
                     <button onClick={() => onSelectProtocol(p)}>
                       {t("protocolsPage.edit", "Edit")}
                     </button>

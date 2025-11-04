@@ -1,115 +1,36 @@
-import React, { useState, useContext } from 'react';
-import { useTranslation } from "react-i18next";
-import VoiceRecorder from './components/VoiceRecorder';
-import CompletionScreen from "./components/CompletionScreen";
-import LanguageSwitcher from "./components/LanguageSwitcher";
-import { createTask } from "./tasks";
-import { resolveTasks, resolveTask } from "./utils/taskResolver";
-import AdminTaskEditor from "./components/AdminTaskEditor";
-import './App.css';
-import Protocols from './components/Protocols/Protocols';
-import { ProtocolContext } from "./context/ProtocolContext";
+// src/App.jsx
+import { Routes, Route, Navigate } from "react-router-dom";
+import AdminDashboard from "./pages/AdminDashboard";
+import ProjectDashboard from "./pages/ProjectDashboard";
+import ProtocolDashboard from "./pages/ProtocolDashboard";
+import ProtocolEditor from "./pages/ProtocolEditor";
+import ParticipantInterface from "./pages/ParticipantInterface";
+import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
 
+export default function App() {
+  return (
+    <Routes>
+      {/* Temporary testing routes */}
+      <Route path="/" element={<Navigate to="/projects/demo" replace />} />
+      <Route path="/projects/:projectId" element={<ProjectDashboard />} />
+      <Route path="/projects/:projectId/protocols" element={<ProtocolDashboard />} />
+      <Route path="/projects/:projectId/protocols/:protocolId" element={<ProtocolEditor />} />
+      <Route path="/participant/test" element={<ParticipantInterface />} />
 
-// App.jsx
-function App() {
-  const { t } = useTranslation(["tasks", "common"]);
-  const [taskIndex, setTaskIndex] = useState(0);
-  const [adminMode, setAdminMode] = useState(true); // start in admin mode
-  const [configuredTasks, setConfiguredTasks] = useState([]);
-  const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
+      {/* Auth 
+      <Route path="/login" element={<Login />} />
 
-  // Convert admin-configured tasks to runtime TaskInstances, then expand with repeat
-  const runtimeTasks = (configuredTasks ?? []).map((t) => createTask(t.category, t));
-  const expandedTasks = resolveTasks(runtimeTasks);
+      {/* Admin 
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin/project/:projectId" element={<ProjectDashboard />} />
+      <Route path="/admin/project/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
 
-  const handleNextTask = (taskData) => {
-    // This is where you would process the data from the completed task
-    console.log(`Task ${taskIndex + 1} completed with data:`, taskData);
-    
-    // Placeholder for saving data to backend/storage
-    // TODO: Implement actual data saving logic here
-    // Example: await saveTaskData(taskIndex, taskData);
+      {/* Participant 
+      <Route path="/session/:token" element={<ParticipantInterface />} />*/}
 
-    // Move to the next task
-    setTaskIndex(prevIndex => prevIndex + 1);
-  };
-
-  const renderCurrentTask = () => {
-    const rawTask = expandedTasks[taskIndex];
-    if (!rawTask) return <CompletionScreen />;
-  
-    const currentTask = resolveTask(rawTask, t);
-    console.log("🧭 Prepared task:", currentTask);
-
-    // Render the appropriate component based on task type
-    switch (currentTask.type) {
-      case 'voice':
-        return (
-          <VoiceRecorder
-            key={taskIndex}
-            title={currentTask.title}
-            instructions={currentTask.instructions}
-            instructionsActive={currentTask.instructionsActive}
-            audioExample={currentTask.illustration}
-            mode={currentTask.recording.mode}
-            duration={currentTask.recording.duration}
-            onNextTask={handleNextTask}
-          />
-        );
-      case 'camera':
-        // Placeholder for future implementation
-        // return <CameraCapture onNextTask={handleNextTask} />;
-        return null;
-      default:
-        return null;
-    }
-  };
-
-  // Progress counts
-  const currentTask = expandedTasks[taskIndex];
-  const currentType = currentTask?.type;
-
-  const totalOfType = expandedTasks.filter(t => t.type === currentType).length;
-  const currentOfType = expandedTasks
-    .slice(0, taskIndex + 1)
-    .filter(t => t.type === currentType).length;
-    
-  // Translated label for the task type (voice, motor, camera)
-  const taskLabel = t(`taskLabels.${currentType}`, { ns: "common"});
-
-return (
-  <div className="app-container" style={{ position: "relative" }}>
-    {adminMode ? (
-        !selectedProtocol ? (
-           <Protocols onSelectProtocol={setSelectedProtocol} />
-         ) : (
-          <>
-          <LanguageSwitcher /> 
-          <AdminTaskEditor
-            initialTasks={configuredTasks}
-            onChange={(tasks) => setConfiguredTasks(tasks)}
-            onSave={() => {
-              setAdminMode(false);
-              setTaskIndex(0);
-            }}
-          />
-          </>
-         )
-    ) : (
-      <>
-        <div className="task-wrapper">
-          {taskIndex < expandedTasks.length && (
-            <div className="task-progress">
-              {taskLabel || "Task"} {currentOfType}/{totalOfType}
-            </div>
-          )}
-          <div className="card">{renderCurrentTask()}</div>
-        </div>
-      </>
-    )}
-  </div>
-);
+      {/* Fallback */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 }
-
-export { App as default };

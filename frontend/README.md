@@ -264,12 +264,12 @@ src/
 ├── context/                 # Global state providers like MappingContext
 │ ├── MappingContext.jsx
 │ ├── ProtocolContext.jsx
-│ ├── UserContext.jsx
-│ ├── RecorderContext.jsx
-│ ├── UIStateContext.jsx
-│ └── AppProvider.jsx   ← composed provider for all contexts
+│ ├── UserContext.jsx        # not implemented yet
+│ ├── RecorderContext.jsx    # not implemented yet
+│ ├── UIStateContext.jsx     # not implemented yet
+│ └── AppProvider.jsx        # ← composed provider for all contexts
 │
-├── pages/
+├── pages/                   # some of them implemented, the logic of components calling
 │ ├── AdminDashboard.jsx
 │ ├── ProjectDashboard.jsx
 │ ├── ProtocolEditor.jsx
@@ -281,7 +281,7 @@ src/
 │ ├── ParticipantInterface.jsx
 │ └── NotFound.jsx
 │
-├── services/
+├── services/              # not implemented yet, refactoring needed
 │ ├── protocols.js
 │ ├── projects.js
 │ ├── participants.js

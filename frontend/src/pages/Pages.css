@@ -2,14 +2,16 @@
 :root {
   --bg: #f9fafb;
   --card-bg: #ededed;
+  --grey: #ced0d3;
   --text: #333;
-  --muted: #6b7280;
+  --border: #d6dfef;
   --primary: #3764df;
   --danger: #e74c3c;
   --warning: #f39c12;
   --success: #27ae60;
   --purple: #7e3ff4;
   --radius: 1rem;
+  --sharp-radius: 4px;
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --transition: all 0.2s ease;
 }

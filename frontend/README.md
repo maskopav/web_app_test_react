@@ -1,18 +1,16 @@
 # Frontend - TaskProtocoller Web App
 
-A modular, multilingual **React platform for standardized voice and cognitive tasks**.
-Built around a Voice Recorder, Admin Task Editor, and a configurable task system — designed to support standardized testing, flexible protocols, and multilingual deployment.
-
+A modular, multilingual **React platform for standardized voice and cognitive task protocols**. Combines recording, translation, and configurable protocol management for research and clinical workflows.
 
 ## Overview
-
-This is more than a voice recorder — it’s a full **framework for guided recording tasks**, with dynamic parameters, translations, and standardized workflows.
+**TaskProtocoller** is a full framework for guided voice tasks.
+It supports dynamic parameters, multilingual translations, and configurable task protocols.
 
 It consists of two main parts (interfaces):
 
 | Component                | Description                                                                                                                                    |
 | -------------------------| ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🎧 **Voice Recorder**    | User-facing module for performing guided recording tasks with dynamic instructions and translations.                                           |
+| 🎧 **Voice Recorder**    | Participant-facing interface for performing guided recording tasks with dynamic instructions and translations.                                           |
 | 🧑‍💼 **Admin Task Editor** | Interface for researchers or clinicians to modify or design task protocols — defining task order, repetitions, parameters, and allowed values. |
 
 ## Goal of the System
@@ -32,15 +30,15 @@ npm run dev -- --host # To run the app with network acess
 ```
 Open `http://localhost:5173` in your browser, or use the Network URL (e.g. `http://192.168.87.184:5173/`) shown in your terminal to test on nobile (same Wi-Fi required).
 
-
-## Task Definition 
+## Core Concepts
+### Task Definition 
 Tasks are defined in **two files only**:
 | File                         | Purpose                                                                                    |
 | ---------------------------- | ------------------------------------------------------------------------------------------ |
 | `src/config/taskBase.ts`     | Defines all technical parameters, modes, and defaults (used by logic and Admin UI).        |
 | `src/i18n/[lang]/tasks.json` | Defines user-facing text — names, instructions, labels, and parameter values.              |
 
-### Adding a New Task
+#### Adding a New Task
 When adding a new task, you must update both files:
 
  1. src/config/taskBase.ts – Technical Configuration
@@ -98,7 +96,7 @@ Example:
 ```
 💡 Note: See next chapter for explanation to dynamic parameters `{{ }}`..
 
-### Dynamic Translations and Recursive Parameters
+#### Dynamic Translations and Recursive Parameters
 Parameters wrapped in `{{ }}` are automatically resolved and replaced with translated values.
 The helper `getResolvedParams()` (in `translations.ts`) recursively traverses all nested structures to extract:
   - Labels (`label`)
@@ -122,7 +120,7 @@ Then used dynamically in:
 "instructions": "Press START and talk about {{topicDescription}}"
 ```
 
-## Task Factory
+### Task Factory
 
 All tasks are created through a single factory - it is done automatically inside App.jsx
 Example:
@@ -140,14 +138,7 @@ Each task will:
 2. Merge parameter overrides
 3. Applies localized labels and resolved parameters
 
-## Available Task Parameters
-TODO:
-👉 See the diagrams for a full overview:
-
-Diagram 1 – Task Structure: relationship between BaseTask, TaskType, TaskCategory, and RecordingMode.
-![Task Structure Diagram](./docs/task-structure.png)
-Diagram 2 – Task Parameters: concrete overridable arguments for each task type.
-![Task Parameters Diagram](./docs/task-parameters.png)
+### Available Task Parameters
 
 To keep the protocol standardized yet flexible, only selected parameters are meant to be editable by admins.
 | Key              | Description                              | Editable by Admin  | Supports `{{ }}` placeholders |
@@ -279,7 +270,8 @@ src/
 │ ├── MasterDashboard.jsx
 │ ├── Login.jsx
 │ ├── ParticipantInterface.jsx
-│ └── NotFound.jsx
+│ ├── NotFound.jsx
+│ └── Pages.css            # Global styles
 │
 ├── services/              # not implemented yet, refactoring needed
 │ ├── protocols.js
@@ -296,8 +288,7 @@ src/
 ├── i18n/                    # Multilingual configuration (see in Internationalization chapter)
 │
 ├── tasks.ts                 # Task creation factory (no editing needed)
-├── App.jsx                  # Orchestrates main flow
-├── App.css                  # Global styles
+├── App.jsx                  # Routing
 └── main.jsx                 # App bootstrap (ReactDOM + i18n import)
 ```
 ### Context architecture
@@ -310,6 +301,17 @@ All global state is managed through React Contexts, grouped into one parent prov
 | `RecorderContext` | Handles mic devices, recording, audio state     | `{ isRecording, audioBlob, deviceList }` |
 | `UIStateContext`  | Controls modals, navigation, and UI theme       | `{ modalOpen, sidebarVisible }`          |
 
+### Routing Structure
+Routing uses React Router v6+ and supports separate flows for Admin, Master, and Participants. All routes specified in `App.jsx`.
+
+| Path                                         | Component                   | Description                   |
+| -------------------------------------------- | --------------------------- | ----------------------------- |
+| `/`                                          | Redirect → `/projects/demo` | Default route for testing     |
+| `/projects/:projectId`                       | `ProjectDashboard`          | Overview of selected project  |
+| `/projects/:projectId/protocols`             | `ProtocolDashboard`         | List of available protocols   |
+| `/projects/:projectId/protocols/:protocolId` | `ProtocolEditor`            | Edit selected protocol        |
+| `/participant/test`                          | `ParticipantInterface`      | Participant testing interface |
+| `*`                                          | `NotFound`                  | Fallback route                |
 
 ### Design principles
 - Typed taskBase.ts → type safety when defining new tasks
@@ -354,128 +356,60 @@ npm run build
 - 2. Upload `dist` folder to your web server (e.g. filemanager server).
 - 3. Access via: `https://yourdomain.com/path/to/dist/` (e.g. `https://malenia.feld.cvut.cz/test/dist/`)
 
+## In the future
+###🔐 User Authentication & Access Control
+#### Login Flow
+- Admin or Master logs in via / route.
+- Credentials are verified against the users table.
+- A JWT token is stored in localStorage.
+- UserContext keeps role and authentication state.
+- Protected routes (e.g. /admin, /project/:id) check for authentication.
 
-
-Routing Structure
-
-Routing uses React Router v6+ and supports separate flows for Admin, Master, and Participants.
-
-src/App.jsx
-```jsx
-import { Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import AdminDashboard from "./pages/AdminDashboard";
-import ProjectDashboard from "./pages/ProjectDashboard";
-import ProtocolEditor from "./pages/ProtocolEditor";
-import ParticipantManager from "./pages/ParticipantManager";
-import ProtocolAssignment from "./pages/ProtocolAssignment";
-import DataExplorer from "./pages/DataExplorer";
-import MasterDashboard from "./pages/MasterDashboard";
-import ParticipantInterface from "./pages/ParticipantInterface";
-import NotFound from "./pages/NotFound";
-
-export default function App() {
-  return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<Login />} />
-      <Route path="/participant/:token" element={<ParticipantInterface />} />
-
-      {/* Admin routes */}
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/project/:id" element={<ProjectDashboard />} />
-      <Route path="/protocols" element={<ProtocolEditor />} />
-      <Route path="/participants" element={<ParticipantManager />} />
-      <Route path="/assignments" element={<ProtocolAssignment />} />
-      <Route path="/data" element={<DataExplorer />} />
-
-      {/* Master routes */}
-      <Route path="/master" element={<MasterDashboard />} />
-
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
-}
-```
-
-🔐 User Authentication & Access Control
-Login Flow
-
-Admin or Master logs in via / route.
-
-Credentials are verified against the users table.
-
-A JWT token is stored in localStorage.
-
-UserContext keeps role and authentication state.
-
-Protected routes (e.g. /admin, /project/:id) check for authentication.
-
-Roles
+#### Roles
 Role	Permissions
-Master	Full access: manage users, projects, and global settings
-Admin	Access to assigned projects only; manage participants, protocols
-Participant	No login; unique access via tokenized link
-🧮 Database Workflow Summaries
+Master ->	Full access: manage users, projects, and global settings
+Admin -> Access to assigned projects only; manage participants, protocols
+Participant	-> No login; unique access via tokenized link
+
+#### Database Workflow Summaries
 3a) Participants
-
 Adding new participant
-
-Insert participant → participants
-
-Lookup protocol → project_protocols
-
-Link participant + protocol → participant_protocols
-
-Generate unique_token
-
+- Insert participant → participants
+- Lookup protocol → project_protocols
+- Link participant + protocol → participant_protocols
+- Generate unique_token
 Editing participant
-
-Update participant fields
-
-Maintain participant_protocols link
+- Update participant fields
+- Maintain participant_protocols link
 
 3b) Protocols
-
-Create new protocol
-
-Insert → protocols (new group ID, version=1, is_current=true)
-
-Insert → protocol_tasks (one per task, store params JSON)
-
+Create new protocol:
+- Insert → protocols (new group ID, version=1, is_current=true)
+- Insert → protocol_tasks (one per task, store params JSON)
 Clone protocol
-
-Duplicate previous tasks → new protocols record (new name → new group)
-
-protocol_tasks duplicated and linked to new protocol_id
-
+- Duplicate previous tasks → new protocols record (new name → new group)
+- protocol_tasks duplicated and linked to new protocol_id
 Edit existing protocol (versioning)
-
-Set old is_current = false
-
-Insert new version (version+1)
-
-Copy and modify protocol_tasks
+- Set old is_current = false
+- Insert new version (version+1)
+- Copy and modify protocol_tasks
 
 3c) Protocol Assignments
 
 Assign protocol
-
-Lookup project_protocols
-
-Update participant_protocols → is_active=true, start_date=now()
-
+- Lookup project_protocols
+- Update participant_protocols → is_active=true, start_date=now()
 End protocol
+- Update participant_protocols → is_active=false, end_date=now()
 
-Update participant_protocols → is_active=false, end_date=now()
-
-🧰 Key Frontend Services
+####  Key Frontend Services
 File	Purpose
 services/protocols.js	CRUD operations for protocols & protocol_tasks
 services/projects.js	Project metadata and statistics
 services/participants.js	Manage participant records
 services/auth.js	Login, JWT handling, role-based access
-🧱 Future Modules
+
+#### Future Modules
 Feature	Description
 RecorderContext	Shared audio recording logic across tasks
 LanguageContext	Manage test language independent from UI language

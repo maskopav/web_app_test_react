@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useMappings } from "../../context/MappingContext";
+import { LanguageSwitcher } from "../LanguageSwitcher/LanguageSwitcher";
+import ProtocolLanguageSelector from "../ProtocolLanguageSelector";
 import "./Protocols.css";
 
 /**
@@ -13,7 +15,7 @@ export default function Protocols({ onSelectProtocol }) {
   const { mappings, loading, error } = useMappings(); 
   const [protocolName, setProtocolName] = useState("");
   const [protocolDescription, setProtocolDescription] = useState("");
-  const [language, setLanguage] = useState("en");
+  const [protocolLanguage, setProtocolLanguage] = useState("en");
 
   const protocols = mappings?.protocols || [];
   const languages = mappings?.languages || [];
@@ -22,9 +24,17 @@ export default function Protocols({ onSelectProtocol }) {
   const getLangName = (id) =>
     languages.find((l) => l.id === id)?.name || id;
 
+  if (loading) return <p>{t("loading")}</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
     <div className="protocols-container">
       <h2>{t("protocolsPage.title", "Protocols Management")}</h2>
+
+      {/* Global language switcher (page language) */}
+      <div className="editor-language">
+          <LanguageSwitcher />
+      </div>
 
       {/* Create new protocol */}
       <div className="protocol-create">
@@ -35,24 +45,22 @@ export default function Protocols({ onSelectProtocol }) {
           onChange={(e) => setProtocolName(e.target.value)}
           placeholder={t("protocolsPage.namePlaceholder", "Enter protocol name")}
         />
+
         <input
           type="text"
           value={protocolDescription}
           onChange={(e) => setProtocolDescription(e.target.value)}
           placeholder={t("protocolsPage.descriptionPlaceholder", "Enter protocol description (optional)")}
         />
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-        >
-          <option value="en">English</option>
-          <option value="cs">Czech</option>
-          {/* Later — populate from DB */}
-        </select>
+
+        <ProtocolLanguageSelector
+          value={protocolLanguage}
+          onChange={setProtocolLanguage}
+        />
 
         <button
           onClick={() =>
-            onSelectProtocol({ name: protocolName, language })
+            onSelectProtocol({ name: protocolName, language: protocolLanguage })
           }
           disabled={!protocolName.trim()}
         >

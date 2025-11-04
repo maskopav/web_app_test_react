@@ -1,7 +1,7 @@
 // src/components/AdminTaskEditor/ProtocolEditor.jsx
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { LANGUAGES } from "../../i18n";
+import ProtocolLanguageSelector from "../ProtocolLanguageSelector";
 import { getAllParams, getResolvedParams, translateTaskName } from "../../utils/translations";
 
 export default function ProtocolEditor({
@@ -25,20 +25,10 @@ export default function ProtocolEditor({
       <div className="protocol-header">
         <h3>{t("currentProtocol")}</h3>
         <div className="header-controls">
-          <label className="protocol-language-label">
-            {t("protocolLanguage")}
-            <select
-              className="language-select"
-              value={protocolLanguage}
-              onChange={(e) => setProtocolLanguage(e.target.value)}
-            >
-              {LANGUAGES.map((lang) => (
-                <option key={lang.code} value={lang.code}>
-                  {lang.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <ProtocolLanguageSelector
+            value={protocolLanguage}
+            onChange={setProtocolLanguage}
+          />
 
           <button className="btn-add-questionnaire" onClick={onAddQuestionnaire}>
             {t("addQuestionnaire")}

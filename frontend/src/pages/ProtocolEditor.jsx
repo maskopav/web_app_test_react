@@ -7,12 +7,13 @@ import { ProtocolContext } from "../context/ProtocolContext";
 import "./Pages.css"
 
 export default function ProtocolEditorPage() {
-  const { protocolId } = useParams();
+  const { projectId, protocolId } = useParams();
   const { selectedProtocol } = useContext(ProtocolContext);
   const [configuredTasks, setConfiguredTasks] = useState([]);
 
   useEffect(() => {
-    console.log("Loaded protocol", protocolId, selectedProtocol);
+    console.log("Loaded protocol:", protocolId, selectedProtocol);
+    // TODO: fetch protocol details here if not available in context
   }, [protocolId, selectedProtocol]);
 
   return (
@@ -21,7 +22,8 @@ export default function ProtocolEditorPage() {
       <AdminTaskEditor
         initialTasks={configuredTasks}
         onChange={setConfiguredTasks}
-        onSave={() => console.log("Save protocol")}
+        protocolId={protocolId}
+        onSave={() => console.log("Save protocol", protocolId)}
       />
     </div>
   );

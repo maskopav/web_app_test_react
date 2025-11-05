@@ -6,10 +6,12 @@ export default function ProtocolLanguageSelector({ value, onChange }) {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
-    <label className="protocol-language-label">
-      {t("protocolLanguage")}
+    <div className="protocol-field">
+      <label className="protocol-label">
+        {t("protocolLanguage")}
+      </label>
       <select
-        className="language-select"
+        className="protocol-language-select"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
@@ -19,6 +21,6 @@ export default function ProtocolLanguageSelector({ value, onChange }) {
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 }

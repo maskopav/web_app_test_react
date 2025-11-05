@@ -1,5 +1,5 @@
 // src/pages/ProtocolDashboard.jsx
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProtocolContext } from "../context/ProtocolContext";
 import Protocols from "../components/Protocols/Protocols";
@@ -12,7 +12,9 @@ export default function ProtocolDashboard() {
 
   const handleSelectProtocol = (protocol) => {
     setSelectedProtocol(protocol);
-    navigate(`/projects/${projectId}/protocols/${protocol.id}`);
+    navigate(`/projects/${projectId}/protocols/${protocol.id}`, {
+      state: { protocol }, 
+    });
   };
 
   return (

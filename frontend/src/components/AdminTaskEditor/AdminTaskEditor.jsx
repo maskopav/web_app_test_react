@@ -1,5 +1,5 @@
 // src/components/AdminTaskEditor/AdminTaskEditor.jsx
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { taskBaseConfig } from "../../config/tasksBase";
 import { getDefaultParams } from "../../utils/translations"; 
@@ -15,10 +15,11 @@ import { ProtocolContext } from "../../context/ProtocolContext";
 
 import "./AdminTaskEditor.css";
 
-export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange = () => {} }) {
+export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange = () => {}, protocol }) {
   const { t } = useTranslation(["admin", "tasks", "common"]);
   const { mappings, loading, error } = useMappings();
   const { selectedProtocol } = useContext(ProtocolContext);
+  const { saveNewProtocol } = useProtocolManager();
 
   const [tasks, setTasks] = useState(initialTasks);
   const [editingTask, setEditingTask] = useState(null);
@@ -27,9 +28,13 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
   const [reorderMode, setReorderMode] = useState(false);
   const [dragIndex, setDragIndex] = useState(null);
   const [showQuestionnaireModal, setShowQuestionnaireModal] = useState(false);
-  const [protocolLanguage, setProtocolLanguage] = useState("en");
 
-  const { saveNewProtocol } = useProtocolManager();
+  const [protocolData, setProtocolData] = useState(protocol || selectedProtocol || {});
+  const [protocolLanguage, setProtocolLanguage] = useState(protocolData.language || "en");
+
+  useEffect(() => {
+    if (protocol) setProtocolData(protocol);
+  }, [protocol]);
 
   if (loading) {
     return <p>Loading mappings...</p>;
@@ -102,8 +107,8 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
 
         <ProtocolEditor
           tasks={tasks}
-          protocolLanguage={protocolLanguage}
-          setProtocolLanguage={setProtocolLanguage}
+          protocolData={protocolData}
+          setProtocolData={setProtocolData}
           reorderMode={reorderMode}
           setReorderMode={setReorderMode}
           onEdit={setEditingTask}

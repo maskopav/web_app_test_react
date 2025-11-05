@@ -6,8 +6,8 @@ import { getAllParams, getResolvedParams, translateTaskName } from "../../utils/
 
 export default function ProtocolEditor({
   tasks,
-  protocolLanguage,
-  setProtocolLanguage,
+  protocolData,
+  setProtocolData,
   reorderMode,
   setReorderMode,
   onEdit,
@@ -20,27 +20,77 @@ export default function ProtocolEditor({
 }) {
   const { t } = useTranslation(["admin", "tasks"]);
 
+  const handleLanguageChange = (lang) => {
+    setProtocolData((prev) => ({ ...prev, language: lang }));
+  };
+
+  const handleNameChange = (e) => {
+    const name = e.target.value;
+    setProtocolData((prev) => ({ ...prev, name }));
+  };
+
+  const handleDescriptionChange = (e) => {
+    const description = e.target.value;
+    setProtocolData((prev) => ({ ...prev, description }));
+  };
+
   return (
     <div className="protocol-section">
       <div className="protocol-header">
-        <h3>{t("currentProtocol")}</h3>
-        <div className="header-controls">
-          <ProtocolLanguageSelector
-            value={protocolLanguage}
-            onChange={setProtocolLanguage}
-          />
+          <h3 className="protocol-current">
+            {t("currentProtocol")}
+          </h3>
 
-          <button className="btn-add-questionnaire" onClick={onAddQuestionnaire}>
-            {t("addQuestionnaire")}
-          </button>
+          <div className="protocol-values">
+            <div className="protocol-field">
+              <label className="protocol-label">
+                {t("protocolsPage.Name", "Protocol name:")}
+              </label>
+              <input
+                type="text"
+                className="protocol-name-input"
+                placeholder={t("protocolsPage.namePlaceholder", "Protocol name")}
+                value={protocolData?.name || ""}
+                onChange={handleNameChange}
+              />
+            </div>
 
-          <button
-            className={`reorder-btn ${reorderMode ? "active" : ""}`}
-            onClick={() => setReorderMode(!reorderMode)}
-          >
-            {reorderMode ? t("finishReordering") : t("reorderTasks")}
-          </button>
-        </div>
+              <ProtocolLanguageSelector
+                value={protocolData?.language || "en"}
+                onChange={handleLanguageChange}
+              />
+
+
+            <div className="protocol-field">
+              <label className="protocol-label">
+                {t("protocolsPage.descriptionLabel", "Description (optional):")}
+              </label>
+              <textarea
+                className="protocol-description-input"
+                placeholder={t(
+                  "protocolsPage.descriptionPlaceholder",
+                  "Enter protocol description"
+                )}
+                value={protocolData?.description || ""}
+                onChange={handleDescriptionChange}
+              />
+            </div>
+
+          </div>
+
+          <div className="button-block">
+            <button className="btn-add-questionnaire" onClick={onAddQuestionnaire}>
+              {t("addQuestionnaire")}
+            </button>
+
+            <button
+              className={`reorder-btn ${reorderMode ? "active" : ""}`}
+              onClick={() => setReorderMode(!reorderMode)}
+            >
+              {reorderMode ? t("finishReordering") : t("reorderTasks")}
+            </button>
+
+          </div>
       </div>
 
       <ul className="protocol-list">

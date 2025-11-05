@@ -1,6 +1,17 @@
-.admin-container {
+/* =========================================================
+   AdminTaskEditor.css
+   Clean, merged and ordered styles for AdminTaskEditor
+   - merges original + updated rules
+   - removes duplicates and keeps behavior
+   ========================================================= */
+  
+  /* =========================================================
+     PAGE / GRID LAYOUT
+     ========================================================= */
+  
+  .admin-container {
     padding: 10px;
-    width: 92vw;
+    width: 95vw;
     margin: 0 auto;
   }
   
@@ -10,53 +21,214 @@
     align-items: flex-start;
   }
   
+  /* task / protocol columns */
   .task-section, .protocol-section {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 15px;
     background: var(--card-bg);
     height: 70vh;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   
-  .task-section { flex: 1; }
-  .protocol-section { 
-    flex: 2; 
-    background: #c0e3ce;
+  .task-section {
+    flex: 1;
   }
-
+  
+  .protocol-section {
+    flex: 2;
+    background: #c0e3ce; /* keep the green tint you used */
+  }
+  
+  /* =========================================================
+     PROTOCOL HEADER (name / description / controls)
+     ========================================================= */
+  
+  /* container */
   .protocol-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    align-items: baseline;
+    margin-bottom: 15px;
   }
 
-  .header-controls {
+  .protocol-current { flex: 1; }
+  .protocol-values { flex: 4; }
+  .protocol-controls { flex: 1; }
+
+  .protocol-values { 
     display: flex;
-    align-items: center;
-    gap: 10px;
+    flex-direction:column;
+    margin: 5px;
   }
-  
-  .protocol-language-label {
+
+  /* a single field row: label + input */
+  .protocol-field {
     display: flex;
     align-items: center;
-    max-width: fit-content;
-    gap: 6px;
+    margin: 2px;
+  }
+
+
+  /* fixed label column to align name + description inputs */
+  .protocol-label {
+    flex: 0 0 200px; /* all labels same width */
+    text-align: right;
+    color: var(--text);
     font-weight: 500;
+    padding-right: 8px;
   }
   
-  .language-select {
-    padding: 6px 8px;
-    margin: 6px 4px;
-    border-radius: var(--sharp-radius);
-    cursor: pointer;
-  }  
+  /* inputs used in protocol editor */
+  .protocol-description-input, 
+  .protocol-name-input,
+  .protocol-language-select {
+    flex: 1;
+    width: fit-content;
+    max-width: 350px; 
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: #fff;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    box-sizing: border-box;
+  }
+  
+  .protocol-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(34, 116, 217, 0.08);
+  }
 
-  .protocol-list, .task-list { 
-    list-style: none; 
-    padding: 0; 
+  .protocol-description-input {
+    resize: vertical; /* allows manual resizing */
+    min-height: 3em; /* roughly 2 rows */
+    max-height: 8em; /* limit expansion */
+    line-height: 1.4;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* vertical stack of buttons */
+  .button-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-width: 200px; /* keeps consistent width for stacked buttons */
+  }
+  
+  /* =========================================================
+     BUTTONS: common + variants
+     ========================================================= */
+  
+  .btn-add-questionnaire,
+  .reorder-btn,
+  .button-show-tasks,
+  .button-save,
+  .btn-save,
+  .btn-cancel,
+  .btn-add-option,
+  .btn-remove-option,
+  .btn-remove-question-icon {
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background var(--transition), transform 0.08s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* primary visual variants */
+  .btn-add-questionnaire {
+    background: var(--purple);
+    color: white;
+  }
+  .btn-add-questionnaire:hover { background: #6a2fd6; }
+  
+  .reorder-btn {
+    background: var(--primary);
+    color: white;
+  }
+  .reorder-btn.active { background: var(--success); }
+  
+  .button-show-tasks {
+    background: #5a5a5a;
+    color: white;
+  }
+  
+  .button-save {
+    background: var(--success);
+    color: white;
+  }
+  
+  .btn-save {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .btn-cancel {
+    background: #ccc;
+    color: #333;
+  }
+  
+  /* small option add button */
+  .btn-add-option {
+    background: var(--warning, #f39c12);
+    color: white;
+  }
+  
+  /* remove option style */
+  .btn-remove-option {
+    background: none;
+    border: none;
+    color: var(--danger);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 2px;
+  }
+  
+  /* remove question icon (red) */
+  .btn-remove-question-icon {
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: var(--sharp-radius);
+    padding: 3px 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+  }
+  
+  /* button disabled look */
+  button:disabled,
+  .btn-disabled {
+    background: #ccc !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  /* bottom action button-row */
+  .button-row {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  
+  /* =========================================================
+     LISTS, TASK ITEMS & PROTOCOL ITEMS
+     ========================================================= */
+  
+  .protocol-list, .task-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     height: 60vh;
-    overflow-y: auto;      /* <— Enables scrolling */
+    overflow-y: auto;      /* enables scrolling */
     overflow-x: hidden;
   }
   
@@ -66,9 +238,11 @@
     background: var(--bg);
     padding: 6px 10px;
     margin-bottom: 8px;
+    box-sizing: border-box;
   }
-  .task-option { 
-    cursor: pointer; 
+  
+  .task-option {
+    cursor: pointer;
     transition: var(--transition);
     margin: 3px;
   }
@@ -77,11 +251,17 @@
     background: #e8f2ff;
     border-color: var(--primary);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
-  .task-title { font-weight: 500; }
-
-  .protocol-item.dragging { background: #e0f7ff; opacity: 0.6; }
+  
+  .task-title {
+    font-weight: 500;
+  }
+  
+  .protocol-item.dragging {
+    background: #e0f7ff;
+    opacity: 0.6;
+  }
   
   .empty-protocol {
     text-align: center;
@@ -93,29 +273,30 @@
     border-radius: var(--radius);
   }
   
-  .protocol-row { display: flex; justify-content: space-between; align-items: center; }
-  .action-buttons span { cursor: pointer; font-size: 18px; margin-left: 8px; }
+  /* top row inside each protocol item */
+  .protocol-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   
-  .edit-icon { color:  var(--primary); }
-  .delete-icon { color: var(--danger);}
-
-  .button-row { margin-top: 15px; display: flex; gap: 10px; }
-  .button-save { 
-    background: var(--success);
+  /* action buttons inside row */
+  .action-buttons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .action-buttons span {
     cursor: pointer;
+    font-size: 18px;
+    margin-left: 8px;
   }
   
-  .button-save:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
+  /* icons colors */
+  .edit-icon { color: var(--primary); }
+  .delete-icon { color: var(--danger); }
   
-  .button-save:not(:disabled):hover {
-    background: #229954;
-  }
-
-/* Parameter preview styling */
+  /* parameter preview lines */
   .param-inline {
     font-size: 0.85rem;
     color: #444;
@@ -129,18 +310,20 @@
     font-weight: 400;
     font-style: normal;
   }
-    
+  
   .param-default {
     color: #555;
     font-style: italic;
   }
   
-
-/* Modal styling */
+  /* =========================================================
+     MODAL / DIALOG (generic)
+     ========================================================= */
+  
   .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0,0,0,0.4);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,16 +332,17 @@
   
   .modal-box {
     background: var(--bg);
-    border-radius:  var(--radius);
+    border-radius: var(--radius);
     max-width: 80vw;
     max-height: 85vh;
     display: flex;
     flex-direction: column;
     padding: 1.5rem 2rem;
     position: relative;
-    box-shadow: var(--shadow); 
+    box-shadow: var(--shadow);
     overflow-y: auto;
     font-size: 18px;
+    box-sizing: border-box;
   }
   
   .modal-close {
@@ -174,35 +358,30 @@
     cursor: pointer;
     font-weight: bold;
     font-size: 13px;
-    display: flex;              /* center horizontally + vertically */
-    align-items: center;        /* vertical */
-    justify-content: center;    /* horizontal */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
-  .modal-close:hover {
-    background: #c0392b;
-  }
-
+  .modal-close:hover { background: #c0392b; }
+  
   .modal-actions {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: flex-end;
+    gap: 8px;
     margin-top: 0.6rem;
   }
   
-  .modal-content h2 {
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-
+  /* modal title styles used by your Modal component */
+  .modal-content h2,
   .modal-title {
     font-size: 1.3rem;
     margin-bottom: 1rem;
     font-weight: 600;
   }
-
-  /* Make form fields align neatly */
+  
+  /* form-group - used across modal forms and TaskModal */
   .form-group {
     display: flex;
     align-items: center;
@@ -210,18 +389,20 @@
     margin-bottom: 0.5rem;
     gap: 0.6rem;
   }
-
-  /* Consistent label sizing */
+  
+  .form-group.small { gap: 0.4rem; }
+  
   .form-group label {
     flex: 0 0 180px;          /* fixed label width for alignment */
     text-align: right;
     font-weight: 600;
     color: var(--text);
   }
-
+  
   .form-group input,
-  .form-group select {
-    flex: 1; 
+  .form-group select,
+  .form-group textarea {
+    flex: 1;
     margin: 0.3rem;
     padding: 0.3rem 0.6rem;
     border: 1px solid #ccc;
@@ -229,58 +410,122 @@
     font-size: 1rem;
     transition: var(--transition);
     background: white;
+    box-sizing: border-box;
   }
-
-  /* Subtle hover/focus effect */
+  
+  /* focus */
   .form-group input:focus,
-  .form-group select:focus {
+  .form-group select:focus,
+  .form-group textarea:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(55, 100, 223, 0.25);
+    box-shadow: 0 0 0 3px rgba(55,100,223,0.12);
     outline: none;
   }
-
   
-  /* Buttons*/
-  .reorder-btn {
-    padding: 8px 12px;
-    cursor: pointer;
-    max-height: min-content;
-    max-width: fit-content;
-  }
-
-  .reorder-btn.active {
-    background: var(--success); 
+  /* textarea sizing helper */
+  .form-textarea {
+    min-height: 80px;
   }
   
-  .btn-add-questionnaire {
-    background: var(--purple);
-    color: white;
-    padding: 8px 12px;
-    border-radius: var(--radius);
-    cursor: pointer;
+  /* =========================================================
+     QUESTIONNAIRE MODAL (specific)
+     ========================================================= */
+  
+  .question-section {
+    margin: 0.3rem 0;
+    padding: 0.4rem 0;
+    overflow-y: auto;
+  }
+  
+  .question-block {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--sharp-radius);
+    padding: 0.5rem;
+    margin-bottom: 0.8em;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.065);
+  }
+  
+  /* header inside each question block */
+  .question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.2rem;
+  }
+  
+  .questionnaire-form {
+    display: flex;
+    flex-direction: column;
+    min-width: 60vw;
+    gap: 1rem;
+  }
+  
+  .questionnaire-header {
+    background: #483dc279;
+    border-radius: var(--sharp-radius);
+    padding: 0.5rem;
+    box-shadow: 0 2px 2px rgba(0,0,0,0.065);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  
+  .questionnaire-header label {
+    font-weight: 500;
+    color: var(--text);
+  }
+  
+  .questionnaire-header input,
+  .questionnaire-header textarea {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--sharp-radius);
+    background: #fff;
+    font-size: 0.9rem;
     transition: var(--transition);
-    max-width: fit-content;
   }
   
-  .btn-add-questionnaire:hover {
-    background: #6a2fd6;
-  }
-
-  .btn-cancel {
-    background: #ccc;
-    color: #333;
+  /* options list in question */
+  .option-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: 95%;
   }
   
-  .btn-save {
-    background: var(--primary);
+  .option-item input {
+    flex: 1;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--sharp-radius);
+    border: 1px solid #ccc;
+    background: white;
+  }
+  
+  /* add option button in questionnaire */
+  .btn-add-option {
+    background: var(--warning, #f39c12);
     color: white;
+    border-radius: var(--sharp-radius);
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    margin-top: 0.3rem;
+    transition: var(--transition);
+    width: fit-content;
   }
   
-  .btn-save:hover {
-    background: #0069d9;
+  .btn-add-option:hover { background: #b36500; }
+  
+  /* remove option hover */
+  .btn-remove-option:hover{
+    color: #c0392b;
+    transform: scale(1.05);
   }
-
-  /* Info tooltip*/
+  
+  /* =========================================================
+     INFO TOOLTIP
+     ========================================================= */
+  
   .info-tooltip {
     position: relative;
     display: inline-block;
@@ -292,18 +537,18 @@
   
   .info-tooltip-text {
     visibility: hidden;
-    position: fixed; /* instead of absolute */
+    position: fixed; /* fixed so it doesn't get clipped by overflow */
     background-color: #333;
     color: #fff;
     border-radius: 8px;
     padding: 8px 10px;
-    z-index: 99999; /* guaranteed on top */
+    z-index: 99999;
     max-width: 260px;
     font-size: 0.85rem;
     line-height: 1.2;
     text-align: left;
     opacity: 0;
-    transition: opacity 0.2s;
+    transition: opacity 0.18s;
     pointer-events: none;
   }
   
@@ -311,153 +556,40 @@
     visibility: visible;
     opacity: 1;
   }
-
-  /* Questionnaire Modal Enhancements */
-.question-section {
-  margin: 0.3rem 0;
-  padding: 0.4rem 0;
-  overflow-y: auto;  
-}
-
-.question-block {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: var(--sharp-radius);
-  padding: 0.5rem;
-  margin-bottom: 0.8em;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.265);
-}
-
-/* Top bar with remove icon */
-.question-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.2rem;
-}
-
-/* --- Questionnaire Modal Specific --- */
-.questionnaire-form {
-  display: flex;
-  flex-direction: column;
-  min-width: 60vw;
-  gap: 1rem;
-}
-
-/* Header section for title + description */
-.questionnaire-header {
-  background: #483dc279;
-  border-radius: var(--sharp-radius);
-  padding: 0.5rem;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.265);
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.questionnaire-header label {
-  font-weight: 500;
-  color: var(--text);
-}
-
-.questionnaire-header input,
-.questionnaire-header textarea {
-  padding: 0.5rem 0.8rem;
-  border: 1px solid var(--border);
-  border-radius: var(--sharp-radius);
-  background: #fff;
-  font-size: 0.9rem;
-  transition: var(--transition);
-}
-
-.questionnaire-header input:focus,
-.questionnaire-header textarea:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(55, 100, 223, 0.25);
-  outline: none;
-}
-
-.option-item {
-  display: flex;
-  align-items: center;
-  gap: 0.2rem;
-  width: 95%;
-}
-
-.option-item input {
-  flex: 1;
-  padding: 0.3rem 0.5rem;
-  border-radius: var(--sharp-radius);
-  border: 1px solid #ccc;
-  background: white;
-}
-
-.btn-add-option {
-  background: var(--warning);
-  color: white;
-  border-radius: var(--sharp-radius);
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
-  margin-top: 0.3rem;
-  transition: var(--transition);
-  width: fit-content;
-}
-
-.btn-add-option:hover {
-  background: #b36500;
-}
-
-/* Remove question/ option icon */
-.btn-remove-option {
-  background: none;
-  border: none;
-  border-radius: var(--sharp-radius);
-  color: var(--danger);
-  cursor: pointer;
-  font-size: 18px;
-  padding: 2px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease;
-  width: min-content;
-}
-
-.btn-remove-option:hover{
-  color: #c0392b; /* darker red on hover */
-  transform: scale(1.1);
-}
-
-.btn-remove-question-icon {
-  background: var(--danger);
-  color: white;
-  border: none;
-  border-radius: var(--sharp-radius);
-  padding: 3px 5px;
-  width: min-content;
-  height: min-content;
-  cursor: pointer;
-  font-weight: bold;
-  font-size: 12px;
-  display: flex;              /* center horizontally + vertically */
-  align-items: center;        /* vertical */
-  justify-content: center;    /* horizontal */
-}
-
-.btn-remove-question-icon:hover {
-  background: #c0392b;
-}
-
-  /* Narrow screens */
-  @media (max-width: 600px) {
-    .form-group {
+  
+  /* =========================================================
+     DRAG & DROP VARIANTS
+     ========================================================= */
+  
+  .protocol-item.dragging {
+    opacity: 0.5;
+    border: 2px dashed #aaa;
+  }
+  
+  /* =========================================================
+    UTILITY CLASSES & RESPONSIVE
+     ========================================================= */
+  
+  .text-center { text-align: center; }
+  .text-right { text-align: right; }
+  .text-muted { color: #777; }
+  
+  .mt-1 { margin-top: 4px; }
+  .mt-2 { margin-top: 8px; }
+  .mt-3 { margin-top: 12px; }
+  
+  /* responsive : stack protocol header on narrow screens */
+  @media (max-width: 900px) {
+    .admin-grid {
+      flex-direction: column;
+      align-items: center;
+    }
+    .protocol-header {
       flex-direction: column;
       align-items: stretch;
     }
-    .form-group label {
-      text-align: left;
-      flex: none;
-    }
+    .protocol-label { text-align: left; flex: none; width: auto; }
+    .protocol-controls { align-items: stretch; flex-direction: row; gap: 10px; justify-content: space-between; }
+    .button-block { flex-direction: row; width: auto; }
   }
   

@@ -12,3 +12,21 @@
     cursor: pointer;
   }
   
+
+/* ===========================================
+   Responsive behavior for small screens
+   =========================================== */
+   @media (max-width: 600px) {
+    .language-switcher {
+      position: static;        /* remove absolute positioning */
+      display: flex;
+      justify-content: center; /* center it horizontally */
+      margin-top: 10px;        /* add space from top content */
+    }
+  
+    .language-switcher select {
+      width: 80%;
+      max-width: 220px;
+      font-size: 0.9rem;
+    }
+  }

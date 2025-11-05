@@ -36,7 +36,7 @@ export default function Protocols({ onSelectProtocol }) {
             className="btn-create"
             disabled={!protocolName.trim()}
             onClick={() =>
-              onSelectProtocol({ name: protocolName, language: protocolLanguage })
+              onSelectProtocol({ name: protocolName, language: protocolLanguage, description: protocolDescription })
             }
           >
             {t("protocolsPage.create", "Create Protocol")}

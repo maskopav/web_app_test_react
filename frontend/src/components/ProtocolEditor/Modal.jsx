@@ -1,6 +1,6 @@
-// src/components/AdminTaskEditor/Modal.jsx
+// src/components/ProtocolEditor/Modal.jsx
 import React from "react";
-import "./AdminTaskEditor.css";
+import "./ProtocolEditor.css";
 import { useTranslation } from "react-i18next";
 
 /**

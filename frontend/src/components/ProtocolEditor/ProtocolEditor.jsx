@@ -1,11 +1,11 @@
-// src/components/AdminTaskEditor/AdminTaskEditor.jsx
+// src/components/ProtocolEditor/ProtocolEditor.jsx
 import React, { useState, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { taskBaseConfig } from "../../config/tasksBase";
 import { getDefaultParams } from "../../utils/translations"; 
 
 import TaskList from "./TaskList";
-import ProtocolEditor from "./ProtocolEditor";
+import ProtocolForm from "./ProtocolForm";
 import TaskModal from "./TaskModal";
 import QuestionnaireModal from "./QuestionnaireModal";
 import { LanguageSwitcher } from "../LanguageSwitcher/LanguageSwitcher";
@@ -13,9 +13,9 @@ import { useMappings } from "../../context/MappingContext";
 import { useProtocolManager } from "../../hooks/useProtocolManager";
 import { ProtocolContext } from "../../context/ProtocolContext";
 
-import "./AdminTaskEditor.css";
+import "./ProtocolEditor.css";
 
-export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange = () => {}, protocol }) {
+export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange = () => {}, protocol }) {
   const { t } = useTranslation(["admin", "tasks", "common"]);
   const { mappings, loading, error } = useMappings();
   const { selectedProtocol } = useContext(ProtocolContext);
@@ -105,7 +105,7 @@ export function AdminTaskEditor({ initialTasks = [], onSave = () => {}, onChange
       <div className="admin-grid">
         <TaskList onCreate={startCreatingTask} />
 
-        <ProtocolEditor
+        <ProtocolForm
           tasks={tasks}
           protocolData={protocolData}
           setProtocolData={setProtocolData}

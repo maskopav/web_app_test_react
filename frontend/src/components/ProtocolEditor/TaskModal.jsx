@@ -1,3 +1,4 @@
+// src/components/ProtcolEditor/TaskModal.jsx
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "./Modal";
@@ -6,7 +7,6 @@ import {
   translateTaskName,
   translateTaskDescription,
 } from "../../utils/translations";
-import InfoTooltip from "./InfoTooltip";
 
 export default function TaskModal({
   open,

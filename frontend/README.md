@@ -173,7 +173,7 @@ src/
 │ |── en
 │ | ├── common.json       # shared buttons, status, general UI
 │ | ├── tasks.json        # user-facing labels for tasks (title,  instructions), names & descriptions of parameters, possible values
-│ | ├── admin.json        # AdminTaskEditor & modal texts
+│ | ├── admin.json        # ProtocolEditor & modal texts
 │ | └── recorder.json     # labels & states for recording UI
 │ |── cs
 │ |── de
@@ -190,7 +190,7 @@ Main architecture:
 | Layer                       | Purpose                                                       |
 | --------------------------- | ------------------------------------------------------------- |
 | `VoiceRecorder`             | Recording logic and UI for users                              |
-| `AdminTaskEditor`           | Interface for creating/modifying task protocols               |
+| `ProtocolEditor`           | Interface for creating/modifying task protocols               |
 | `config/taskBase.ts`        | Typed task definitions (technical behavior, defaults, params) |
 | `i18n/[lang]/tasks.json`    | Defines translated titles,  instructionss, and parameter labels    |
 | `utils/translation.ts`      | Recursively resolves parameters and translations              |
@@ -200,7 +200,7 @@ Main architecture:
 | Folder            | Purpose                                                                 |
 | ----------------- | ----------------------------------------------------------------------- |
 | `src/api/`        | Contains all backend API calls (`mappings.js`, `protocols.js`)          |
-| `src/components/` | Reusable UI components (AdminTaskEditor, modals, etc.)                  |
+| `src/components/` | Reusable UI components (ProtocolEditor, modals, etc.)                  |
 | `src/hooks/`      | Custom hooks for logic and data management (e.g., `useProtocolManager`) |
 | `src/context/`    | (Optional) Global state providers like `MappingContext`                 |
 | `src/config/`     | Static configuration (e.g., base task definitions)                      |
@@ -229,15 +229,15 @@ src/
 │ | ├── StatusIndicator.jsx    # Shows current state (Idle, Recording, Paused, etc.)
 │ | └── index.js               # Barrel file for clean imports
 │ │
-│ ├── AdminTaskEditor/
-│ │ ├── AdminTaskEditor.jsx    # main container (state + coordination)
+│ ├── ProtocolEditor/
+│ │ ├── ProtocolEditor.jsx    # main container (state + coordination)
 │ │ ├── TaskList.jsx           # left column - available tasks
-│ │ ├── ProtocolEditor.jsx     # right column - current protocol
+│ │ ├── ProtocolForm.jsx     # right column - current protocol
 │ │ ├── TaskModal.jsx          # modal for editing/creating tasks
 │ │ ├── QuestionnaireModal.jsx # modal for questionnaires
 │ │ ├── InfoToolTip.jsx        # info tool tip component
 │ │ ├── Modal.jsx              # reusable modal component
-│ │ ├── AdminTaskEditor.css    # scoped styles
+│ │ ├── ProtocolEditor.css    # scoped styles
 │ │ └── index.js               # barrel export
 │ │
 │ ├── LanguageSwitcher/
@@ -261,17 +261,17 @@ src/
 │ └── AppProvider.jsx        # ← composed provider for all contexts
 │
 ├── pages/                   # some of them implemented, the logic of components calling
-│ ├── AdminDashboard.jsx
-│ ├── ProjectDashboard.jsx
-│ ├── ProtocolEditor.jsx
-│ ├── ParticipantManager.jsx
-│ ├── ProtocolAssignment.jsx
-│ ├── DataExplorer.jsx
-│ ├── MasterDashboard.jsx
-│ ├── Login.jsx
-│ ├── ParticipantInterface.jsx
-│ ├── NotFound.jsx
-│ └── Pages.css            # Global styles
+│ ├── AdminDashboardPage.jsx
+│ ├── ProjectDashboardPage.jsx
+│ ├── ProtocolEditorPage.jsx
+│ ├── ParticipantManagerPage.jsx
+│ ├── ProtocolAssignmentPage.jsx
+│ ├── DataExplorerPage.jsx
+│ ├── MasterDashboardPage.jsx
+│ ├── LoginPage.jsx
+│ ├── ParticipantInterfacePage.jsx
+│ ├── NotFoundPage.jsx
+│ └── PagesPage.css            # Global styles
 │
 ├── services/              # not implemented yet, refactoring needed
 │ ├── protocols.js

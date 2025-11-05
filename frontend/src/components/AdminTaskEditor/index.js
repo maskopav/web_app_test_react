@@ -1,1 +1,0 @@
-export { AdminTaskEditor as default } from './AdminTaskEditor';

@@ -2,7 +2,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
-import AdminTaskEditor from "../components/AdminTaskEditor";
+import ProtocolEditor from "../components/ProtocolEditor";
 import { ProtocolContext } from "../context/ProtocolContext";
 import "./Pages.css"
 
@@ -33,7 +33,7 @@ export default function ProtocolEditorPage() {
   return (
     <div className="protocol-editor-page">
       <LanguageSwitcher />
-      <AdminTaskEditor
+      <ProtocolEditor
         initialTasks={configuredTasks}
         onChange={setConfiguredTasks}
         protocol={protocolData}

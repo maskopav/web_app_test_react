@@ -1,4 +1,4 @@
-// src/components/AdminTaskEditor/QuestionnaireModal.jsx
+// src/components/ProtocolEditor/QuestionnaireModal.jsx
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "./Modal";

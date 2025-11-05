@@ -1,4 +1,4 @@
-// src/components/AdminTaskEditor/TaskList.jsx
+// src/components/ProtocolEditor/TaskList.jsx
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { taskBaseConfig } from "../../config/tasksBase";

@@ -64,7 +64,7 @@
 .protocol-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: 0.99rem;
 }
 
 .protocol-table th,
@@ -105,7 +105,7 @@
 
 .actions button {
   flex: 1 1 auto;
-  font-size: 0.85rem;
+  font-size: 0.99rem;
   padding: 0.2rem 0.2rem;
   margin: 0rem;
   border-radius: 0.6rem;

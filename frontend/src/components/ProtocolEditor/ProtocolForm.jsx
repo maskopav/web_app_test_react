@@ -1,10 +1,10 @@
-// src/components/AdminTaskEditor/ProtocolEditor.jsx
+// src/components/ProtocolEditor/ProtocolForm.jsx
 import React from "react";
 import { useTranslation } from "react-i18next";
 import ProtocolLanguageSelector from "../ProtocolLanguageSelector";
 import { getAllParams, getResolvedParams, translateTaskName } from "../../utils/translations";
 
-export default function ProtocolEditor({
+export default function ProtocolForm({
   tasks,
   protocolData,
   setProtocolData,

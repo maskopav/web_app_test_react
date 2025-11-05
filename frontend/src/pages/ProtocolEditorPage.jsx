@@ -1,4 +1,4 @@
-// src/pages/ProtocolEditor.jsx
+// src/pages/ProtocolEditorPage.jsx
 import React, { useState, useContext, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";

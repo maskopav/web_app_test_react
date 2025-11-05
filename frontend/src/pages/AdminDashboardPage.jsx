@@ -1,6 +1,6 @@
-// src/pages/AdminDashboard.jsx
+// src/pages/AdminDashboardPage.jsx
 import "./Pages.css"
 
-export default function AdminDashboard() {
+export default function AdminDashboardPage() {
     return <div>Admin Dashboard – select project</div>;
   }

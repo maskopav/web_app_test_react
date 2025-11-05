@@ -1,8 +1,8 @@
-// src/pages/ProjectDashboard.jsx
+// src/pages/ProjectDashboardPage.jsx
 import { useParams } from "react-router-dom";
 import "./Pages.css"
 
-export default function ProjectDashboard() {
+export default function ProjectDashboardPage() {
   const { projectId } = useParams();
   const currentProject = projectId || "demo"; // fallback for test
 

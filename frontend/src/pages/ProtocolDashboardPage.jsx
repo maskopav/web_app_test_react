@@ -1,11 +1,11 @@
-// src/pages/ProtocolDashboard.jsx
+// src/pages/ProtocolDashboardPage.jsx
 import React, { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ProtocolContext } from "../context/ProtocolContext";
 import Protocols from "../components/Protocols/Protocols";
 import "./Pages.css"
 
-export default function ProtocolDashboard() {
+export default function ProtocolDashboardPage() {
   const { setSelectedProtocol } = useContext(ProtocolContext);
   const { projectId } = useParams();
   const navigate = useNavigate();

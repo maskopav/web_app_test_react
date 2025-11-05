@@ -1,4 +1,4 @@
-// src/pages/ParticipantInterface.jsx
+// src/pages/ParticipantInterfacePage.jsx
 import React, { useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -9,7 +9,7 @@ import { resolveTasks, resolveTask } from "../utils/taskResolver";
 import { ProtocolContext } from "../context/ProtocolContext";
 import "./Pages.css"
 
-export default function ParticipantInterface() {
+export default function ParticipantInterfacePage() {
   const { token } = useParams();
   const { t } = useTranslation(["tasks", "common"]);
   const [taskIndex, setTaskIndex] = useState(0);

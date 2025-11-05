@@ -1,45 +1,45 @@
 // src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
-import AdminDashboard from "./pages/AdminDashboard";
-import ProjectDashboard from "./pages/ProjectDashboard";
-import ProtocolDashboard from "./pages/ProtocolDashboard";
-import ProtocolEditor from "./pages/ProtocolEditor";
-// import ParticipantManager from "./pages/ParticipantManager";
-// import DataExplorer from "./pages/DataExplorer";
-// import MasterDashboard from "./pages/MasterDashboard";
-import ParticipantInterface from "./pages/ParticipantInterface";
-import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
+import ProjectDashboardPage from "./pages/ProjectDashboardPage";
+import ProtocolDashboardPage from "./pages/ProtocolDashboardPage";
+import ProtocolEditorPage from "./pages/ProtocolEditorPage";
+// import ParticipantManagerPage from "./pages/ParticipantManagerPage";
+// import DataExplorerPage from "./pages/DataExplorerPage";
+// import MasterDashboardPage from "./pages/MasterDashboardPage";
+import ParticipantInterfacePage from "./pages/ParticipantInterfacePage";
+import LoginPage from "./pages/LoginPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
   return (
     <Routes>
       {/* Temporary testing routes */}
       <Route path="/" element={<Navigate to="/projects/demo" replace />} />
-      <Route path="/projects/:projectId" element={<ProjectDashboard />} />
-      <Route path="/projects/:projectId/protocols" element={<ProtocolDashboard />} />
-      <Route path="/projects/:projectId/protocols/:protocolId" element={<ProtocolEditor />} />
-      <Route path="/participant/test" element={<ParticipantInterface />} />
+      <Route path="/projects/:projectId" element={<ProjectDashboardPage />} />
+      <Route path="/projects/:projectId/protocols" element={<ProtocolDashboardPage />} />
+      <Route path="/projects/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
+      <Route path="/participant/test" element={<ParticipantInterfacePage />} />
 
       {/* Public routes  
       <Route path="/login" element={<Login />} />
-      <Route path="/participant/:token" element={<ParticipantInterface />} />
+      <Route path="/participant/:token" element={<ParticipantInterfacePage />} />
 
       {/* Admin routes
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/project/:projectId" element={<ProjectDashboard />} />
+      <Route path="/admin" element={<AdminDashboardPage />} />
+      <Route path="/admin/project/:projectId" element={<ProjectDashboardPage />} />
       <Route path="/admin/project/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
-      <Route path="/data" element={<DataExplorer />} />
-      <Route path="/participants" element={<ParticipantManager />} />
+      <Route path="/data" element={<DataExplorerPage />} />
+      <Route path="/participants" element={<ParticipantManagerPage />} />
 
       {/* Master routes 
-      <Route path="/master" element={<MasterDashboard />} />
+      <Route path="/master" element={<MasterDashboardPage />} />
 
       */}
 
 
       {/* Fallback */}
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotFoundPage/>} />
     </Routes>
   );
 }

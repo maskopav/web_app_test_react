@@ -1,9 +1,10 @@
-/* App.css <div className="app-container"> {currentTask && ( <div className="task-wrapper"> <div className="task-progress"> {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType} </div> <div className="card"> {renderCurrentTask()} </div> </div> )} </div> */ 
+/* Page.css <div className="app-container"> {currentTask && ( <div className="task-wrapper"> <div className="task-progress"> {TASK_LABELS[currentType] || "Task"} {currentOfType}/{totalOfType} </div> <div className="card"> {renderCurrentTask()} </div> </div> )} </div> */ 
 :root {
   --bg: #f9fafb;
   --card-bg: #ededed;
   --grey: #ced0d3;
   --text: #333;
+  --muted: #575151;
   --border: #d6dfef;
   --primary: #3764df;
   --danger: #e74c3c;
@@ -26,31 +27,46 @@ body {
 .app-container {
   display: flex;
   justify-content: center;
-  flex-direction: column;
   align-items: center;
-  padding: 0.2rem;
-  min-height: 90vh;
+  height: 95vh; /* use full viewport height */
+  padding: 0;
 }
 
 .task-wrapper {
-  max-width: 90vw;
-  max-height: 90vh;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* progress stays on top */
+  width: 90vw;
+  height: 90vh;
+  max-width: 1200px;
+  margin: auto;
+  gap: 0.3rem; /* space between progress and card */
 }
 
 .task-progress {
-  font-size: 1.3rem;
-  font-weight: 500;
+  font-size: 1.4rem;
+  font-weight: 600;
   color: var(--muted);
-  margin-bottom: 0.2rem;
   text-align: center;
+  background: var(--bg);
+  padding: 0.5rem 1rem;
+  border-radius: var(--sharp-radius);
+  z-index: 2;
 }
 
-.card {
+.task-card {
   background: var(--card-bg);
   border-radius: var(--radius);
-  padding: 1rem;
   box-shadow: var(--shadow);
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+  overflow-y: auto; /* internal scroll */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* keep instruction Y-position stable */
   text-align: center;
 }
 
@@ -78,7 +94,7 @@ button {
   width: 100%;
   padding: 0.9rem 1rem;
   margin: 0.5rem 0;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 500;
   border-radius: var(--radius);
   border: none;
@@ -139,11 +155,11 @@ button:disabled {
 
   .task-progress {
     font-size: 1.1rem;
-    margin-bottom: 0.1rem;
+    margin-bottom: 0px;
   }
 
   .button-group button, .controls button {
-    font-size: 1rem;  
+    font-size: 1.2rem;  
     padding: 0.2rem 0.6rem;
   }
 

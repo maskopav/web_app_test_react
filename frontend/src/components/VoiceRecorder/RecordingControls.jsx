@@ -14,7 +14,7 @@ export const RecordingControls = ({
     disableStop,
     showPause = true, // Pause button is shown by default
     RECORDING_STATES,
-    className = ""
+    className = "control-buttons"
 }) => {
     const { t } = useTranslation();
     const { IDLE, RECORDING, PAUSED } = RECORDING_STATES;

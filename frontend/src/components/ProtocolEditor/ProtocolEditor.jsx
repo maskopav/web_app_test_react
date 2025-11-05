@@ -1,6 +1,8 @@
 // src/components/ProtocolEditor/ProtocolEditor.jsx
 import React, { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import { taskBaseConfig } from "../../config/tasksBase";
 import { getDefaultParams } from "../../utils/translations"; 
 
@@ -17,6 +19,7 @@ import "./ProtocolEditor.css";
 
 export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange = () => {}, protocol }) {
   const { t } = useTranslation(["admin", "tasks", "common"]);
+  const navigate = useNavigate();
   const { mappings, loading, error } = useMappings();
   const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
   const { saveNewProtocol } = useProtocolManager();
@@ -106,6 +109,17 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
     }
   }
 
+  function handleShowProtocol() {
+    // Ensure tasks are synced into global context
+    setSelectedProtocol({
+      ...protocolData,
+      tasks,
+    });
+  
+    // Redirect to participant view
+    navigate("/participant/test");
+  }  
+
   return (
     <div className="admin-container">
       <h2>{t("title")}</h2>
@@ -132,6 +146,7 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
           dragIndex={dragIndex}
           onAddQuestionnaire={() => setShowQuestionnaireModal(true)}
           onSave={handleSave}
+          onShowProtocol={handleShowProtocol}
         />
       </div>
 

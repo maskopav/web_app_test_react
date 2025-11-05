@@ -119,6 +119,7 @@ export const VoiceRecorder = ({
             
             <StatusIndicator status={recordingStatus} />
 
+            <div className="bottom-controls">
             <RecordingControls
             recordingStatus={recordingStatus}
             disableControls={mode === 'countDown'}
@@ -140,6 +141,7 @@ export const VoiceRecorder = ({
             onNextTask={handleNextTask}
             showNextButton={showNextButton}
             />
+            </div>
         </div>
     );
 };

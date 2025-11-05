@@ -51,8 +51,7 @@ export default function Protocols({ onSelectProtocol }) {
             value={protocolName}
             onChange={(e) => setProtocolName(e.target.value)}
           />
-          <input
-            type="text"
+          <textarea
             className="protocol-input optional"
             placeholder={t("protocolsPage.descriptionPlaceholder", "Description (optional)")}
             value={protocolDescription}

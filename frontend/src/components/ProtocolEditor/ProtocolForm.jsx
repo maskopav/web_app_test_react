@@ -14,6 +14,7 @@ export default function ProtocolForm({
   onDelete,
   onAddQuestionnaire,
   onSave,
+  onShowProtocol,
   onDragStart,
   onDrop,
   dragIndex,
@@ -138,7 +139,7 @@ export default function ProtocolForm({
       </ul>
 
       <div className="button-row">
-        <button className="button-show-tasks" onClick={() => onSave(tasks)} disabled={!tasks.length}>
+        <button className="button-show-tasks" onClick={onShowProtocol} disabled={!tasks.length}>
           {t("showProtocol")}
         </button>
         <button className="button-save" onClick={() => onSave()} disabled={!tasks.length}>

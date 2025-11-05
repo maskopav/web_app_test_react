@@ -1,5 +1,5 @@
 .protocols-container {
-  padding: 0.5rem;
+  padding: 0.2rem;
   max-width: 90vw;
   margin: auto;
 }
@@ -24,13 +24,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  
 }
 
 .protocol-create-fields {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 0.2rem;
+  margin-top: 0rem;
 }
 
 .protocol-input {
@@ -50,8 +51,13 @@
 .btn-create {
   width: auto;
   background: var(--success);
-  padding: 0.6rem 1.2rem;
+  padding: 0.6rem 0.8rem;
 }
+
+.protocol-list-header {
+  padding: 0px 20px;
+}
+
 
 /* --- Table --- */
 .protocol-table-wrapper {

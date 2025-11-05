@@ -8,7 +8,7 @@
   .language-switcher select {
     border-radius: 4px;
     padding: 6px 6px;
-    margin: 3px 3px;
+    margin: 3px;
     cursor: pointer;
   }
   
@@ -16,17 +16,38 @@
 /* ===========================================
    Responsive behavior for small screens
    =========================================== */
-   @media (max-width: 600px) {
+   @media (max-width: 800px) {
     .language-switcher {
-      position: static;        /* remove absolute positioning */
+      position: relative;       /* remove absolute positioning */
+      top: 0;
+      right: 0;
+      left: 0;
+  
       display: flex;
-      justify-content: center; /* center it horizontally */
-      margin-top: 10px;        /* add space from top content */
+      align-items: center;
+      justify-content: flex-end;  /* align to the left */
+      gap: 6px;
+  
+      width: 95%;
+      padding: 4px 10px;
+      margin-bottom: 0px;
+      background: transparent;  /* you can change to white if needed */
+      z-index: 5;
     }
   
     .language-switcher select {
-      width: 80%;
-      max-width: 220px;
-      font-size: 0.9rem;
+      width: auto;
+      max-width: 160px;
+      font-size: 0.85rem;
+      padding: 4px 6px;
+      margin: 0;
+    }
+  
+    /* optional: make it visually lighter */
+    .language-switcher label,
+    .language-switcher span {
+      font-size: 0.85rem;
+      color: #444;
     }
   }
+  

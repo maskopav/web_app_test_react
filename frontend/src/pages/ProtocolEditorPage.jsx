@@ -32,7 +32,9 @@ export default function ProtocolEditorPage() {
 
   return (
     <div className="protocol-editor-page">
-      <LanguageSwitcher />
+      <div className="top-bar"> 
+        <LanguageSwitcher />
+      </div>
       <ProtocolEditor
         initialTasks={configuredTasks}
         onChange={setConfiguredTasks}

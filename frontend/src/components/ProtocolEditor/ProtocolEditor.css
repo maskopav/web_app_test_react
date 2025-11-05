@@ -588,18 +588,91 @@
   .mt-2 { margin-top: 8px; }
   .mt-3 { margin-top: 12px; }
   
-  /* responsive : stack protocol header on narrow screens */
-  @media (max-width: 900px) {
-    .admin-grid {
-      flex-direction: column;
-      align-items: center;
-    }
-    .protocol-header {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .protocol-label { text-align: left; flex: none; width: auto; }
-    .protocol-controls { align-items: stretch; flex-direction: row; gap: 10px; justify-content: space-between; }
-    .button-block { flex-direction: row; width: auto; }
+  /* =========================================================
+   MOBILE FRIENDLY LAYOUT IMPROVEMENTS
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .admin-container {
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
   }
   
+  /* Stack everything vertically */
+  .admin-grid {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  /* Make sections full-width */
+  .task-section,
+  .protocol-section {
+    width: 98%;
+    padding: 6px;
+    min-height: auto;
+  }
+
+  /* Simplify protocol header layout */
+  .protocol-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .protocol-field {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .protocol-label {
+    text-align: left;
+    padding-right: 0;
+    font-size: 0.95rem;
+    margin-bottom: 0px;
+    flex: none; 
+    width: auto;
+  }
+
+  .protocol-name-input,
+  .protocol-language-select,
+  .protocol-description-input {
+    width: 100%;
+    max-width: none;
+    font-size: 1rem;
+  }
+
+  /* Buttons */
+  .button-block {
+    flex-direction: column;
+    gap: 0px;
+    max-width: 100%;
+    width: auto; 
+  }
+
+  .button-block button,
+  .button-save,
+  .button-show-tasks {
+    width: 100%;
+    font-size: 1rem;
+    padding: 5px;
+  }
+
+  /* Reduce font sizes slightly */
+  h2 {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+
+  .protocol-item,
+  .task-option {
+    font-size: 0.95rem;
+  }
+
+  /* Adjust modal box for mobile */
+  .modal-box {
+    width: 95vw;
+    max-height: 90vh;
+    padding: 1rem;
+  }
+}

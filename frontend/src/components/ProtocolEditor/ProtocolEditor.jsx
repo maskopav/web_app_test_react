@@ -18,7 +18,7 @@ import "./ProtocolEditor.css";
 export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange = () => {}, protocol }) {
   const { t } = useTranslation(["admin", "tasks", "common"]);
   const { mappings, loading, error } = useMappings();
-  const { selectedProtocol } = useContext(ProtocolContext);
+  const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
   const { saveNewProtocol } = useProtocolManager();
 
   const [tasks, setTasks] = useState(initialTasks);
@@ -30,11 +30,20 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
   const [showQuestionnaireModal, setShowQuestionnaireModal] = useState(false);
 
   const [protocolData, setProtocolData] = useState(protocol || selectedProtocol || {});
-  const [protocolLanguage, setProtocolLanguage] = useState(protocolData.language || "en");
 
   useEffect(() => {
-    if (protocol) setProtocolData(protocol);
-  }, [protocol]);
+    if (protocol) {
+      setProtocolData(protocol);
+      setSelectedProtocol(protocol);
+    }
+  }, [protocol, setSelectedProtocol]);
+
+  // Whenever local protocolData changes, reflect it globally
+  useEffect(() => {
+    if (protocolData) {
+      setSelectedProtocol(protocolData);
+    }
+  }, [protocolData, setSelectedProtocol]);  
 
   if (loading) {
     return <p>Loading mappings...</p>;
@@ -89,8 +98,7 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
   // Save to backend
   async function handleSave() {
     try {
-      console.log("Selected protocol name:", selectedProtocol)
-      const result = await saveNewProtocol(tasks, selectedProtocol, protocolLanguage);
+      const result = await saveNewProtocol(tasks, protocolData);
       alert("Protocol saved successfully!");
       onSave(result);
     } catch (err) {

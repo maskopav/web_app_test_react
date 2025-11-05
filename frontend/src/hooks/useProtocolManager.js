@@ -5,12 +5,11 @@ import { useMappings } from "../context/MappingContext";
 export function useProtocolManager() {
   const { mappings } = useMappings();
 
-  async function saveNewProtocol(tasks, selectedProtocol, updatedLanguage) {
+  async function saveNewProtocol(tasks, selectedProtocol) {
     console.log(tasks);
     console.log(selectedProtocol);
-    console.log(updatedLanguage);
 
-    const languageId = mappings.languages.find(l => l.code === updatedLanguage)?.id;
+    const languageId = mappings.languages.find(l => l.code === selectedProtocol.language)?.id;
 
     const protocolData = {
       name: selectedProtocol.name,

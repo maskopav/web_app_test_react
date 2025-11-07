@@ -1,7 +1,7 @@
-// src/server.js
+// server.js
 import express from "express";
-import mappingsRouter from "./routes/mappings.js";
-import protocolsRouter from "./routes/protocols.js";
+import mappingsRouter from "./src/routes/mappings.js";
+import protocolsRouter from "./src/routes/protocols.js";
 import cors from "cors";
 
 const app = express();

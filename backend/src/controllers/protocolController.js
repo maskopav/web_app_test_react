@@ -1,27 +1,32 @@
 import { executeTransaction } from '../db/queryHelper.js';
+import { logToFile } from '../utils/logger.js';
 
 export const saveProtocol = async (req, res) => {
-  console.log("🧩 saveProtocol called with body:", req.body);
-  const { name, language_id, description, created_by, tasks } = req.body;
+  logToFile(`🧩 saveProtocol called with body: ${JSON.stringify(req.body)}`);
+  const { protocol_group_id, name, language_id, description, created_by, updated_by, tasks } = req.body;
 
   if (!Array.isArray(tasks) || tasks.length === 0) {
+    logToFile(`❌ Invalid request: no tasks provided`);
     return res.status(400).json({ error: 'No tasks provided' });
   }
 
   try {
     const protocolId = await executeTransaction(async (conn) => {
       const [result] = await conn.query(
-        `INSERT INTO protocols (name, language_id, description, version, created_by)
-         VALUES (?, ?, ?, 1, ?)`,
+        `INSERT INTO protocols (protocol_group_id, name, language_id, description, version, created_by, updated_by)
+         VALUES (?, ?, ?, ?, 1, ?, ?)`,
         [
+          protocol_group_id || 1,
           name || 'Placeholder Protocol',
           language_id || 1,
           description || 'Auto-created from AdminTaskEditor',
           created_by || 1,
+          updated_by || 1,
         ]
       );
 
       const protocolId = result.insertId;
+      logToFile(`✅ Inserted protocol with id=${protocolId}`);
 
       const insertTask = `INSERT INTO protocol_tasks
         (protocol_id, task_id, task_order, params)
@@ -35,6 +40,7 @@ export const saveProtocol = async (req, res) => {
           t.task_order || i + 1,
           JSON.stringify(t.params || {}),
         ]);
+        logToFile(`→ Added task ${t.task_id} to protocol ${protocolId}`);
       }
 
       return protocolId;
@@ -42,7 +48,7 @@ export const saveProtocol = async (req, res) => {
 
     res.json({ success: true, protocol_id: protocolId });
   } catch (err) {
-    console.error('❌ Error saving protocol:', err);
+    logToFile(`❌ Error saving protocol: ${err.stack || err}`);
     res.status(500).json({ error: 'Failed to save protocol' });
   }
 };

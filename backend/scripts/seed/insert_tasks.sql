@@ -1,4 +1,4 @@
-INSERT INTO tasks (`key`, `type_id`, `recording_mode`, `params`, `illustration`)
+INSERT INTO tasks (`category`, `type_id`, `recording_mode`, `params`, `illustration`)
 VALUES
 ('phonation', 
  (SELECT id FROM task_types WHERE type='voice'),

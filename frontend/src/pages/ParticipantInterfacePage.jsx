@@ -1,17 +1,34 @@
-import React, { useState, useContext, useMemo } from "react";
+import React, { useState, useContext, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { createTask } from "../tasks";
 import { resolveTasks, resolveTask } from "../utils/taskResolver";
 import { VoiceRecorder } from "../components/VoiceRecorder/VoiceRecorder";
 import CompletionScreen from "../components/CompletionScreen";
-import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
 import "./Pages.css";
 
 export default function ParticipantInterfacePage() {
-  const { t } = useTranslation(["tasks", "common"]);
+  const { i18n, t } = useTranslation(["tasks", "common"]);
   const { selectedProtocol } = useContext(ProtocolContext);
   const [taskIndex, setTaskIndex] = useState(0);
+
+  // Apply protocol language temporarily
+  useEffect(() => {
+    if (!selectedProtocol) return;
+
+    const protocolLang = selectedProtocol.language || "en";
+    const previousLang = i18n.language;
+
+    // Change language for the participant view
+    if (protocolLang !== previousLang) {
+      i18n.changeLanguage(protocolLang);
+    }
+
+    // Optionally restore editor language when leaving participant view
+    return () => {
+      i18n.changeLanguage(previousLang);
+    };
+  }, [selectedProtocol, i18n]);
 
   if (!selectedProtocol) {
     return <p>No protocol selected.</p>;

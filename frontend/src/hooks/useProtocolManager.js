@@ -17,7 +17,7 @@ export function useProtocolManager() {
       description: selectedProtocol.description,
       created_by: 1,
       tasks: tasks.map((task, index) => ({
-        task_id: mappings.tasks.find(t => t.key === task.category)?.id,
+        task_id: mappings.tasks.find(t => t.category === task.category)?.id,
         task_order: index + 1,
         params: task,
       })),

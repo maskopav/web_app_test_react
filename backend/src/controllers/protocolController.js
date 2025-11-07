@@ -3,7 +3,7 @@ import { logToFile } from '../utils/logger.js';
 
 export const saveProtocol = async (req, res) => {
   logToFile(`🧩 saveProtocol called with body: ${JSON.stringify(req.body)}`);
-  const { protocol_group_id, name, language_id, description, created_by, updated_by, tasks } = req.body;
+  const { protocol_group_id, name, language_id, description, version, created_by, updated_by, tasks } = req.body;
 
   if (!Array.isArray(tasks) || tasks.length === 0) {
     logToFile(`❌ Invalid request: no tasks provided`);
@@ -12,21 +12,30 @@ export const saveProtocol = async (req, res) => {
 
   try {
     const protocolId = await executeTransaction(async (conn) => {
+      // Determine the protocol_group_id
+      let groupId = protocol_group_id;
+      if (!groupId) {
+        const [rows] = await conn.query(`SELECT COALESCE(MAX(protocol_group_id), 0) + 1 AS next_group_id FROM protocols`);
+        groupId = rows[0].next_group_id || 1;
+      }
+
+      // Insert the new protocol
       const [result] = await conn.query(
         `INSERT INTO protocols (protocol_group_id, name, language_id, description, version, created_by, updated_by)
-         VALUES (?, ?, ?, ?, 1, ?, ?)`,
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
-          protocol_group_id || 1,
+          groupId,
           name || 'Placeholder Protocol',
           language_id || 1,
           description || 'Auto-created from AdminTaskEditor',
+          version || 1,
           created_by || 1,
           updated_by || 1,
         ]
       );
 
       const protocolId = result.insertId;
-      logToFile(`✅ Inserted protocol with id=${protocolId}`);
+      logToFile(`✅ Inserted protocol with id=${protocolId}, group_id=${groupId}, version=${version}`);
 
       const insertTask = `INSERT INTO protocol_tasks
         (protocol_id, task_id, task_order, params)

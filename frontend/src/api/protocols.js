@@ -18,4 +18,11 @@ export async function saveProtocolToBackend(protocolData) {
       throw error;
     }
   }
+
+export async function getProtocolById(protocolId) {
+  console.log("Fetching protocol %d", protocolId);
+  const res = await fetch(`${API_BASE}/protocols/${protocolId}`);
+  if (!res.ok) throw new Error("Failed to fetch protocol");
+  return res.json(); // expected: { protocolData, tasks }
+}
   

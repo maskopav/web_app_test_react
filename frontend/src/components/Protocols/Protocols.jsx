@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useMappings } from "../../context/MappingContext";
 import { LanguageSwitcher } from "../LanguageSwitcher/LanguageSwitcher";
 import ProtocolLanguageSelector from "../ProtocolLanguageSelector";
+import { useProtocolActions } from "../../hooks/useProtocolActions";
 import "./Protocols.css";
 
 export default function Protocols({ onSelectProtocol }) {
@@ -11,6 +12,7 @@ export default function Protocols({ onSelectProtocol }) {
   const [protocolName, setProtocolName] = useState("");
   const [protocolDescription, setProtocolDescription] = useState("");
   const [protocolLanguage, setProtocolLanguage] = useState("en");
+  const { viewProtocol } = useProtocolActions();
 
   const protocols = mappings?.protocols || [];
   const languages = mappings?.languages || [];
@@ -118,7 +120,7 @@ export default function Protocols({ onSelectProtocol }) {
                     <td className="actions">
                       <button
                         className="btn-view"
-                        onClick={() => onSelectProtocol(p)}
+                        onClick={() => viewProtocol(p.id)}
                       >
                         {t("protocolDashboard.buttons.show")}
                       </button>

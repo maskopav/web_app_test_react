@@ -11,7 +11,7 @@
       "save": "Uložit",
       "done": "Hotovo",
       "skip": "Přeskočit",
-      "back": "Zpět"
+      "backToEditor": "Zpět na správu protokolů"
     },
     "status": {
       "ready": "⚪ Připraveno",

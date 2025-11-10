@@ -1,3 +1,4 @@
+// src/db/queryHelper.js
 import pool from './connection.js';
 
 export async function executeQuery(query, params = []) {

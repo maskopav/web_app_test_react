@@ -109,7 +109,7 @@ export default function ParticipantInterfacePage() {
         <div className="top-controls">
           {testingMode && (
           <button className="btn-back" onClick={handleBack}>
-            ← {t("buttons.back", { ns: "common" })}
+            ← {t("buttons.backToEditor", { ns: "common" })}
           </button>
           )}
 

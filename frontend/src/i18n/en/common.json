@@ -9,7 +9,9 @@
       "permission": "🎤 Get Microphone Permission",
       "cancel": "Cancel",
       "save": "Save",
-      "done": "Done"
+      "done": "Done",
+      "skip": "Skip",
+      "back": "Back"
     },
     "status": {
       "ready": "⚪ Ready",

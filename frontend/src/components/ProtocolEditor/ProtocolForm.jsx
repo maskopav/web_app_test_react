@@ -40,18 +40,18 @@ export default function ProtocolForm({
     <div className="protocol-section">
       <div className="protocol-header">
           <h3 className="protocol-current">
-            {t("currentProtocol")}
+            {t("protocolEditor.currentProtocol")}
           </h3>
 
           <div className="protocol-values">
             <div className="protocol-field">
               <label className="protocol-label">
-                {t("protocolsPage.Name", "Protocol name:")}
+                {t("protocolDashboard.namePlaceholder")}:
               </label>
               <input
                 type="text"
                 className={`protocol-name-input ${nameError ? "name-input-error" : ""}`}
-                placeholder={t("protocolsPage.namePlaceholder", "Protocol name")}
+                placeholder={t("protocolDashboard.namePlaceholder")}
                 value={protocolData?.name || ""}
                 onChange={handleNameChange}
               />
@@ -66,13 +66,12 @@ export default function ProtocolForm({
 
             <div className="protocol-field">
               <label className="protocol-label">
-                {t("protocolsPage.descriptionLabel", "Description (optional):")}
+                {t("protocolDashboard.descriptionPlaceholder")}:
               </label>
               <textarea
                 className="protocol-description-input"
                 placeholder={t(
-                  "protocolsPage.descriptionPlaceholder",
-                  "Enter protocol description"
+                  "protocolDashboard.descriptionPlaceholder"
                 )}
                 value={protocolData?.description || ""}
                 onChange={handleDescriptionChange}
@@ -83,14 +82,14 @@ export default function ProtocolForm({
 
           <div className="button-block">
             <button className="btn-add-questionnaire" onClick={onAddQuestionnaire}>
-              {t("addQuestionnaire")}
+              {t("protocolEditor.addQuestionnaire")}
             </button>
 
             <button
               className={`reorder-btn ${reorderMode ? "active" : ""}`}
               onClick={() => setReorderMode(!reorderMode)}
             >
-              {reorderMode ? t("finishReordering") : t("reorderTasks")}
+              {reorderMode ? t("protocolEditor.finishReordering") : t("protocolEditor.reorderTasks")}
             </button>
 
           </div>
@@ -99,7 +98,7 @@ export default function ProtocolForm({
       <ul className="protocol-list">
         {tasks.length === 0 ? (
           <li className="empty-protocol">
-            <em>{t("noTasks")}</em>
+            <em>{t("protocolEditor.noTasks")}</em>
           </li>
         ) : (
           tasks.map((task, idx) => {
@@ -121,8 +120,8 @@ export default function ProtocolForm({
                   </div>
                   {!reorderMode && (
                     <div className="action-buttons">
-                      <span className="edit-icon" title={t("tooltips.edit")} onClick={() => onEdit(idx)}>✎</span>
-                      <span className="delete-icon" title={t("tooltips.delete")} onClick={() => onDelete(idx)}>✖</span>
+                      <span className="edit-icon" title={t("protocolEditor.tooltips.edit")} onClick={() => onEdit(idx)}>✎</span>
+                      <span className="delete-icon" title={t("protocolEditor.tooltips.delete")} onClick={() => onDelete(idx)}>✖</span>
                     </div>
                   )}
                 </div>
@@ -142,13 +141,13 @@ export default function ProtocolForm({
 
       <div className="button-row">
         <button className="button-show-tasks" onClick={onShowProtocol} disabled={!tasks.length || reorderMode}>
-          {t("showProtocol")}
+          {t("protocolEditor.showProtocol")}
         </button>
         <button className="button-save" 
           onClick={() => onSave()} 
           disabled={!tasks.length  || !protocolData?.name?.trim() || !!nameError || reorderMode}
         >
-          {t("saveProtocol")}
+          {t("protocolEditor.saveProtocol")}
         </button>
       </div>
     </div>

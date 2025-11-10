@@ -9,7 +9,9 @@
       "permission": "🎤 Povolit mikrofon",
       "cancel": "Zrušit",
       "save": "Uložit",
-      "done": "Hotovo"
+      "done": "Hotovo",
+      "skip": "Přeskočit",
+      "back": "Zpět"
     },
     "status": {
       "ready": "⚪ Připraveno",

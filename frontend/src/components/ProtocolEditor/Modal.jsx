@@ -40,7 +40,7 @@ export default function AdminModal({
         {showSaveButton && (
           <div className="modal-actions">
             <button className="btn-save" onClick={onSave}>
-              {t("buttons.save")}
+              {t("protocolEditor.buttons.save")}
             </button>
           </div>
         )}

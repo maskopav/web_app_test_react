@@ -48,8 +48,8 @@ export default function TaskModal({
     <Modal open={open} onClose={onClose} onSave={handleSave}>
       <div className="modal-title">
         {creatingNewTask
-          ? t("addTask", { category: translatedName })
-          : t("editTask", { category: translatedName })}
+          ? t("protocolEditor.addTask", { category: translatedName })
+          : t("protocolEditor.editTask", { category: translatedName })}
       </div>
 
       <div className="modal-form">

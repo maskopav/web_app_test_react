@@ -6,7 +6,7 @@ import "./LanguageSwitcher.css";
 
 export function LanguageSwitcher() {
   const { i18n } = useTranslation();
-  const { t } = useTranslation(["admin", "tasks", "common"]);
+  const { t } = useTranslation(["admin"]);
 
   const handleChange = (event) => {
     const newLang = event.target.value;
@@ -23,7 +23,7 @@ export function LanguageSwitcher() {
 
   return (
     <div className="language-switcher">
-      <label className="protocol-language-label">{t("editorLanguage")}
+      <label className="protocol-language-label">{t("protocolEditor.editorLanguage")}
         <select 
           className="language-select"
           value={i18n.language} 

@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import { LANGUAGES } from "../i18n";
 
 export default function ProtocolLanguageSelector({ value, onChange }) {
-  const { t } = useTranslation(["admin", "common"]);
+  const { t } = useTranslation(["admin"]);
 
   return (
     <div className="protocol-field">
       <label className="protocol-label">
-        {t("protocolLanguage")}
+        {t("protocolEditor.protocolLanguage")}
       </label>
       <select
         className="protocol-language-select"

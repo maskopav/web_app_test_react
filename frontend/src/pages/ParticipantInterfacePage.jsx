@@ -109,7 +109,7 @@ export default function ParticipantInterfacePage() {
         <div className="top-controls">
           {testingMode && (
           <button className="btn-back" onClick={handleBack}>
-            ← Back
+            ← {t("buttons.back", { ns: "common" })}
           </button>
           )}
 
@@ -121,7 +121,7 @@ export default function ParticipantInterfacePage() {
 
             {testingMode && (
               <button className="btn-skip" onClick={handleSkip}>
-                Skip →
+                {t("buttons.skip", { ns: "common" })} →
               </button>
             )}
             </>

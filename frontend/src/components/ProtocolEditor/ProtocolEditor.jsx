@@ -18,7 +18,7 @@ import { ProtocolContext } from "../../context/ProtocolContext";
 import "./ProtocolEditor.css";
 
 export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange = () => {}, protocol }) {
-  const { t } = useTranslation(["admin", "tasks", "common"]);
+  const { t } = useTranslation(["admin"]);
   const navigate = useNavigate();
   const { mappings, loading, error } = useMappings();
   const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
@@ -143,7 +143,7 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
 
   return (
     <div className="admin-container">
-      <h2>{t("title")}</h2>
+      <h2>{t("protocolEditor.title")}</h2>
 
       <div className="admin-grid">
         <TaskList onCreate={startCreatingTask} />

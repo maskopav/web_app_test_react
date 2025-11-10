@@ -1,5 +1,34 @@
 {
-    "title": "Editor úloh",
+  "projectDashboard": {
+    "title": "Přehled projektu",
+    "subtitle": "Načtený projekt:"
+  },
+  "protocolDashboard": {
+    "title": "Správa protokolů",
+    "createNew": "Vytvořit nový protokol",
+    "existingProtocols": "Existující protokoly",
+    "namePlaceholder": "Název protokolu",
+    "nameExists": "Protokol s tímto názvem již existuje.",
+    "descriptionPlaceholder": "Popis (nepovinné)",
+    "noData": "Nebyly nalezeny žádné protokoly",
+    "buttons": {
+      "create": "Vytvořit protokol",
+      "show": "Zobrazit",
+      "edit": "Upravit",
+      "duplicate": "Duplikovat"
+    },
+    "table": {
+      "name": "Název",
+      "language": "Jazyk",
+      "description": "Popis",
+      "version": "Verze",
+      "questionnaire": "Dotazník",
+      "createdAt": "Vytvořeno",
+      "actions": "Akce"
+    }
+  },
+  "protocolEditor": {
+    "title": "Editor úloh protokolu",
     "availableTasks": "Dostupné úlohy:",
     "currentProtocol": "Aktuální protokol:",
     "noTasks": "Zatím nejsou přidány žádné úlohy.",
@@ -8,29 +37,29 @@
     "editorLanguage": "🌍 Jazyk editoru:",
     "protocolLanguage": "🌍 Jazyk protokolu:",
     "addQuestionnaire": "Přidat dotazník",
-    "reorderTasks": "Změnit pořadí",
+    "reorderTasks": "Změnit pořadí úloh",
     "finishReordering": "Dokončit změnu pořadí",
     "showProtocol": "Zobrazit navržený protokol",
     "saveProtocol": "Uložit protokol",
-    "params": "Parametery",
+    "params": "Parametry",
     "questionnaire": {
-      "questionnaireTitle": "Questionnaire Title",
-      "enterTitle": "Enter questionnaire title",
-      "questionnaireDescription": "Questionnaire Description",
-      "enterDescription": "Enter optional description",
-      "questions": "Questions",
-      "question": "Question",
-      "enterQuestionText": "Enter question text",
-      "answerType": "Answer Type",
-      "Open answer": "Open answer",
-      "Single choice": "Single choice (radio)",
-      "Multiple choice": "Multiple choice (checkbox)",
-      "Dropdown": "Dropdown",
-      "answerOptions": "Answer Options",
-      "Option": "Option",
-      "addOption": "Add option",
-      "addQuestion": "Add question",
-      "removeQuestion": "Remove question"
+      "questionnaireTitle": "Název dotazníku",
+      "enterTitle": "Zadejte název dotazníku",
+      "questionnaireDescription": "Popis dotazníku",
+      "enterDescription": "Zadejte volitelný popis",
+      "questions": "Otázky",
+      "question": "Otázka",
+      "enterQuestionText": "Zadejte text otázky",
+      "answerType": "Typ odpovědi",
+      "Open answer": "Otevřená odpověď",
+      "Single choice": "Jedna možnost (radio)",
+      "Multiple choice": "Více možností (checkbox)",
+      "Dropdown": "Rozbalovací nabídka",
+      "answerOptions": "Možnosti odpovědí",
+      "Option": "Možnost",
+      "addOption": "Přidat možnost",
+      "addQuestion": "Přidat otázku",
+      "removeQuestion": "Odstranit otázku"
     },
     "tooltips": {
       "edit": "Upravit tuto úlohu",
@@ -46,4 +75,4 @@
       "save": "Uložit změny"
     }
   }
-  
+}

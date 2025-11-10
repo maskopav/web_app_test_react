@@ -79,23 +79,23 @@ export default function QuestionnaireModal({ open, onClose, onSave }) {
 
   return (
     <Modal open={open} onClose={onClose} onSave={handleSave}>
-      <div className="modal-title">{t("addQuestionnaire")}</div>
+      <div className="modal-title">{t("protocolEditor.addQuestionnaire")}</div>
 
       <div className="questionnaire-form">
         {/* Header Section */}
         <div className="questionnaire-header">
-          <label>{t("questionnaire.questionnaireTitle")}</label>
+          <label>{t("protocolEditor.questionnaire.questionnaireTitle")}</label>
           <input
             type="text"
             value={title}
-            placeholder={t("questionnaire.enterTitle")}
+            placeholder={t("protocolEditor.questionnaire.enterTitle")}
             onChange={(e) => setTitle(e.target.value)}
           />
 
-          <label>{t("questionnaire.questionnaireDescription")}</label>
+          <label>{t("protocolEditor.questionnaire.questionnaireDescription")}</label>
           <textarea
             value={description}
-            placeholder={t("questionnaire.enterDescription")}
+            placeholder={t("protocolEditor.questionnaire.enterDescription")}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
           />
@@ -106,28 +106,28 @@ export default function QuestionnaireModal({ open, onClose, onSave }) {
           {questions.map((q, idx) => (
             <div key={q.id} className="question-block compact">
             <div className="question-header">
-              <strong>{t("questionnaire.question")} {idx + 1}</strong>
+              <strong>{t("protocolEditor.questionnaire.question")} {idx + 1}</strong>
               <button
                 className="btn-remove-question-icon"
                 onClick={() => removeQuestion(q.id)}
-                title={t("questionnaire.removeQuestion")}
+                title={t("protocolEditor.questionnaire.removeQuestion")}
               >
                 ✖
               </button>
             </div>
             
             <div className="form-group small">
-              <label>{t("questionnaire.question")}</label>
+              <label>{t("protocolEditor.questionnaire.question")}</label>
               <input
                 type="text"
                 value={q.text}
-                placeholder={t("questionnaire.enterQuestionText")}
+                placeholder={t("protocolEditor.questionnaire.enterQuestionText")}
                 onChange={(e) => updateQuestion(q.id, "text", e.target.value)}
               />
             </div>
           
             <div className="form-group small">
-              <label>{t("questionnaire.answerType")}</label>
+              <label>{t("protocolEditor.questionnaire.answerType")}</label>
               <select
                 value={q.type}
                 onChange={(e) => {
@@ -136,10 +136,10 @@ export default function QuestionnaireModal({ open, onClose, onSave }) {
                   if (newType === "open") updateQuestion(q.id, "options", []);
                 }}
               >
-                <option value="open">{t("questionnaire.Open answer")}</option>
-                <option value="single">{t("questionnaire.Single choice")}</option>
-                <option value="multiple">{t("questionnaire.Multiple choice")}</option>
-                <option value="dropdown">{t("questionnaire.Dropdown")}</option>
+                <option value="open">{t("protocolEditor.questionnaire.Open answer")}</option>
+                <option value="single">{t("protocolEditor.questionnaire.Single choice")}</option>
+                <option value="multiple">{t("protocolEditor.questionnaire.Multiple choice")}</option>
+                <option value="dropdown">{t("protocolEditor.questionnaire.Dropdown")}</option>
               </select>
             </div>
 
@@ -147,12 +147,12 @@ export default function QuestionnaireModal({ open, onClose, onSave }) {
               {q.type !== "open" && (
                 <div className="options-section">
                   <div className="question-header">
-                  <label>{t("questionnaire.answerOptions")}</label>
+                  <label>{t("protocolEditor.questionnaire.answerOptions")}</label>
                   <button
                     className="btn-add-option"
                     onClick={() => addOption(q.id)}
                   >
-                    + {t("questionnaire.addOption")}
+                    + {t("protocolEditor.questionnaire.addOption")}
                   </button>
                   </div>
                   {q.options.map((opt, i) => (
@@ -160,7 +160,7 @@ export default function QuestionnaireModal({ open, onClose, onSave }) {
                       <input
                         type="text"
                         value={opt}
-                        placeholder={`${t("questionnaire.Option")} ${i + 1}`}
+                        placeholder={`${t("protocolEditor.questionnaire.Option")} ${i + 1}`}
                         onChange={(e) =>
                           updateOption(q.id, i, e.target.value)
                         }
@@ -180,7 +180,7 @@ export default function QuestionnaireModal({ open, onClose, onSave }) {
           ))}
 
           <button className="btn-add-questionnaire" onClick={addQuestion}>
-            + {t("questionnaire.addQuestion")}
+            + {t("protocolEditor.questionnaire.addQuestion")}
           </button>
         </div>
       </div>

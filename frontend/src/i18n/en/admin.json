@@ -1,5 +1,34 @@
 {
-    "title": "Admin Task Editor",
+  "projectDashboard": {
+    "title": "Project Dashboard",
+    "subtitle": "Loaded project:"
+  },
+  "protocolDashboard": {
+    "title": "Protocols Management",
+    "createNew": "Create New Protocol",
+    "existingProtocols": "Existing Protocols",
+    "namePlaceholder": "Protocol name",
+    "nameExists": "A protocol with this name already exists.",
+    "descriptionPlaceholder": "Description (optional)",
+    "noData": "No protocols found",
+    "buttons": {
+      "create": "Create Protocol",
+      "show": "Show",
+      "edit": "Edit",
+      "duplicate": "Duplicate"
+    },
+    "table": {
+      "name": "Name",
+      "language": "Language",
+      "description": "Description",
+      "version": "Version",
+      "questionnaire": "Questionnaire",
+      "createdAt": "Created at",
+      "actions": "Actions"
+    }
+  },
+  "protocolEditor": {
+    "title": "Protocol Task Editor",
     "availableTasks": "Available Tasks:",
     "currentProtocol": "Current Protocol:",
     "noTasks": "No tasks added yet.",
@@ -46,4 +75,5 @@
       "save": "Save Changes"
     }
   }
+}
   

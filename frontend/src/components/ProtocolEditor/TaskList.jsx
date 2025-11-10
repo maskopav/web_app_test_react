@@ -10,7 +10,7 @@ export default function TaskList({ onCreate }) {
 
   return (
     <div className="task-section">
-      <h3>{t("availableTasks")}</h3>
+      <h3>{t("protocolEditor.availableTasks")}</h3>
       <ul className="task-list">
         {Object.keys(taskBaseConfig).map((cat) => {
           const translatedName = translateTaskName(cat);

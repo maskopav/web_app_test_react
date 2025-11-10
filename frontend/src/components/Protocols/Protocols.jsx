@@ -27,14 +27,14 @@ export default function Protocols({ onSelectProtocol }) {
   return (
     <div className="protocols-container">
       <div className="protocols-header">
-        <h2>{t("protocolsPage.title", "Protocols Management")}</h2>
+        <h2>{t("protocolDashboard.title")}</h2>
         <LanguageSwitcher />
       </div>
 
       {/* Create protocol section */}
       <div className="protocol-create card">
         <div className="protocol-create-header">
-          <h3>{t("protocolsPage.createNew", "Create New Protocol")}</h3>
+          <h3>{t("protocolDashboard.createNew")}</h3>
           <button
             className="btn-create"
             disabled={!protocolName.trim() || nameExists}
@@ -42,7 +42,7 @@ export default function Protocols({ onSelectProtocol }) {
               onSelectProtocol({ name: protocolName, language: protocolLanguage, description: protocolDescription })
             }
           >
-            {t("protocolsPage.create", "Create Protocol")}
+            {t("protocolDashboard.buttons.create")}
           </button>
         </div>
 
@@ -51,20 +51,20 @@ export default function Protocols({ onSelectProtocol }) {
             <input
               type="text"
               className={`protocol-input ${nameExists ? "input-error" : ""}`}
-              placeholder={t("protocolsPage.namePlaceholder", "Protocol name")}
+              placeholder={t("protocolDashboard.namePlaceholder")}
               value={protocolName}
               onChange={(e) => setProtocolName(e.target.value)}
             />
             {nameExists && (
               <div className="error-text">
-                {t("protocolsPage.nameExists", "A protocol with this name already exists.")}
+                {t("protocolDashboard.nameExists")}
               </div>
             )}
           </div>
           
           <textarea
             className="protocol-input optional"
-            placeholder={t("protocolsPage.descriptionPlaceholder", "Description (optional)")}
+            placeholder={t("protocolDashboard.descriptionPlaceholder")}
             value={protocolDescription}
             onChange={(e) => setProtocolDescription(e.target.value)}
           />
@@ -78,11 +78,11 @@ export default function Protocols({ onSelectProtocol }) {
       {/* Protocol list */}
       <div className="protocol-list card">
         <div className="protocol-list-header">
-          <h3>{t("protocolsPage.existing", "Existing Protocols")}</h3>
+          <h3>{t("protocolDashboard.existingProtocols")}</h3>
           {/* Future filter/search 
           <input
             className="protocol-filter"
-            placeholder={t("protocolsPage.search", "Filter protocols...")}
+            placeholder={t("protocolDashboard.search", "Filter protocols...")}
           />*/}
         </div>
 
@@ -90,20 +90,20 @@ export default function Protocols({ onSelectProtocol }) {
           <table className="protocol-table">
             <thead>
               <tr>
-                <th>{t("protocolsPage.name", "Name")}</th>
-                <th>{t("protocolsPage.language", "Language")}</th>
-                <th>{t("protocolsPage.description", "Description")}</th>
-                <th>{t("protocolsPage.version", "Version")}</th>
-                <th>{t("protocolsPage.questionnaires_id", "Questionnaire")}</th>
-                <th>{t("protocolsPage.created_at", "Created at")}</th>
-                <th>{t("protocolsPage.actions", "Actions")}</th>
+                <th>{t("protocolDashboard.table.name")}</th>
+                <th>{t("protocolDashboard.table.language")}</th>
+                <th>{t("protocolDashboard.table.description")}</th>
+                <th>{t("protocolDashboard.table.version")}</th>
+                <th>{t("protocolDashboard.table.questionnaire")}</th>
+                <th>{t("protocolDashboard.table.createdAt")}</th>
+                <th>{t("protocolDashboard.table.actions")}</th>
               </tr>
             </thead>
             <tbody>
               {protocols.length === 0 ? (
                 <tr>
                   <td colSpan="7" className="empty-row">
-                    {t("protocolsPage.noData", "No protocols found")}
+                    {t("protocolDashboard.noData")}
                   </td>
                 </tr>
               ) : (
@@ -120,13 +120,13 @@ export default function Protocols({ onSelectProtocol }) {
                         className="btn-view"
                         onClick={() => onSelectProtocol(p)}
                       >
-                        {t("protocolsPage.show", "Show")}
+                        {t("protocolDashboard.buttons.show")}
                       </button>
                       <button
                         className="btn-edit"
                         onClick={() => onSelectProtocol(p)}
                       >
-                        {t("protocolsPage.edit", "Edit")}
+                        {t("protocolDashboard.buttons.edit")}
                       </button>
                       <button
                         className="btn-duplicate"
@@ -138,7 +138,7 @@ export default function Protocols({ onSelectProtocol }) {
                           })
                         }
                       >
-                        {t("protocolsPage.duplicate", "Duplicate")}
+                        {t("protocolDashboard.buttons.duplicate")}
                       </button>
                     </td>
                   </tr>

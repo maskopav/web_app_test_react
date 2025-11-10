@@ -13,7 +13,7 @@ export default function ProtocolEditorPage() {
   const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
   const { refreshMappings } = useMappings();
 
-  const [configuredTasks, setConfiguredTasks] = useState([]);
+  const [configuredTasks, setConfiguredTasks] = useState(state?.protocol?.tasks || selectedProtocol?.tasks || []);
   const [protocolData, setProtocolData] = useState(
     state?.protocol || selectedProtocol || null
   );

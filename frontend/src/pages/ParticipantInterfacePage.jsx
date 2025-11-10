@@ -1,5 +1,6 @@
 import React, { useState, useContext, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { createTask } from "../tasks";
 import { resolveTasks, resolveTask } from "../utils/taskResolver";
@@ -9,41 +10,61 @@ import "./Pages.css";
 
 export default function ParticipantInterfacePage() {
   const { i18n, t } = useTranslation(["tasks", "common"]);
-  const { selectedProtocol } = useContext(ProtocolContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
   const [taskIndex, setTaskIndex] = useState(0);
 
-  // Apply protocol language temporarily
+  // Determine testing mode and protocol
+  const testingMode = location.state?.testing ?? false;
+  const protocolData = location.state?.protocol || selectedProtocol;
+
+  // Restore protocol in context if provided via state
   useEffect(() => {
-    if (!selectedProtocol) return;
+    if (protocolData && !selectedProtocol) {
+      setSelectedProtocol(protocolData);
+    }
+  }, [protocolData, selectedProtocol, setSelectedProtocol]);
 
-    const protocolLang = selectedProtocol.language || "en";
+  // Handle language switching temporarily
+  useEffect(() => {
+    if (!protocolData) return;
+    const protocolLang = protocolData.language || "en";
     const previousLang = i18n.language;
-
-    // Change language for the participant view
     if (protocolLang !== previousLang) {
       i18n.changeLanguage(protocolLang);
     }
-
-    // Optionally restore editor language when leaving participant view
     return () => {
       i18n.changeLanguage(previousLang);
     };
-  }, [selectedProtocol, i18n]);
+  }, [protocolData, i18n]);
 
-  if (!selectedProtocol) {
+  if (!protocolData) {
     return <p>No protocol selected.</p>;
   }
 
   // Generate runtime tasks from the selected protocol
   const runtimeTasks = useMemo(() => {
+    if (!selectedProtocol) return [];
     const configured = selectedProtocol.tasks ?? [];
     const raw = configured.map((t) => createTask(t.category, t));
     return resolveTasks(raw);
-  }, [selectedProtocol]);
+  }, [selectedProtocol, i18n.language]);
 
   const handleNextTask = (data) => {
     console.log(`Task ${taskIndex + 1} completed`, data);
     setTaskIndex((i) => i + 1);
+  };
+
+  const handleBack = () => {
+    // Return to ProtocolEditor with preserved protocol
+    navigate(`/projects/${protocolData.projectId || "demo"}/protocols/${protocolData.id || "test"}`, {
+      state: { protocol: protocolData },
+    });
+  };
+
+  const handleSkip = () => {
+    setTaskIndex((i) => Math.min(i + 1, runtimeTasks.length));
   };
 
   const renderCurrentTask = () => {
@@ -85,11 +106,27 @@ export default function ParticipantInterfacePage() {
   return (
     <div className="app-container">
       <div className="task-wrapper">
-        {taskIndex < runtimeTasks.length && (
-          <div className="task-progress">
-            {taskLabel || "Task"} {currentOfType}/{totalOfType}
-          </div>
-        )}
+        <div className="top-controls">
+          {testingMode && (
+          <button className="btn-back" onClick={handleBack}>
+            ← Back
+          </button>
+          )}
+
+          {taskIndex < runtimeTasks.length && (
+            <>
+            <div className="task-progress">
+              {taskLabel || "Task"} {currentOfType}/{totalOfType}
+            </div>
+
+            {testingMode && (
+              <button className="btn-skip" onClick={handleSkip}>
+                Skip →
+              </button>
+            )}
+            </>
+          )}
+        </div>
         <div className="task-card">{renderCurrentTask()}</div>
       </div>
     </div>

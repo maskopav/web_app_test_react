@@ -28,8 +28,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 95vh; /* use full viewport height */
+  height: 90vh; /* use full viewport height */
   padding: 0;
+}
+
+.top-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10%;
+  width: 100%;
 }
 
 .task-wrapper {
@@ -45,6 +53,7 @@ body {
 }
 
 .task-progress {
+  flex: 2;
   font-size: 1.4rem;
   font-weight: 600;
   color: var(--muted);
@@ -86,7 +95,6 @@ p {
   margin-bottom: 1.5rem;
   color: var(--muted);
 }
-
 
 
 /* Buttons */
@@ -134,6 +142,13 @@ button:disabled {
 .btn-resume,
 .btn-next {
   background: var(--success);
+}
+
+.btn-skip, .btn-back {
+  flex: 1;
+  padding: 0.4rem 0.4rem;
+  margin-bottom: 0.2rem;
+  font-size: 1.2rem;
 }
 
 /* Validation */

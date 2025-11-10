@@ -68,6 +68,12 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
     }
   }, [protocolData?.name, protocols]);
 
+  useEffect(() => {
+    if (onChange) {
+      onChange(tasks);
+    }
+  }, [tasks, onChange]);  
+
   if (loading) {
     return <p>Loading mappings...</p>;
   }
@@ -90,18 +96,13 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
   }
 
   function addTaskToProtocol(taskData) {
-    setTasks((prev) => {
-      const next = [...prev, taskData];
-      onChange(next);
-      return next;
-    });
+    setTasks((prev) => [...prev, taskData]);
   }
 
   function updateTask(updatedData, index) {
     setTasks((prev) =>
       prev.map((t, i) => (i === index ? { ...t, ...updatedData } : t))
-    );
-    onChange(tasks);
+    );    
   }
 
   // Drag & Drop
@@ -136,8 +137,8 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
       tasks,
     });
   
-    // Redirect to participant view
-    navigate("/participant/test");
+    // Redirect to participant view in testing mode (additional back, skip buttons, data is not being saved)
+    navigate("/participant/test", { state: { testing: true, protocol: { ...protocolData, tasks } } });
   }  
 
   return (

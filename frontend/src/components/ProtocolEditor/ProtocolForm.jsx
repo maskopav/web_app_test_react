@@ -18,6 +18,7 @@ export default function ProtocolForm({
   onDragStart,
   onDrop,
   dragIndex,
+  nameError,
 }) {
   const { t } = useTranslation(["admin", "tasks"]);
 
@@ -49,11 +50,12 @@ export default function ProtocolForm({
               </label>
               <input
                 type="text"
-                className="protocol-name-input"
+                className={`protocol-name-input ${nameError ? "name-input-error" : ""}`}
                 placeholder={t("protocolsPage.namePlaceholder", "Protocol name")}
                 value={protocolData?.name || ""}
                 onChange={handleNameChange}
               />
+              {nameError && <div className="error-text">{nameError}</div>}
             </div>
 
               <ProtocolLanguageSelector
@@ -142,7 +144,10 @@ export default function ProtocolForm({
         <button className="button-show-tasks" onClick={onShowProtocol} disabled={!tasks.length}>
           {t("showProtocol")}
         </button>
-        <button className="button-save" onClick={() => onSave()} disabled={!tasks.length}>
+        <button className="button-save" 
+          onClick={() => onSave()} 
+          disabled={!tasks.length  || !protocolData?.name?.trim() || !!nameError}
+        >
           {t("saveProtocol")}
         </button>
       </div>

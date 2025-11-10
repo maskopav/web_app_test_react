@@ -34,6 +34,9 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
 
   const [protocolData, setProtocolData] = useState(protocol || selectedProtocol || {});
 
+  const protocols = mappings?.protocols || [];
+  const [nameError, setNameError] = useState("");
+
   useEffect(() => {
     if (protocol) {
       setProtocolData(protocol);
@@ -47,6 +50,23 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
       setSelectedProtocol(protocolData);
     }
   }, [protocolData, setSelectedProtocol]);  
+
+  useEffect(() => {
+    if (!protocolData?.name) {
+      setNameError("");
+      return;
+    }
+  
+    const existingNames = protocols
+      .filter(p => p.id !== protocolData.id) // ignore itself if editing
+      .map(p => p.name.toLowerCase().trim());
+  
+    if (existingNames.includes(protocolData.name.toLowerCase().trim())) {
+      setNameError("A protocol with this name already exists.");
+    } else {
+      setNameError("");
+    }
+  }, [protocolData?.name, protocols]);
 
   if (loading) {
     return <p>Loading mappings...</p>;
@@ -147,6 +167,7 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
           onAddQuestionnaire={() => setShowQuestionnaireModal(true)}
           onSave={handleSave}
           onShowProtocol={handleShowProtocol}
+          nameError={nameError} 
         />
       </div>
 

@@ -15,6 +15,9 @@ export default function Protocols({ onSelectProtocol }) {
   const protocols = mappings?.protocols || [];
   const languages = mappings?.languages || [];
 
+  const existingNames = protocols.map((p) => p.name.toLowerCase().trim());
+  const nameExists = existingNames.includes(protocolName.toLowerCase().trim());
+
   const getLangName = (id) =>
     languages.find((l) => l.id === id)?.name || id;
 
@@ -34,7 +37,7 @@ export default function Protocols({ onSelectProtocol }) {
           <h3>{t("protocolsPage.createNew", "Create New Protocol")}</h3>
           <button
             className="btn-create"
-            disabled={!protocolName.trim()}
+            disabled={!protocolName.trim() || nameExists}
             onClick={() =>
               onSelectProtocol({ name: protocolName, language: protocolLanguage, description: protocolDescription })
             }
@@ -44,13 +47,21 @@ export default function Protocols({ onSelectProtocol }) {
         </div>
 
         <div className="protocol-create-fields">
-          <input
-            type="text"
-            className="protocol-input"
-            placeholder={t("protocolsPage.namePlaceholder", "Protocol name")}
-            value={protocolName}
-            onChange={(e) => setProtocolName(e.target.value)}
-          />
+          <div className="input-wrapper">
+            <input
+              type="text"
+              className={`protocol-input ${nameExists ? "input-error" : ""}`}
+              placeholder={t("protocolsPage.namePlaceholder", "Protocol name")}
+              value={protocolName}
+              onChange={(e) => setProtocolName(e.target.value)}
+            />
+            {nameExists && (
+              <div className="error-text">
+                {t("protocolsPage.nameExists", "A protocol with this name already exists.")}
+              </div>
+            )}
+          </div>
+          
           <textarea
             className="protocol-input optional"
             placeholder={t("protocolsPage.descriptionPlaceholder", "Description (optional)")}

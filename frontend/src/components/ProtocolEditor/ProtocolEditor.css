@@ -75,12 +75,14 @@
     display: flex;
     align-items: center;
     margin: 2px;
+    flex-wrap: wrap;            /* allows wrapping on narrow screens */
+    gap: 6px; 
   }
 
 
   /* fixed label column to align name + description inputs */
   .protocol-label {
-    flex: 0 0 200px; /* all labels same width */
+    flex: 0 0 180px; /* all labels same width */
     text-align: right;
     color: var(--text);
     font-weight: 500;
@@ -91,9 +93,9 @@
   .protocol-description-input, 
   .protocol-name-input,
   .protocol-language-select {
-    flex: 1;
-    width: fit-content;
-    max-width: 350px; 
+    flex: 1 1 200px;            /* flexible, but can shrink */
+    min-width: 100px;           /* prevent becoming too tiny */
+    max-width: 300px;           /* smaller max so buttons fit */
     padding: 4px 8px;
     border: 1px solid #ccc;
     border-radius: 6px;
@@ -102,7 +104,16 @@
     transition: border-color var(--transition), box-shadow var(--transition);
     box-sizing: border-box;
   }
-  
+
+  .name-input-error {
+    flex: 0;                /* disable flex grow/shrink behavior */
+    max-width: 100px;     /* shrink to fit the text content */
+  }
+
+  .error-text {
+    flex: 1;
+  }
+
   .protocol-input:focus {
     outline: none;
     border-color: var(--primary);
@@ -126,7 +137,7 @@
     gap: 2px;
     max-width: 200px; /* keeps consistent width for stacked buttons */
   }
-  
+
   /* =========================================================
      BUTTONS: common + variants
      ========================================================= */

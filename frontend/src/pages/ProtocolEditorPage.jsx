@@ -4,12 +4,14 @@ import { useParams, useLocation } from "react-router-dom";
 import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
 import ProtocolEditor from "../components/ProtocolEditor";
 import { ProtocolContext } from "../context/ProtocolContext";
+import { useMappings } from "../context/MappingContext";
 import "./Pages.css"
 
 export default function ProtocolEditorPage() {
   const { projectId, protocolId } = useParams();
   const { state } = useLocation();
   const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
+  const { refreshMappings } = useMappings();
 
   const [configuredTasks, setConfiguredTasks] = useState([]);
   const [protocolData, setProtocolData] = useState(
@@ -30,6 +32,16 @@ export default function ProtocolEditorPage() {
     }
   }, [protocolId, protocolData]);
 
+  async function handleSave(result) {
+    console.log("✅ Protocol saved, refreshing mappings...");
+    try {
+      await refreshMappings(["protocols"]); // reload relevant tables
+      console.log("Mappings refreshed successfully.");
+    } catch (err) {
+      console.error("❌ Failed to refresh mappings:", err);
+    }
+  }
+
   return (
     <div className="protocol-editor-page">
       <div className="top-bar"> 
@@ -39,7 +51,7 @@ export default function ProtocolEditorPage() {
         initialTasks={configuredTasks}
         onChange={setConfiguredTasks}
         protocol={protocolData}
-        onSave={() => console.log("Save protocol", protocolId)}
+        onSave={handleSave}
       />
     </div>
   );

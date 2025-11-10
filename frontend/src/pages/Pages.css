@@ -136,6 +136,18 @@ button:disabled {
   background: var(--success);
 }
 
+/* Validation */
+.input-error, .name-input-error {
+  border: 2px solid var(--danger) !important;
+  background-color: #ffeaea;
+}
+
+.error-text {
+  color: var(--danger);
+  font-size: 0.85rem;
+  pointer-events: none;
+  padding: 1px;
+}
 
 /* Mobile-friendly adjustments */
 @media (max-width: 600px) {

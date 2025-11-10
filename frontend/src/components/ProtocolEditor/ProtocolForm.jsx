@@ -141,12 +141,12 @@ export default function ProtocolForm({
       </ul>
 
       <div className="button-row">
-        <button className="button-show-tasks" onClick={onShowProtocol} disabled={!tasks.length}>
+        <button className="button-show-tasks" onClick={onShowProtocol} disabled={!tasks.length || reorderMode}>
           {t("showProtocol")}
         </button>
         <button className="button-save" 
           onClick={() => onSave()} 
-          disabled={!tasks.length  || !protocolData?.name?.trim() || !!nameError}
+          disabled={!tasks.length  || !protocolData?.name?.trim() || !!nameError || reorderMode}
         >
           {t("saveProtocol")}
         </button>

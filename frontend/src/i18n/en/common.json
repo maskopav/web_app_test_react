@@ -11,7 +11,8 @@
       "save": "Save",
       "done": "Done",
       "skip": "Skip",
-      "backToEditor": "Back to Protocol Editor"
+      "back": "Back"
+      
     },
     "status": {
       "ready": "⚪ Ready",

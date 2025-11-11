@@ -172,10 +172,6 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
         />
       </div>
 
-      {/* Global language switcher (editor UI language) */}
-      <div className="editor-language">
-        <LanguageSwitcher />
-      </div>
 
       {/* Task edit/create modal */}
       <TaskModal

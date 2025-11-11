@@ -1,4 +1,5 @@
-import { executeTransaction } from '../db/queryHelper.js';
+// src/controllers/protocolController.js
+import { executeTransaction, executeQuery } from '../db/queryHelper.js';
 import { logToFile } from '../utils/logger.js';
 
 export const saveProtocol = async (req, res) => {
@@ -59,5 +60,47 @@ export const saveProtocol = async (req, res) => {
   } catch (err) {
     logToFile(`❌ Error saving protocol: ${err.stack || err}`);
     res.status(500).json({ error: 'Failed to save protocol' });
+  }
+};
+
+// GET /api/protocols/:id
+export const getProtocolById = async (req, res) => {
+  const { id } = req.params;
+  logToFile(`📖 getProtocolById called with id=${id}`);
+
+  try {
+    // Get protocol details
+    const protocolRows = await executeQuery(
+      `SELECT * FROM protocols WHERE id = ?`,
+      [id]
+    );
+
+    if (protocolRows.length === 0) {
+      return res.status(404).json({ error: 'Protocol not found' });
+    }
+    const protocol = protocolRows[0];
+
+    // Get tasks assigned to that protocol
+    const taskRows = await executeQuery(
+      `SELECT task_id, task_order, params
+       FROM protocol_tasks
+       WHERE protocol_id = ?
+       ORDER BY task_order ASC`,
+      [id]
+    );
+
+    // Parse params JSON
+    const tasks = taskRows.map(t => ({
+      ...t,
+      params: t.params ? JSON.parse(t.params) : {}
+    }));
+
+    // Return structured result
+    const result = { ...protocol, tasks };
+    res.json(result);
+
+  } catch (err) {
+    logToFile(`❌ Error fetching protocol: ${err.stack || err}`);
+    res.status(500).json({ error: 'Failed to load protocol' });
   }
 };

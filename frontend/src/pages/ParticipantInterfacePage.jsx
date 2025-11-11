@@ -106,10 +106,10 @@ export default function ParticipantInterfacePage() {
   return (
     <div className="app-container">
       <div className="task-wrapper">
-        <div className="top-controls">
+        <div className="top-controls-participant">
           {testingMode && (
           <button className="btn-back" onClick={handleBack}>
-            ← {t("buttons.backToEditor", { ns: "common" })}
+            ← {t("buttons.back", { ns: "common" })}
           </button>
           )}
 

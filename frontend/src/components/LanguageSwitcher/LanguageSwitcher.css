@@ -1,17 +1,16 @@
 /* src/components/LanguageSwitcher.css */
-.language-switcher {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-  }
-  
-  .language-switcher select {
-    border-radius: 4px;
-    padding: 6px 6px;
-    margin: 3px;
-    cursor: pointer;
-  }
-  
+.language-switcher {           /* removes absolute positioning */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;    /* keeps it aligned to the right */
+  gap: 3px;
+}
+
+.language-switcher select {
+  border-radius: 4px;
+  padding: 6px 6px;
+  cursor: pointer;
+}
 
 /* ===========================================
    Responsive behavior for small screens

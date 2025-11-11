@@ -5,7 +5,7 @@ A modular, multilingual **React platform for standardized voice and cognitive ta
 ## Overview
 **TaskProtocoller** is a full framework for guided voice tasks.
 It supports dynamic parameters, multilingual translations, and configurable task protocols.
-
+It communicates with the backend API to store, retrieve, and edit protocol definitions.
 It consists of two main parts (interfaces):
 
 | Component                | Description                                                                                                                                    |
@@ -250,6 +250,7 @@ src/
 │
 ├── hooks/
 │ ├── useProtocolManager.js  # Prepares the payload and calls the backend (api/protocols.js).
+│ ├── useProtocolActions.js  # Handles viewing/loading protocols (reverse mapping)
 │ └── useVoiceRecorder.js    # Logic layer: manages state, MediaRecorder, AudioContext
 │                            # Exposes API: startRecording, pauseRecording, resumeRecording, stopRecording, resetRecording
 ├── context/                 # Global state providers like MappingContext

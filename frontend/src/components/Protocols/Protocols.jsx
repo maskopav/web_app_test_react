@@ -28,10 +28,7 @@ export default function Protocols({ onSelectProtocol }) {
 
   return (
     <div className="protocols-container">
-      <div className="protocols-header">
-        <h2>{t("protocolDashboard.title")}</h2>
-        <LanguageSwitcher />
-      </div>
+      <h2>{t("protocolDashboard.title")}</h2>
 
       {/* Create protocol section */}
       <div className="protocol-create card">
@@ -50,6 +47,9 @@ export default function Protocols({ onSelectProtocol }) {
 
         <div className="protocol-create-fields">
           <div className="input-wrapper">
+            <label className="protocol-label">
+                {t("protocolDashboard.namePlaceholder")}:
+            </label>
             <input
               type="text"
               className={`protocol-input ${nameExists ? "input-error" : ""}`}
@@ -64,12 +64,18 @@ export default function Protocols({ onSelectProtocol }) {
             )}
           </div>
           
-          <textarea
-            className="protocol-input optional"
-            placeholder={t("protocolDashboard.descriptionPlaceholder")}
-            value={protocolDescription}
-            onChange={(e) => setProtocolDescription(e.target.value)}
-          />
+          <div className="input-wrapper">
+            <label className="protocol-label">
+              {t("protocolDashboard.descriptionPlaceholder")}:
+            </label>
+            <textarea
+              className="protocol-input optional"
+              placeholder={t("protocolDashboard.descriptionPlaceholder")}
+              value={protocolDescription}
+              onChange={(e) => setProtocolDescription(e.target.value)}
+            />
+          </div>
+          
           <ProtocolLanguageSelector
             value={protocolLanguage}
             onChange={setProtocolLanguage}

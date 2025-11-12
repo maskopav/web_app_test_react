@@ -1,6 +1,7 @@
 .protocols-container {
   padding: 0.2rem;
-  max-width: 90vw;
+  max-width: 95vw;
+  height: auto;
   margin: auto;
 }
 
@@ -24,28 +25,50 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
 }
 
 .protocol-create-fields {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 0rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+
+
+/* Name field — smaller proportion */
+.protocol-create-fields .input-wrapper:first-child {
+  flex: 1 1 20%;
+}
+
+/* Description field — biggest proportion in the middle */
+.protocol-create-fields .input-wrapper:nth-child(2) {
+  flex: 3 1 50%;
+}
+
+/* Language selector — fits content */
+.protocol-create-fields .protocol-field {
+  flex: 0 1 auto;
+}
+
+/* Labels aligned above inputs */
+.protocol-label {
+  font-weight: 600;
 }
 
 .protocol-input {
-  flex: 1 100px;
+  flex: 1;
   padding: 0.7rem;
   border: 1px solid #d1d5db;
   border-radius: var(--radius);
   font-size: 1rem;
-  height: 1.1rem;
 }
 
 .protocol-input.optional {
   background: #f5f6f8;
-  flex: 3;
+  width: 600px;
+  height: 1.1rem;
 }
 
 .btn-create {

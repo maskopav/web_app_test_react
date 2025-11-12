@@ -8,10 +8,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/mappings", mappingsRouter);
-app.use("/api/protocols", protocolsRouter); 
+// Test routes
+app.get('/parkinson', (req, res) => res.json({ status: 'ok' }));
+app.get('/test', (req, res) => res.json({ response: 'test' }));
+app.get('/envtest', (req, res) => {
+  res.json({
+    DB_HOST: process.env.DB_HOST,
+    DB_USER: process.env.DB_USER,
+    DB_NAME: process.env.DB_NAME
+  });
+});
 
-const PORT = process.env.PORT || 4000;
+
+app.use("/mappings", mappingsRouter);
+app.use("/protocols", protocolsRouter); 
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Backend running on http://localhost:${PORT}`);
 });

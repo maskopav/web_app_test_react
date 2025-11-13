@@ -48,6 +48,10 @@
     flex: 2;
     background: #c0e3ce; /* keep the green tint you used */
   }
+
+  .task-type-header, .task-list-title {
+    margin-bottom: 0 !important;
+  }
   
   /* =========================================================
      PROTOCOL HEADER (name / description / controls)
@@ -250,7 +254,7 @@
      LISTS, TASK ITEMS & PROTOCOL ITEMS
      ========================================================= */
   
-  .protocol-list, .task-list {
+  .protocol-list, .task-list, .task-type-list {
     flex: 1;
     list-style: none;
     min-height: 0;

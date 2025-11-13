@@ -1,6 +1,6 @@
 // src/components/ProtocolEditor/ProtocolEditor.jsx
 import React, { useState, useContext, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { taskBaseConfig } from "../../config/tasksBase";
@@ -24,9 +24,10 @@ export function ProtocolEditor({
   testingMode,
   editingMode
   }
-  ) {
+) {
   const { t } = useTranslation(["admin"]);
   const navigate = useNavigate();
+  const { projectId } = useParams();
   const { mappings, loading, error } = useMappings();
   const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
   const { saveNewProtocol } = useProtocolManager();
@@ -133,6 +134,10 @@ export function ProtocolEditor({
       const result = await saveNewProtocol(tasks, protocolData, editingMode);
       alert("Protocol saved successfully!");
       onSave(result);
+      // Clean environment
+      setSelectedProtocol(null);
+      // Redirect to dashboard
+      navigate(`/projects/${projectId}/protocols`);
     } catch (err) {
       alert("Failed to save protocol. Check console.");
     }

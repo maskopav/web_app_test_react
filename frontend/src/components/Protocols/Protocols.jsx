@@ -11,7 +11,7 @@ export default function Protocols({ onSelectProtocol }) {
   const [protocolName, setProtocolName] = useState("");
   const [protocolDescription, setProtocolDescription] = useState("");
   const [protocolLanguage, setProtocolLanguage] = useState("en");
-  const { viewProtocol, editProtocol } = useProtocolActions();
+  const { viewProtocol, editProtocol, duplicateProtocol  } = useProtocolActions();
 
   const protocols = mappings?.protocols || [];
   const languages = mappings?.languages || [];
@@ -138,11 +138,7 @@ export default function Protocols({ onSelectProtocol }) {
                       <button
                         className="btn-duplicate"
                         onClick={() =>
-                          onSelectProtocol({
-                            ...p,
-                            id: undefined,
-                            name: `${p.name} Copy`,
-                          })
+                          duplicateProtocol(p.id)
                         }
                       >
                         {t("protocolDashboard.buttons.duplicate")}

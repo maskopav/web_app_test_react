@@ -54,7 +54,33 @@ export function useProtocolActions() {
       alert("Failed to edit protocol");
     }
   };
-  return { viewProtocol, editProtocol };
+
+    // ----- DUPLICATE PROTOCOL (Prefilled protocol, saved as new one)
+    async function duplicateProtocol(protocolId) {
+      try {
+        const rawProtocol = await getProtocolById(protocolId);
+        const mappedProtocol = mapProtocolWithNames(rawProtocol, mappings);
+  
+        setSelectedProtocol(mappedProtocol);
+  
+        mappedProtocol.id = undefined;
+        mappedProtocol.protocol_group_id = undefined;
+        mappedProtocol.version = 1;
+
+        // navigate with edit flag
+        navigate(`/projects/${projectId}/protocols/${protocolId}`, {
+          state: {
+            protocol: mappedProtocol,
+            testingMode: true, // stays true to preview tasks
+            editingMode: false,
+          },
+        });
+      } catch (error) {
+        console.error("Error duplicating protocol:", error);
+        alert("Failed to duplicate protocol");
+      }
+    };
+  return { viewProtocol, editProtocol, duplicateProtocol };
 }
 
 /**

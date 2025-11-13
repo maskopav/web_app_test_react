@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { useMappings } from "../context/MappingContext";
@@ -8,7 +8,9 @@ export function useProtocolActions() {
   const { setSelectedProtocol } = useContext(ProtocolContext);
   const { mappings } = useMappings();
   const navigate = useNavigate();
+  const { projectId } = useParams();
 
+  // ----- VIEW PROTOCOL (Participant view/test mode)
   async function viewProtocol(protocolId) {
     console.log("Getting protocolId:", protocolId);
 
@@ -20,8 +22,9 @@ export function useProtocolActions() {
 
       navigate("/participant/test", {
         state: {
-          testing: true,
           protocol: mappedProtocol,
+          testingMode: true,
+          editingMode: false,
         },
       });
     } catch (error) {
@@ -30,7 +33,28 @@ export function useProtocolActions() {
     }
   }
 
-  return { viewProtocol };
+  // ----- EDIT PROTOCOL (Admin edit mode)
+  async function editProtocol(protocolId) {
+    try {
+      const rawProtocol = await getProtocolById(protocolId);
+      const mappedProtocol = mapProtocolWithNames(rawProtocol, mappings);
+
+      setSelectedProtocol(mappedProtocol);
+
+      // navigate with edit flag
+      navigate(`/projects/${projectId}/protocols/${protocolId}`, {
+        state: {
+          protocol: mappedProtocol,
+          testingMode: true, // stays true to preview tasks
+          editingMode: true,
+        },
+      });
+    } catch (error) {
+      console.error("Error editing protocol:", error);
+      alert("Failed to edit protocol");
+    }
+  };
+  return { viewProtocol, editProtocol };
 }
 
 /**
@@ -51,7 +75,10 @@ function mapProtocolWithNames(raw, mappings) {
 
   return {
     id: raw.id,
+    protocol_group_id: raw.protocol_group_id,
     name: raw.name,
+    version: raw.version,
+    versionNext: raw.version + 1,
     description: raw.description,
     language: language?.code || "unknown",
     tasks: mappedTasks,

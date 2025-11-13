@@ -138,6 +138,11 @@
     max-width: 200px; /* keeps consistent width for stacked buttons */
   }
 
+  .version-warning {
+    font-weight: 500;
+    color: var(--danger);
+  }
+
   /* =========================================================
      BUTTONS: common + variants
      ========================================================= */

@@ -21,6 +21,9 @@ export default function ProtocolEditorPage() {
     state?.protocol || selectedProtocol || null
   );
 
+  const testingMode = state?.testingMode ?? false;
+  const editingMode = state?.editingMode ?? false;
+
   // Keep context in sync (in case of page refresh)
   useEffect(() => {
     if (state?.protocol && !selectedProtocol) {
@@ -35,7 +38,7 @@ export default function ProtocolEditorPage() {
     }
   }, [protocolId, protocolData]);
 
-  async function handleSave(result) {
+  async function handleSave() {
     console.log("✅ Protocol saved, refreshing mappings...");
     try {
       await refreshMappings(["protocols"]); // reload relevant tables
@@ -75,6 +78,8 @@ export default function ProtocolEditorPage() {
         onChange={setConfiguredTasks}
         protocol={protocolData}
         onSave={handleSave}
+        testingMode={testingMode}
+        editingMode={editingMode}
       />
     </div>
   );

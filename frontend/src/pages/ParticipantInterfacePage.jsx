@@ -17,8 +17,9 @@ export default function ParticipantInterfacePage() {
   const [taskIndex, setTaskIndex] = useState(0);
   const [langReady, setLangReady] = useState(false);
 
-  const testingMode = location.state?.testing ?? false;
-  const protocolData = location.state?.protocol || selectedProtocol;
+  const testingMode = location.state?.testingMode ?? false;
+  const editingMode = location.state?.editingMode ?? false;
+  const protocolData = location.state?.protocol || selectedProtocol;  
 
   // Restore protocol in context
   useEffect(() => {
@@ -61,7 +62,11 @@ export default function ParticipantInterfacePage() {
   const handleNextTask = () => setTaskIndex((i) => i + 1);
   const handleBack = () =>
     navigate(`/projects/${protocolData.projectId || "demo"}/protocols/${protocolData.id || "test"}`, {
-      state: { protocol: protocolData },
+      state: { 
+        protocol: protocolData, 
+        testingMode,
+        editingMode 
+      },
     });
   const handleSkip = () => setTaskIndex((i) => Math.min(i + 1, runtimeTasks.length));
 

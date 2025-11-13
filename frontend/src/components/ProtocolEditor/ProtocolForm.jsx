@@ -19,6 +19,7 @@ export default function ProtocolForm({
   onDrop,
   dragIndex,
   nameError,
+  editingMode,
 }) {
   const { t } = useTranslation(["admin", "tasks"]);
 
@@ -27,6 +28,7 @@ export default function ProtocolForm({
   };
 
   const handleNameChange = (e) => {
+    if (editingMode) return; 
     const name = e.target.value;
     setProtocolData((prev) => ({ ...prev, name }));
   };
@@ -54,14 +56,15 @@ export default function ProtocolForm({
                 placeholder={t("protocolDashboard.namePlaceholder")}
                 value={protocolData?.name || ""}
                 onChange={handleNameChange}
+                disabled={editingMode} 
               />
               {nameError && <div className="error-text">{nameError}</div>}
             </div>
 
-              <ProtocolLanguageSelector
-                value={protocolData?.language || "en"}
-                onChange={handleLanguageChange}
-              />
+            <ProtocolLanguageSelector
+              value={protocolData?.language || "en"}
+              onChange={handleLanguageChange}
+            />
 
 
             <div className="protocol-field">
@@ -94,6 +97,13 @@ export default function ProtocolForm({
 
           </div>
       </div>
+
+      {/* --- Version warning --- */}
+      {editingMode && (
+        <div className="version-warning">
+          ! Editing {protocolData?.name || ""} protocol: version will be changed from {protocolData?.version || ""} to {protocolData?.versionNext || ""}!
+        </div>
+      )}
 
       <ul className="protocol-list">
         {tasks.length === 0 ? (

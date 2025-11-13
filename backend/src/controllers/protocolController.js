@@ -4,7 +4,17 @@ import { logToFile } from '../utils/logger.js';
 
 export const saveProtocol = async (req, res) => {
   logToFile(`🧩 saveProtocol called with body: ${JSON.stringify(req.body)}`);
-  const { protocol_group_id, name, language_id, description, version, created_by, updated_by, tasks } = req.body;
+  const { 
+    protocol_group_id, 
+    name, 
+    language_id, 
+    description, 
+    version, 
+    created_by, 
+    updated_by, 
+    tasks,
+    editingMode 
+  } = req.body;
 
   if (!Array.isArray(tasks) || tasks.length === 0) {
     logToFile(`❌ Invalid request: no tasks provided`);
@@ -20,6 +30,23 @@ export const saveProtocol = async (req, res) => {
         groupId = rows[0].next_group_id || 1;
       }
 
+      let newVersion = version || 1;
+
+      if (editingMode) {
+        // find latest version
+        const [verRows] = await conn.query(
+          `SELECT COALESCE(MAX(version), 0) AS max_version FROM protocols WHERE protocol_group_id = ?`,
+          [groupId]
+        );
+        newVersion = verRows[0].max_version + 1;
+
+        // mark old versions as not current
+        await conn.query(
+          `UPDATE protocols SET is_current = 0, updated_at = NOW() WHERE protocol_group_id = ?`,
+          [groupId]
+        );
+      }
+
       // Insert the new protocol
       const [result] = await conn.query(
         `INSERT INTO protocols (protocol_group_id, name, language_id, description, version, created_by, updated_by)
@@ -29,7 +56,7 @@ export const saveProtocol = async (req, res) => {
           name || 'Placeholder Protocol',
           language_id || 1,
           description || 'Auto-created from AdminTaskEditor',
-          version || 1,
+          newVersion || 1,
           created_by || 1,
           updated_by || 1,
         ]

@@ -1,6 +1,6 @@
 // src/components/ProtocolEditor/ProtocolEditor.jsx
 import React, { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { taskBaseConfig } from "../../config/tasksBase";
@@ -10,14 +10,21 @@ import TaskList from "./TaskList";
 import ProtocolForm from "./ProtocolForm";
 import TaskModal from "./TaskModal";
 import QuestionnaireModal from "./QuestionnaireModal";
-import { LanguageSwitcher } from "../LanguageSwitcher/LanguageSwitcher";
 import { useMappings } from "../../context/MappingContext";
 import { useProtocolManager } from "../../hooks/useProtocolManager";
 import { ProtocolContext } from "../../context/ProtocolContext";
 
 import "./ProtocolEditor.css";
 
-export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange = () => {}, protocol }) {
+export function ProtocolEditor({ 
+  initialTasks = [], 
+  onSave = () => {}, 
+  onChange = () => {}, 
+  protocol,
+  testingMode,
+  editingMode
+  }
+  ) {
   const { t } = useTranslation(["admin"]);
   const navigate = useNavigate();
   const { mappings, loading, error } = useMappings();
@@ -59,6 +66,7 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
   
     const existingNames = protocols
       .filter(p => p.id !== protocolData.id) // ignore itself if editing
+      .filter(p => p.protocol_group_id !== protocolData.protocol_group_id)
       .map(p => p.name.toLowerCase().trim());
   
     if (existingNames.includes(protocolData.name.toLowerCase().trim())) {
@@ -122,7 +130,7 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
   // Save to backend
   async function handleSave() {
     try {
-      const result = await saveNewProtocol(tasks, protocolData);
+      const result = await saveNewProtocol(tasks, protocolData, editingMode);
       alert("Protocol saved successfully!");
       onSave(result);
     } catch (err) {
@@ -138,7 +146,14 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
     });
   
     // Redirect to participant view in testing mode (additional back, skip buttons, data is not being saved)
-    navigate("/participant/test", { state: { testing: true, protocol: { ...protocolData, tasks } } });
+    navigate("/participant/test", 
+      { 
+        state: { 
+          protocol: { ...protocolData, tasks }, 
+          testingMode,
+          editingMode
+        }
+    });
   }  
 
   return (
@@ -169,6 +184,7 @@ export function ProtocolEditor({ initialTasks = [], onSave = () => {}, onChange 
           onSave={handleSave}
           onShowProtocol={handleShowProtocol}
           nameError={nameError} 
+          editingMode={editingMode} 
         />
       </div>
 

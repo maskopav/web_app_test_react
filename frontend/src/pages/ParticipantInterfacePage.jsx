@@ -20,6 +20,9 @@ export default function ParticipantInterfacePage() {
   const testingMode = location.state?.testingMode ?? false;
   const editingMode = location.state?.editingMode ?? false;
   const protocolData = location.state?.protocol || selectedProtocol;  
+  // For saving recordings in the future.....
+  const participant = location.state?.participant;
+  const accessToken = location.state?.token;
 
   // Restore protocol in context
   useEffect(() => {

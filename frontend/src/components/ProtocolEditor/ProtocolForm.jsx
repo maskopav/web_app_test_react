@@ -101,7 +101,7 @@ export default function ProtocolForm({
       {/* --- Version warning --- */}
       {editingMode && (
         <div className="version-warning">
-          ! Editing {protocolData?.name || ""} protocol: version will be changed from {protocolData?.version || ""} to {protocolData?.versionNext || ""}!
+          ! Editing {protocolData?.name || ""} protocol: version will be incremented, protocol will be marked as current!
         </div>
       )}
 

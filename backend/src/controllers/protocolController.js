@@ -44,7 +44,7 @@ export const saveProtocol = async (req, res) => {
 
         // mark old versions as not current
         await conn.query(
-          `UPDATE protocols SET is_current = 0, updated_at = NOW() WHERE protocol_group_id = ?`,
+          `UPDATE protocols SET is_current = 0, updated_at = NOW() WHERE protocol_group_id = ? AND is_current = 1`,
           [groupId]
         );
       }

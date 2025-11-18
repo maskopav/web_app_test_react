@@ -104,7 +104,6 @@ function mapProtocolWithNames(raw, mappings) {
     protocol_group_id: raw.protocol_group_id,
     name: raw.name,
     version: raw.version,
-    versionNext: raw.version + 1,
     description: raw.description,
     language: language?.code || "unknown",
     tasks: mappedTasks,

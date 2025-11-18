@@ -7,7 +7,7 @@ import { ProtocolProvider } from "./ProtocolContext";
 //import { UIStateProvider } from "./UIStateContext";
 
 export const AppProvider = ({ children }) => {
-  const mappingTables = ["protocols", "task_types", "languages", "tasks"]; // mapping tables called globally once
+  const mappingTables = ["projects", "protocols", "task_types", "languages", "tasks"]; // mapping tables called globally once
 
   return (
       <MappingProvider tables={mappingTables}>

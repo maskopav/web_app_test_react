@@ -16,7 +16,7 @@ export default function App() {
   return (
     <Routes>
       {/* Temporary testing routes */}
-      <Route path="/" element={<Navigate to="/projects/demo" replace />} />
+      <Route path="/" element={<Navigate to="/projects/1" replace />} />
       <Route path="/projects/:projectId" element={<ProjectDashboardPage />} />
       <Route path="/projects/:projectId/protocols" element={<ProtocolDashboardPage />} />
       <Route path="/projects/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />

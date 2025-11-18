@@ -5,7 +5,8 @@ import { useMappings } from "../context/MappingContext";
 export function useProtocolManager() {
   const { mappings } = useMappings();
 
-  async function saveNewProtocol(tasks, selectedProtocol, editingMode) {
+  async function saveNewProtocol(tasks, selectedProtocol, projectId, editingMode) {
+    if (!projectId) throw new Error("Missing projectId when saving protocol");
     const languageId = mappings.languages.find(l => l.code === selectedProtocol.language)?.id;
     const version = editingMode? selectedProtocol.versionNext : 1;
 
@@ -21,6 +22,7 @@ export function useProtocolManager() {
         task_order: index + 1,
         params: task,
       })),
+      project_id: Number(projectId),  
       editingMode,
     };
     console.log("Saving protocol:", protocolData);

@@ -131,7 +131,7 @@ export function ProtocolEditor({
   // Save to backend
   async function handleSave() {
     try {
-      const result = await saveNewProtocol(tasks, protocolData, editingMode);
+      const result = await saveNewProtocol(tasks, protocolData, projectId, editingMode);
       alert("Protocol saved successfully!");
       onSave(result);
       // Clean environment

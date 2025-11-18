@@ -1,6 +1,7 @@
 // src/controllers/protocolController.js
 import { executeTransaction, executeQuery } from '../db/queryHelper.js';
 import { logToFile } from '../utils/logger.js';
+import { generateAccessToken } from "../utils/tokenGenerator.js";
 
 export const saveProtocol = async (req, res) => {
   logToFile(`🧩 saveProtocol called with body: ${JSON.stringify(req.body)}`);
@@ -13,6 +14,7 @@ export const saveProtocol = async (req, res) => {
     created_by, 
     updated_by, 
     tasks,
+    project_id,
     editingMode 
   } = req.body;
 
@@ -22,7 +24,7 @@ export const saveProtocol = async (req, res) => {
   }
 
   try {
-    const protocolId = await executeTransaction(async (conn) => {
+      const protocol_id = await executeTransaction(async (conn) => {
       // Determine the protocol_group_id
       let groupId = protocol_group_id;
       if (!groupId) {
@@ -62,8 +64,8 @@ export const saveProtocol = async (req, res) => {
         ]
       );
 
-      const protocolId = result.insertId;
-      logToFile(`✅ Inserted protocol with id=${protocolId}, group_id=${groupId}, version=${version}`);
+      const protocol_id = result.insertId;
+      logToFile(`✅ Inserted protocol with id=${protocol_id}, group_id=${groupId}, version=${version}`);
 
       const insertTask = `INSERT INTO protocol_tasks
         (protocol_id, task_id, task_order, params)
@@ -72,18 +74,44 @@ export const saveProtocol = async (req, res) => {
       for (let i = 0; i < tasks.length; i++) {
         const t = tasks[i];
         await conn.query(insertTask, [
-          protocolId,
+          protocol_id,
           t.task_id,
           t.task_order || i + 1,
           JSON.stringify(t.params || {}),
         ]);
-        logToFile(`→ Added task ${t.task_id} to protocol ${protocolId}`);
+        logToFile(`→ Added task ${t.task_id} to protocol ${protocol_id}`);
       }
 
-      return protocolId;
+      // Generate unique token
+      let accessToken = generateAccessToken();
+
+      let unique = false;
+      while (!unique) {
+        const [rows] = await conn.query(
+          `SELECT id FROM project_protocols WHERE access_token = ?`,
+          [accessToken]
+        );
+        if (rows.length === 0) unique = true;
+        else accessToken = generateAccessToken();
+      }
+
+      // Insert project_protocol
+      // TEMP: project_id = 1 (choose correct project later)
+      await conn.query(
+        `
+          INSERT INTO project_protocols
+          (project_id, protocol_id, access_token)
+          VALUES (?, ?, ?)
+        `,
+        [project_id, protocol_id, accessToken]
+      );
+
+      logToFile(`→ Created project_protocol with token ${accessToken}`);
+
+      return protocol_id;
     });
 
-    res.json({ success: true, protocol_id: protocolId });
+    res.json({ success: true, protocol_id: protocol_id });
   } catch (err) {
     logToFile(`❌ Error saving protocol: ${err.stack || err}`);
     res.status(500).json({ error: 'Failed to save protocol' });

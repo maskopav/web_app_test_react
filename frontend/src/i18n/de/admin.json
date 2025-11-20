@@ -44,6 +44,46 @@
       "title": "Edit Task",
       "cancel": "Cancel",
       "save": "Save Changes"
+    },
+    "participantProtocol": {
+      "title": "Zuweisung von Protokollen zu Teilnehmern",
+      "noAssignments": "Keine Zuweisungen gefunden",
+      "table": {
+        "participant": "Teilnehmer",
+        "externalId": "Externe ID",
+        "protocol": "Protokoll",
+        "version": "Version",
+        "project": "Projekt",
+        "start": "Start",
+        "end": "Ende",
+        "status": "Status",
+        "actions": "Aktionen"
+      },
+      "status": {
+        "active": "Aktiv",
+        "inactive": "Inaktiv"
+      },
+      "buttons": {
+        "assign": "Zuweisen",
+        "end": "Beenden",
+        "showModal": "Modal anzeigen"
+      },
+      "confirm": {
+        "assign": "Protokoll \"{{protocol}}\" an Teilnehmer \"{{participant}}\" senden?",
+        "end": "Zuweisung von \"{{protocol}}\" für \"{{participant}}\" beenden?"
+      }
+    },
+  
+    "assignmentModal": {
+      "title": "Protokoll zugewiesen",
+      "description": "Der Teilnehmer kann über folgenden Link zugreifen:",
+      "copyLink": "Link kopieren",
+      "qrTitle": "QR-Code",
+      "emailMessage": "E-Mail Nachricht",
+      "copyEmail": "E-Mail Text kopieren",
+      "close": "Schließen",
+      "emailText": "Sehr geehrte/r {{name}},\n\nIhnen wurde ein neues Bewertungsprotokoll zugewiesen.\nBitte öffnen Sie den folgenden Link:\n\n{{link}}\n\nAlternativ können Sie den QR-Code im Anhang scannen.\n\nVielen Dank.",
+      "participant": "Teilnehmer"
     }
   }
   

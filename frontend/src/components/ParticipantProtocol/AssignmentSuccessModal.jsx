@@ -1,16 +1,18 @@
-// src/components/ParticipantProtocol/AssignmentSuccessModal.jsx
 import React from "react";
-import {QRCodeSVG} from 'qrcode.react';
+import { QRCodeSVG } from "qrcode.react";
+import { useTranslation } from "react-i18next";
 import "./AssignmentSuccessModal.css";
 
 export default function AssignmentSuccessModal({ link, emailText, onClose }) {
+  const { t } = useTranslation(["admin"]);
+
   return (
     <div className="modal-overlay">
       <div className="modal-card">
 
-        <h2>Protocol Assigned</h2>
+        <h2>{t("assignmentModal.title")}</h2>
 
-        <p>Your participant can access their protocol via:</p>
+        <p>{t("assignmentModal.description")}</p>
 
         <div className="link-box">
           <code>{link}</code>
@@ -18,16 +20,16 @@ export default function AssignmentSuccessModal({ link, emailText, onClose }) {
             className="btn-copy"
             onClick={() => navigator.clipboard.writeText(link)}
           >
-            Copy Link
+            {t("assignmentModal.copyLink")}
           </button>
         </div>
 
-        <h3>QR Code</h3>
+        <h3>{t("assignmentModal.qrTitle")}</h3>
         <div className="qr-wrapper">
           <QRCodeSVG value={link} size={180} />
         </div>
 
-        <h3>Email Message</h3>
+        <h3>{t("assignmentModal.emailMessage")}</h3>
         <textarea
           className="email-box"
           rows={6}
@@ -39,11 +41,11 @@ export default function AssignmentSuccessModal({ link, emailText, onClose }) {
           className="btn-copy"
           onClick={() => navigator.clipboard.writeText(emailText)}
         >
-          Copy Email Text
+          {t("assignmentModal.copyEmail")}
         </button>
 
         <button className="btn-close" onClick={onClose}>
-          Close
+          {t("assignmentModal.close")}
         </button>
 
       </div>

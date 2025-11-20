@@ -74,5 +74,45 @@
       "cancel": "Zrušit",
       "save": "Uložit změny"
     }
+  },
+  "participantProtocol": {
+    "title": "Přiřazení protokolů účastníkům",
+    "noAssignments": "Žádná přiřazení nenalezena",
+    "table": {
+      "participant": "Účastník",
+      "externalId": "Externí ID",
+      "protocol": "Protokol",
+      "version": "Verze",
+      "project": "Projekt",
+      "start": "Začátek",
+      "end": "Konec",
+      "status": "Stav",
+      "actions": "Akce"
+    },
+    "status": {
+      "active": "Aktivní",
+      "inactive": "Neaktivní"
+    },
+    "buttons": {
+      "assign": "Aktivace",
+      "end": "Deaktivace",
+      "showModal": "Zobrazit link / QR kód"
+    },
+    "confirm": {
+      "assign": "Odeslat protokol \"{{protocol}}\" účastníkovi \"{{participant}}\"?",
+      "end": "Ukončit přiřazení \"{{protocol}}\" pro \"{{participant}}\"?"
+    }
+  },
+
+  "assignmentModal": {
+    "title": "Protokol přiřazen",
+    "description": "Účastník může otevřít protokol přes:",
+    "copyLink": "Zkopírovat odkaz",
+    "qrTitle": "QR kód",
+    "emailMessage": "Emailová zpráva",
+    "copyEmail": "Kopírovat text emailu",
+    "close": "Zavřít",
+    "emailText": "Vážený/á {{name}},\n\nByl vám přiřazen nový protokol.\nOtevřete prosím následující odkaz:\n\n{{link}}\n\nPřípadně můžete naskenovat QR kód v přiloženém obrázku.\n\nDěkujeme.",
+    "participant": "účastníku"
   }
 }

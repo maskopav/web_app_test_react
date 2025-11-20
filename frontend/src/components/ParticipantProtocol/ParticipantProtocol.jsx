@@ -1,35 +1,33 @@
+// src/components/ParticipantProtocol/ParticipantProtocol.jsx
 import React, { useState } from "react";
 import "./ParticipantProtocol.css";
 import {
   activateParticipantProtocol,
-  deactivateParticipantProtocol
+  deactivateParticipantProtocol,
 } from "../../api/participantProtocols";
 import AssignmentSuccessModal from "./AssignmentSuccessModal";
+import { useTranslation } from "react-i18next";
 
 export default function ParticipantProtocolTable({ rows, onRefresh }) {
+  const { t } = useTranslation(["admin"]);
+
   const [showModal, setShowModal] = useState(false);
   const [modalLink, setModalLink] = useState("");
   const [modalText, setModalText] = useState("");
 
   async function handleActivate(id, protocolName, participantName, uniqueToken) {
     const ok = window.confirm(
-      `Send protocol "${protocolName}" to participant "${participantName}"?`
+      t("participantProtocol.confirm.assign", {
+        protocol: protocolName,
+        participant: participantName,
+      })
     );
     if (!ok) return;
 
     await activateParticipantProtocol(id);
+
     const link = `${window.location.origin}/participant/${uniqueToken}`;
-
-    const emailText = `Dear ${participantName},
-
-You have been assigned a new assessment protocol.
-Please open the following link:
-
-${link}
-
-If you prefer, you may scan the QR code in the attached image.
-
-Thank you.`;
+    const emailText = generateEmail(participantName, link);
 
     setModalLink(link);
     setModalText(emailText);
@@ -38,9 +36,22 @@ Thank you.`;
     onRefresh && onRefresh();
   }
 
+  function generateEmail(name, link) {
+    const finalName = name || t("assignmentModal.participant");
+  
+    return t("assignmentModal.emailText", {
+      name: finalName,
+      link,
+    });
+  }
+  
+
   async function handleDeactivate(id, protocolName, participantName) {
     const ok = window.confirm(
-      `End assignment of "${protocolName}" for "${participantName}"?`
+      t("participantProtocol.confirm.end", {
+        protocol: protocolName,
+        participant: participantName,
+      })
     );
     if (!ok) return;
 
@@ -52,21 +63,22 @@ Thank you.`;
     <div className="protocols-container">
       <div className="protocol-list card">
         <div className="protocol-list-header">
-          <h3>Participant–Protocol Assignments</h3>
+          <h3>{t("participantProtocol.title")}</h3>
         </div>
 
         <div className="protocol-table-wrapper">
           <table className="protocol-table">
             <thead>
               <tr>
-                <th>Participant</th>
-                <th>External ID</th>
-                <th>Protocol</th>
-                <th>Version</th>
-                <th>Project</th>
-                <th>Start</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>{t("participantProtocol.table.participant")}</th>
+                <th>{t("participantProtocol.table.externalId")}</th>
+                <th>{t("participantProtocol.table.protocol")}</th>
+                <th>{t("participantProtocol.table.version")}</th>
+                <th>{t("participantProtocol.table.project")}</th>
+                <th>{t("participantProtocol.table.start")}</th>
+                <th>{t("participantProtocol.table.end")}</th>
+                <th>{t("participantProtocol.table.status")}</th>
+                <th>{t("participantProtocol.table.actions")}</th>
               </tr>
             </thead>
 
@@ -74,7 +86,7 @@ Thank you.`;
               {rows.length === 0 ? (
                 <tr>
                   <td colSpan="8" className="empty-row">
-                    No assignments found
+                    {t("participantProtocol.noAssignments")}
                   </td>
                 </tr>
               ) : (
@@ -86,7 +98,12 @@ Thank you.`;
                     <td>{r.protocol_version}</td>
                     <td>{r.project_name}</td>
                     <td>{r.start_date?.slice(0, 10)}</td>
-                    <td>{r.is_active ? "Active" : "Inactive"}</td>
+                    <td>{r.end_date?.slice(0, 10) || "-"}</td>
+                    <td>
+                      {r.is_active
+                        ? t("participantProtocol.status.active")
+                        : t("participantProtocol.status.inactive")}
+                    </td>
 
                     <td className="actions">
                       {!r.is_active && (
@@ -101,23 +118,42 @@ Thank you.`;
                             )
                           }
                         >
-                          Assign
+                          {t("participantProtocol.buttons.assign")}
                         </button>
                       )}
 
                       {r.is_active && (
-                        <button
-                          className="btn-edit"
-                          onClick={() =>
-                            handleDeactivate(
-                              r.participant_protocol_id,
-                              r.protocol_name,
-                              r.full_name
-                            )
-                          }
-                        >
-                          End
-                        </button>
+                        <>
+                          <button
+                            className="btn-edit"
+                            onClick={() =>
+                              handleDeactivate(
+                                r.participant_protocol_id,
+                                r.protocol_name,
+                                r.full_name
+                              )
+                            }
+                          >
+                            {t("participantProtocol.buttons.end")}
+                          </button>
+
+                          {/* EXTRA BUTTON TO SHOW MODAL */}
+                          <button
+                            className="btn-view"
+                            onClick={() => {
+                              const link = `${window.location.origin}/participant/${r.unique_token}`;
+                              const emailText = generateEmail(
+                                r.full_name,
+                                link
+                              );
+                              setModalLink(link);
+                              setModalText(emailText);
+                              setShowModal(true);
+                            }}
+                          >
+                            {t("participantProtocol.buttons.showModal")}
+                          </button>
+                        </>
                       )}
                     </td>
                   </tr>

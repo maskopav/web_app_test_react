@@ -74,6 +74,46 @@
       "cancel": "Cancel",
       "save": "Save Changes"
     }
-  }
+  },
+  "participantProtocol": {
+    "title": "Participant–Protocol Assignments",
+    "noAssignments": "No assignments found",
+    "table": {
+      "participant": "Participant",
+      "externalId": "External ID",
+      "protocol": "Protocol",
+      "version": "Version",
+      "project": "Project",
+      "start": "Start date",
+      "end": "End date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "buttons": {
+      "assign": "Assign",
+      "end": "End",
+      "showModal": "Show Modal"
+    },
+    "confirm": {
+      "assign": "Send protocol \"{{protocol}}\" to participant \"{{participant}}\"?",
+      "end": "End assignment of \"{{protocol}}\" for \"{{participant}}\"?"
+    }
+  },
+
+  "assignmentModal": {
+    "title": "Protocol Assigned",
+    "description": "Your participant can access their protocol via:",
+    "copyLink": "Copy Link",
+    "qrTitle": "QR Code",
+    "emailMessage": "Email Message",
+    "copyEmail": "Copy Email Text",
+    "close": "Close",
+    "emailText": "Dear {{name}},\n\nYou have been assigned a new assessment protocol.\nPlease open the following link:\n\n{{link}}\n\nIf you prefer, you may scan the QR code in the attached image.\n\nThank you.",
+    "participant": "participant"
+  } 
 }
   

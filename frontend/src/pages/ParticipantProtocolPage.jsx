@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
-import ParticipantProtocolTable from "../components/ParticipantProtocolTable/ParticipantProtocolTable";
+import ParticipantProtocolTable from "../components/ParticipantProtocol/ParticipantProtocol";
 import { fetchParticipantProtocolView } from "../api/participantProtocols";
 import "./Pages.css";
 

@@ -99,8 +99,16 @@
       "showModal": "Show Modal"
     },
     "confirm": {
-      "assign": "Send protocol \"{{protocol}}\" to participant \"{{participant}}\"?",
-      "end": "End assignment of \"{{protocol}}\" for \"{{participant}}\"?"
+      "assign": {
+        "message": "Send protocol \"{{protocol}}\" to participant \"{{participant}}\"?",
+        "title": "Send protocol confirmation"
+      },
+      "end": {
+        "message":"End assignment of \"{{protocol}}\" for \"{{participant}}\"?",
+        "title":"Inactivate protocol assignment"
+      }, 
+      "confirm": "Confirm",
+      "cancel": "Cancel"
     }
   },
 

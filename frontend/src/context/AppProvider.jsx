@@ -5,6 +5,7 @@ import { MappingProvider } from "./MappingContext";
 import { ProtocolProvider } from "./ProtocolContext";
 //import { RecorderProvider } from "./RecorderContext";
 //import { UIStateProvider } from "./UIStateContext";
+import { ConfirmDialogProvider } from "../components/ConfirmDialog/ConfirmDialogContext";
 
 export const AppProvider = ({ children }) => {
   const mappingTables = ["projects", "protocols", "task_types", "languages", "tasks"]; // mapping tables called globally once
@@ -14,7 +15,9 @@ export const AppProvider = ({ children }) => {
         <ProtocolProvider>
           {/*<RecorderProvider> */}
             {/*<UIStateProvider> */}
+            <ConfirmDialogProvider>
               {children}
+            </ConfirmDialogProvider>
             {/*</UIStateProvider> */}
           {/*</RecorderProvider> */}
         </ProtocolProvider>

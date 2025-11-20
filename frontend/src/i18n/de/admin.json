@@ -69,8 +69,16 @@
         "showModal": "Modal anzeigen"
       },
       "confirm": {
-        "assign": "Protokoll \"{{protocol}}\" an Teilnehmer \"{{participant}}\" senden?",
-        "end": "Zuweisung von \"{{protocol}}\" für \"{{participant}}\" beenden?"
+        "assign": {
+          "message": "Protokoll \"{{protocol}}\" an Teilnehmer \"{{participant}}\" senden?",
+          "title": "Send protocol confirmation"
+        },
+        "end": {
+          "message":"Zuweisung von \"{{protocol}}\" für \"{{participant}}\" beenden?",
+          "title":"Inactivate protocol assignment"
+        }, 
+        "confirm": "Confirm",
+        "cancel": "Cancel"
       }
     },
   

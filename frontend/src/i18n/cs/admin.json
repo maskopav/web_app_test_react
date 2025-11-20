@@ -99,8 +99,16 @@
       "showModal": "Zobrazit link / QR kód"
     },
     "confirm": {
-      "assign": "Odeslat protokol \"{{protocol}}\" účastníkovi \"{{participant}}\"?",
-      "end": "Ukončit přiřazení \"{{protocol}}\" pro \"{{participant}}\"?"
+      "assign": {
+        "message": "Odeslat protokol \"{{protocol}}\" účastníkovi \"{{participant}}\"?",
+        "title": "Potvrzení o přiřazení a odeslání protokolu"
+      },
+      "end": {
+        "message":"Ukončit přiřazení \"{{protocol}}\" pro \"{{participant}}\"?",
+        "title":"Ukončení přiřazení protokolu"
+      }, 
+      "confirm": "Potvrdit",
+      "cancel": "Zrušit"
     }
   },
 

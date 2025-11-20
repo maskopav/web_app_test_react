@@ -7,22 +7,29 @@ import {
 } from "../../api/participantProtocols";
 import AssignmentSuccessModal from "./AssignmentSuccessModal";
 import { useTranslation } from "react-i18next";
+import { useConfirm } from "../ConfirmDialog/ConfirmDialogContext";
 
 export default function ParticipantProtocolTable({ rows, onRefresh }) {
   const { t } = useTranslation(["admin"]);
+  const confirm = useConfirm();
 
   const [showModal, setShowModal] = useState(false);
   const [modalLink, setModalLink] = useState("");
   const [modalText, setModalText] = useState("");
 
   async function handleActivate(id, protocolName, participantName, uniqueToken) {
-    const ok = window.confirm(
-      t("participantProtocol.confirm.assign", {
+    const ok = await confirm({
+      title: t("participantProtocol.confirm.assign.title"),
+      message: t("participantProtocol.confirm.assign.message", {
         protocol: protocolName,
         participant: participantName,
-      })
-    );
+      }),
+      confirmText: t("participantProtocol.confirm.confirm"),
+      cancelText: t("participantProtocol.confirm.cancel"),
+    });
+    
     if (!ok) return;
+    
 
     await activateParticipantProtocol(id);
 
@@ -47,12 +54,16 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
   
 
   async function handleDeactivate(id, protocolName, participantName) {
-    const ok = window.confirm(
-      t("participantProtocol.confirm.end", {
+    const ok = await confirm({
+      title: t("participantProtocol.confirm.end.title"),
+      message: t("participantProtocol.confirm.end.message", {
         protocol: protocolName,
         participant: participantName,
-      })
-    );
+      }),
+      confirmText: t("participantProtocol.confirm.confirm"),
+      cancelText: t("participantProtocol.confirm.cancel"),
+    });
+    
     if (!ok) return;
 
     await deactivateParticipantProtocol(id);
@@ -139,7 +150,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
 
                           {/* EXTRA BUTTON TO SHOW MODAL */}
                           <button
-                            className="btn-view"
+                            className="btn-show-modal"
                             onClick={() => {
                               const link = `${window.location.origin}/participant/${r.unique_token}`;
                               const emailText = generateEmail(

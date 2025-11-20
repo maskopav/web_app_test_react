@@ -24,7 +24,7 @@ export default function ProjectDashboardPage() {
 
   const goProtocols = () => navigate(`/projects/${projectId}/protocols`);
   const goParticipants = () => navigate(`/projects/${projectId}/participants`);
-  const goAssignments = () => navigate(`/projects/${projectId}/assignments`);
+  const goAssignments = () => navigate(`/projects/${projectId}/enrollment/assign`);
   const goData = () => navigate(`/projects/${projectId}/data`);
 
   return (

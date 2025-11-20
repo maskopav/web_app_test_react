@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { useMappings } from "../context/MappingContext";
-import { fetchParticipantProtocol } from "../api/participantProtocol";
+import { fetchParticipantProtocol } from "../api/participantProtocols";
 
 export default function ParticipantInterfaceLoader() {
   const { token } = useParams();

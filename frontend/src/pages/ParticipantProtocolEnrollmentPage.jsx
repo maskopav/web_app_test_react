@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createParticipantProtocol } from "../api/participantProtocol";
+import { createParticipantProtocol } from "../api/participantProtocols";
 import { useMappings } from "../context/MappingContext";
 
 export default function ParticipantAssignmentPage() {

@@ -4,13 +4,21 @@ import {
   createParticipantProtocol, 
   resolveParticipantToken,
   getParticipantProtocolView,
-  getParticipantProtocolViewById
+  getParticipantProtocolViewById,
+  activateParticipantProtocol,
+  deactivateParticipantProtocol
 } from "../controllers/participantProtocolController.js";
 
 const router = express.Router();
 
 // POST /api/participant-protocols/create
 router.post("/create", createParticipantProtocol);
+
+// Assign (activate)
+router.post("/activate", activateParticipantProtocol);
+
+// End assignment (deactivate)
+router.post("/deactivate", deactivateParticipantProtocol);
 
 // GET /api/participant-protocol/:token
 /// e.g. http://localhost:3000/participant-protocol/99b8883a-c142-11f0-9f82-1063c8a646e0

@@ -176,3 +176,47 @@ export const getParticipantProtocolViewById = async (req, res) => {
     res.status(500).json({ error: "Failed to load participant-protocol" });
   }
 };
+
+// Set assignment active (start)
+export async function activateParticipantProtocol(req, res) {
+  try {
+    const { participant_protocol_id } = req.body;
+    if (!participant_protocol_id) {
+      return res.status(400).json({ error: "Missing participant_protocol_id" });
+    }
+
+    const [rows] = await pool.query(
+      `UPDATE participant_protocols 
+       SET is_active = 1, start_date = NOW(), end_date = NULL
+       WHERE id = ?`,
+      [participant_protocol_id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Activation error:", err);
+    res.status(500).json({ error: "Internal error" });
+  }
+}
+
+// End assignment
+export async function deactivateParticipantProtocol(req, res) {
+  try {
+    const { participant_protocol_id } = req.body;
+    if (!participant_protocol_id) {
+      return res.status(400).json({ error: "Missing participant_protocol_id" });
+    }
+
+    await pool.query(
+      `UPDATE participant_protocols 
+       SET is_active = 0, end_date = NOW()
+       WHERE id = ?`,
+      [participant_protocol_id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Deactivation error:", err);
+    res.status(500).json({ error: "Internal error" });
+  }
+}

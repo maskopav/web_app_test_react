@@ -50,7 +50,13 @@ export default function ParticipantProtocolPage() {
       {loading ? (
         <p>{t("loading")}</p>
       ) : (
-        <ParticipantProtocolTable rows={rows} />
+        <ParticipantProtocolTable 
+        rows={rows}
+        onRefresh={() => {
+            // reload table after changes
+            fetchParticipantProtocolView({ project_id: projectId }).then(setRows);
+        }}
+        />
       )}
     </div>
   );

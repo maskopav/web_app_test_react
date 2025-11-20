@@ -1,0 +1,63 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  
+  .modal-card {
+    background: white;
+    padding: 1.2rem 1.5rem;
+    border-radius: 0.8rem;
+    max-width: 450px;
+    width: 100%;
+    box-shadow: var(--sharp-shadow);
+  }
+  
+  .link-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f7f7f7;
+    border-radius: 6px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .qr-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+  
+  .email-box {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: #fbfbfb;
+    margin-bottom: 0.8rem;
+  }
+  
+  .btn-copy {
+    width: 100%;
+    padding: 0.7rem;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    border: none;
+    margin-bottom: 0.8rem;
+  }
+  
+  .btn-close {
+    width: 100%;
+    padding: 0.7rem;
+    background: var(--warning);
+    color: white;
+    border-radius: 6px;
+    border: none;
+  }
+  

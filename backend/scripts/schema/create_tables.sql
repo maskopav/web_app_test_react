@@ -40,7 +40,7 @@ CREATE TABLE `projects` (
 CREATE TABLE `protocols` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `protocol_group_id` integer NOT NULL,
-  `name` varchar(255) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `language_id` integer NOT NULL,
   `description` text,
   `version` integer NOT NULL DEFAULT 1,
@@ -62,7 +62,8 @@ CREATE TABLE `questionnaires` (
 CREATE TABLE `project_protocols` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `project_id` integer NOT NULL,
-  `protocol_id` integer NOT NULL
+  `protocol_id` integer NOT NULL,
+  `access_token` char(64) UNIQUE DEFAULT NULL
 );
 
 CREATE TABLE `protocol_tasks` (
@@ -75,7 +76,7 @@ CREATE TABLE `protocol_tasks` (
 
 CREATE TABLE `tasks` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `category` varchar(255) UNIQUE NOT NULL COMMENT 'e.g. monologue, reading, phonation',
+  `category` varchar(50) UNIQUE NOT NULL COMMENT 'e.g. monologue, reading, phonation',
   `type_id` integer NOT NULL COMMENT 'id of voice, visual, cognitive',
   `recording_mode` JSON NOT NULL,
   `params` JSON COMMENT 'JSON schema of editable parameters - names not values',
@@ -91,7 +92,7 @@ CREATE TABLE `task_types` (
 
 CREATE TABLE `languages` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `code` varchar(255) UNIQUE NOT NULL COMMENT 'e.g. en, cs, de',
+  `code` varchar(10) UNIQUE NOT NULL COMMENT 'e.g. en, cs, de',
   `name` varchar(255) NOT NULL
 );
 
@@ -105,14 +106,16 @@ CREATE TABLE `participants` (
   `contact_phone` varchar(255),
   `notes` text,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp
+  `updated_at` timestamp,
+  `login_email` varchar(255) UNIQUE DEFAULT NULL,
+  `login_password_hash` varchar(255) DEFAULT NULL
 );
 
 CREATE TABLE `participant_protocols` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `participant_id` integer NOT NULL,
   `project_protocol_id` integer NOT NULL,
-  `unique_token` varchar(255) UNIQUE NOT NULL COMMENT 'UUID or hash to reconstruct the URL on the backend',
+  `access_token` char(64) UNIQUE NOT NULL COMMENT 'UUID or hash to reconstruct the URL on the backend',
   `start_date` date,
   `end_date` date,
   `is_active` BOOLEAN DEFAULT TRUE

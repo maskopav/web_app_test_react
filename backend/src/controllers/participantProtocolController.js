@@ -19,7 +19,7 @@ export async function createParticipantProtocol(req, res) {
 
     while (!unique) {
       const [rows] = await conn.query(
-          `SELECT id FROM participant_protocols WHERE unique_token = ?`,
+          `SELECT id FROM participant_protocols WHERE access_token = ?`,
           [token]
       );
       if (rows.length === 0) unique = true;
@@ -30,7 +30,7 @@ export async function createParticipantProtocol(req, res) {
     const [result] = await pool.query(
       `
       INSERT INTO participant_protocols
-      (participant_id, project_protocol_id, unique_token, start_date, is_active)
+      (participant_id, project_protocol_id, access_token, start_date, is_active)
       VALUES (?, ?, ?, NOW(), 1)
       `,
       [participant_id, project_protocol_id, token]
@@ -55,7 +55,7 @@ export async function resolveParticipantToken(req, res) {
   try {
     // 1. Load from PARTICIPANT-PROTOCOLS table → get its id
     const rows = await executeQuery(
-      `SELECT id FROM participant_protocols WHERE unique_token = ?`,
+      `SELECT id FROM participant_protocols WHERE access_token = ?`,
       [token]
     );
 

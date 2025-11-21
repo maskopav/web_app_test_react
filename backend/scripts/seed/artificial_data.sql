@@ -6,9 +6,16 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- --------------------------
+-- 0) Users
+-- --------------------------
+INSERT INTO users (`email`, `password_hash`, `full_name`, `role_id`) VALUES
+('master_user@example.com', '$2y$12$EXAMPLEHASH1', 'Master User', 1),
+('admin_user1@example.com', '$2y$12$EXAMPLEHASH2', 'Admin User 1', 2),
+('admin_user2@example.com', '$2y$12$EXAMPLEHASH3', 'Admin User 2', 2);
+
+-- --------------------------
 -- 1) Projects
 -- --------------------------
-TRUNCATE TABLE projects;
 
 INSERT INTO projects (id, name, description, start_date, end_date, is_active, frequency, country, contact_person)
 VALUES
@@ -23,7 +30,6 @@ VALUES
 -- 2) Participants
 -- --------------------------
 
-TRUNCATE TABLE participants;
 
 INSERT INTO participants (id, external_id, full_name, birth_date, sex, contact_email, contact_phone, notes)
 VALUES
@@ -60,29 +66,25 @@ FROM (
 -- Requires existing protocol records!
 -- If you want artificial protocols generated too → tell me.
 
-TRUNCATE TABLE project_protocols;
-
 -- Example: project 1 uses protocols 1,2
 INSERT INTO project_protocols (id, project_id, protocol_id)
 VALUES
-(1, 1, 3),
-(2, 1, 7),
-(3, 2, 8),
-(4, 2, 9),
-(5, 3, 10),
-(6, 3, 12),
-(7, 4, 21),
-(8, 5, 24),
-(9, 6, 26);
+(1, 1, 1),
+(2, 1, 2),
+(3, 2, 2),
+(4, 2, 3),
+(5, 3, 4),
+(6, 3, 5),
+(7, 4, 6),
+(8, 5, 7),
+(9, 6, 8);
 
 -- --------------------------
 -- 4) Participant-Protocol assignment
 -- --------------------------
 
-TRUNCATE TABLE participant_protocols;
-
 INSERT INTO participant_protocols
-(participant_id, project_protocol_id, unique_token, start_date, end_date, is_active)
+(participant_id, project_protocol_id, access_token, start_date, end_date, is_active)
 VALUES
 -- project 1
 (1, 1, UUID(), '2024-02-01', NULL, 1),
@@ -104,7 +106,7 @@ VALUES
 (9, 9, UUID(), '2024-10-14', NULL, 1);
 
 -- Random assignment of the remaining participants
-INSERT INTO participant_protocols (participant_id, project_protocol_id, unique_token, start_date, is_active)
+INSERT INTO participant_protocols (participant_id, project_protocol_id, access_token, start_date, is_active)
 SELECT 
   p.id,
   FLOOR(1 + RAND()*9), 

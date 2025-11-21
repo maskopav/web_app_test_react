@@ -1,7 +1,7 @@
 CREATE OR REPLACE VIEW v_participant_protocols AS
 SELECT
     pp.id                            AS participant_protocol_id,
-    pp.unique_token,
+    pp.access_token,
     pp.start_date,
     pp.end_date,
     pp.is_active,

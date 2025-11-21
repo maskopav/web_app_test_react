@@ -63,14 +63,17 @@ export default function ParticipantInterfacePage() {
 
   // --- handlers
   const handleNextTask = () => setTaskIndex((i) => i + 1);
-  const handleBack = () =>
-    navigate(`/projects/${protocolData.projectId || "demo"}/protocols/${protocolData.id || "test"}`, {
-      state: { 
-        protocol: protocolData, 
-        testingMode,
-        editingMode 
-      },
+  function handleBack() {
+    if (location.state?.returnTo === "dashboard") {
+      navigate(`/projects/${protocolData.projectId}/protocols`);
+      return;
+    }
+  
+    // default → return to editor
+    navigate(`/projects/${protocolData.projectId}/protocols/${protocolData.id}`, {
+      state: { protocol: protocolData, testingMode, editingMode },
     });
+  }
   const handleSkip = () => setTaskIndex((i) => Math.min(i + 1, runtimeTasks.length));
 
   const renderCurrentTask = () => {

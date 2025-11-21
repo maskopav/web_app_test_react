@@ -18,6 +18,8 @@ export function useProtocolActions() {
       const rawProtocol = await getProtocolById(protocolId);
       const mappedProtocol = mapProtocolWithNames(rawProtocol, mappings);
 
+      mappedProtocol.projectId = projectId;
+
       setSelectedProtocol(mappedProtocol);
 
       navigate("/participant/test", {
@@ -25,6 +27,7 @@ export function useProtocolActions() {
           protocol: mappedProtocol,
           testingMode: true,
           editingMode: false,
+          returnTo: "dashboard", 
         },
       });
     } catch (error) {
@@ -47,6 +50,7 @@ export function useProtocolActions() {
           protocol: mappedProtocol,
           testingMode: true, // stays true to preview tasks
           editingMode: true,
+          returnTo: "editor",
         },
       });
     } catch (error) {

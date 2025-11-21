@@ -8,6 +8,15 @@ import { ProtocolContext } from "../context/ProtocolContext";
 import { useMappings } from "../context/MappingContext";
 import "./Pages.css"
 
+function attachIds(protocol, projectId, protocolId) {
+  if (!protocol) return null;
+  return {
+    ...protocol,
+    projectId,
+    protocolId
+  };
+}  
+
 export default function ProtocolEditorPage() {
   const { t } = useTranslation(["tasks", "common"]);
   const { projectId, protocolId } = useParams();
@@ -18,7 +27,7 @@ export default function ProtocolEditorPage() {
 
   const [configuredTasks, setConfiguredTasks] = useState(state?.protocol?.tasks || selectedProtocol?.tasks || []);
   const [protocolData, setProtocolData] = useState(
-    state?.protocol || selectedProtocol || null
+    attachIds(state?.protocol || selectedProtocol || null, projectId, protocolId)
   );
 
   const testingMode = state?.testingMode ?? false;

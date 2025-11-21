@@ -96,7 +96,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="empty-row">
+                  <td colSpan="9" className="empty-row">
                     {t("participantProtocol.noAssignments")}
                   </td>
                 </tr>
@@ -117,7 +117,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
                     </td>
 
                     <td className="actions">
-                      {!r.is_active && (
+                      {r.is_active == 0 && (
                         <button
                           className="btn-view"
                           onClick={() =>
@@ -133,7 +133,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
                         </button>
                       )}
 
-                      {r.is_active && (
+                      {r.is_active == 1 && (
                         <>
                           <button
                             className="btn-edit"

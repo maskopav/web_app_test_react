@@ -35,7 +35,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
 
     await activateParticipantProtocol(id);
 
-    const link = `${VITE_APP_BASE_PATH}/#/participant/${uniqueToken}`;
+    const link = `${window.location.origin}${VITE_APP_BASE_PATH}#/participant/${uniqueToken}`;
     const emailText = generateEmail(participantName, link);
 
     setModalLink(link);
@@ -154,7 +154,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
                           <button
                             className="btn-show-modal"
                             onClick={() => {
-                              const link = `${window.location.origin}/#/participant/${r.access_token}`;
+                              const link = `${window.location.origin}${VITE_APP_BASE_PATH}#/participant/${r.access_token}`;
                               const emailText = generateEmail(
                                 r.full_name,
                                 link

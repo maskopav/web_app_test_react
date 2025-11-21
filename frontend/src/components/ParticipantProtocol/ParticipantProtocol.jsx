@@ -9,6 +9,8 @@ import AssignmentSuccessModal from "./AssignmentSuccessModal";
 import { useTranslation } from "react-i18next";
 import { useConfirm } from "../ConfirmDialog/ConfirmDialogContext";
 
+const VITE_APP_BASE_PATH = import.meta.env.VITE_APP_BASE_PATH;
+
 export default function ParticipantProtocolTable({ rows, onRefresh }) {
   const { t } = useTranslation(["admin"]);
   const confirm = useConfirm();
@@ -33,7 +35,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
 
     await activateParticipantProtocol(id);
 
-    const link = `${window.location.origin}/#/participant/${uniqueToken}`;
+    const link = `${VITE_APP_BASE_PATH}/#/participant/${uniqueToken}`;
     const emailText = generateEmail(participantName, link);
 
     setModalLink(link);

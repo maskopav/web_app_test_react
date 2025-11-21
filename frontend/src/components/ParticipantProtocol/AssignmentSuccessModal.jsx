@@ -9,13 +9,14 @@ export default function AssignmentSuccessModal({ link, emailText, onClose }) {
   return (
     <div className="modal-overlay">
       <div className="modal-card">
-
+        <button className="modal-close" onClick={onClose}>✖</button>
+        
         <h2>{t("assignmentModal.title")}</h2>
 
-        <p>{t("assignmentModal.description")}</p>
+        <p className="assignment-descr">{t("assignmentModal.description")}</p>
 
         <div className="link-box">
-          <code>{link}</code>
+          <code className="link-text">{link}</code>
           <button
             className="btn-copy"
             onClick={() => navigator.clipboard.writeText(link)}
@@ -42,10 +43,6 @@ export default function AssignmentSuccessModal({ link, emailText, onClose }) {
           onClick={() => navigator.clipboard.writeText(emailText)}
         >
           {t("assignmentModal.copyEmail")}
-        </button>
-
-        <button className="btn-close" onClick={onClose}>
-          {t("assignmentModal.close")}
         </button>
 
       </div>

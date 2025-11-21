@@ -75,9 +75,8 @@ VALUES
 (4, 2, 3),
 (5, 3, 4),
 (6, 3, 5),
-(7, 4, 6),
-(8, 5, 7),
-(9, 6, 8);
+(7, 4, 6);
+
 
 -- --------------------------
 -- 4) Participant-Protocol assignment
@@ -87,38 +86,14 @@ INSERT INTO participant_protocols
 (participant_id, project_protocol_id, access_token, start_date, end_date, is_active)
 VALUES
 -- project 1
-(1, 1, UUID(), '2024-02-01', NULL, 1),
-(2, 2, UUID(), '2024-02-12', NULL, 1),
+(1, 1, UUID(), NULL, NULL, 0),
+(2, 2, UUID(), NULL, NULL, 0),
 
 -- project 2
-(6, 3, UUID(), '2024-03-20', NULL, 1),
-(7, 4, UUID(), '2024-03-22', NULL, 1),
+(6, 3, UUID(), NULL, NULL, 0),
+(7, 4, UUID(), NULL, NULL, 0),
 
 -- project 3
-(3, 5, UUID(), '2023-12-01', NULL, 1),
-(4, 6, UUID(), '2024-01-10', '2024-03-01', 0),
+(3, 5, UUID(), NULL, NULL, 0),
+(4, 6, UUID(), NULL, NULL, 0);
 
--- project 4 (inactive)
-(10, 7, UUID(), '2025-01-12', '2025-02-10', 0),
-
--- etc.
-(8, 8, UUID(), '2024-09-02', NULL, 1),
-(9, 9, UUID(), '2024-10-14', NULL, 1);
-
--- Random assignment of the remaining participants
-INSERT INTO participant_protocols (participant_id, project_protocol_id, access_token, start_date, is_active)
-SELECT 
-  p.id,
-  FLOOR(1 + RAND()*9), 
-  UUID(),
-  DATE('2024-01-01') + INTERVAL (RAND()*200) DAY,
-  1
-FROM participants p
-WHERE p.id > 10;
-
-
-UPDATE project_protocols
-SET access_token = LPAD(HEX(RANDOM_BYTES(32)), 64, '0')
-WHERE access_token IS NULL;
-
-SET FOREIGN_KEY_CHECKS = 1;

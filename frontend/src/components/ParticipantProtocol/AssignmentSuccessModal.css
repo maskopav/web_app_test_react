@@ -12,9 +12,40 @@
     background: white;
     padding: 1.2rem 1.5rem;
     border-radius: 0.8rem;
-    max-width: 450px;
+    max-width: 800px;
     width: 100%;
+    height: 90vh;
     box-shadow: var(--sharp-shadow);
+    overflow-y: scroll;
+    position: relative; 
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: var(--danger);
+    color: white;
+    border: none;
+    border-radius: var(--sharp-radius);
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;  /* ensures visibility above content */
+  }
+  
+  .modal-close:hover {
+    background: #c0392b;
+  }
+
+  .assignment-descr {
+    margin: 0;
+    font-size: 1.2rem;
   }
   
   .link-box {
@@ -23,14 +54,16 @@
     justify-content: space-between;
     background: #f7f7f7;
     border-radius: 6px;
-    padding: 0.5rem;
-    margin-bottom: 1rem;
+    padding: 0.3rem;
+    margin-bottom: 0.5rem;
   }
+  .link-text { flex: 3; padding: 0.1rem; }
+  .btn-copy { flex: 1; }
   
   .qr-wrapper {
     display: flex;
     justify-content: center;
-    margin: 1rem 0;
+    margin: 0.2rem 0;
   }
   
   .email-box {
@@ -44,20 +77,21 @@
   
   .btn-copy {
     width: 100%;
-    padding: 0.7rem;
+    padding: 0.5rem;
     background: var(--primary);
     color: white;
     border-radius: 6px;
     border: none;
-    margin-bottom: 0.8rem;
+    margin: 0rem;
   }
   
   .btn-close {
     width: 100%;
-    padding: 0.7rem;
+    padding: 0.5rem;
     background: var(--warning);
     color: white;
     border-radius: 6px;
     border: none;
+    margin: 0;
   }
   

@@ -45,6 +45,10 @@ export function ProtocolEditor({
   const protocols = mappings?.protocols || [];
   const [nameError, setNameError] = useState("");
 
+  const [editingQuestionnaireIndex, setEditingQuestionnaireIndex] = useState(null);
+  const [questionnaireInitialData, setQuestionnaireInitialData] = useState(null);
+
+
   useEffect(() => {
     if (protocol) {
       setProtocolData(protocol);
@@ -174,7 +178,18 @@ export function ProtocolEditor({
           setProtocolData={setProtocolData}
           reorderMode={reorderMode}
           setReorderMode={setReorderMode}
-          onEdit={setEditingTask}
+          onEdit={(idx) => {
+            const task = tasks[idx];
+            if (task.category === "questionnaire") {
+              setEditingQuestionnaireIndex(idx);
+              setQuestionnaireInitialData(task.params);  // prefill form
+              setShowQuestionnaireModal(true);
+              return;
+            }
+            // regular task editing
+            setEditingTask(idx);
+            setEditingData(tasks[idx]);
+          }}          
           onDelete={(i) =>
             setTasks((prev) => {
               const next = prev.filter((_, idx) => idx !== i);
@@ -218,8 +233,22 @@ export function ProtocolEditor({
 
       <QuestionnaireModal
         open={showQuestionnaireModal}
-        onClose={() => setShowQuestionnaireModal(false)}
-        onSave={() => setShowQuestionnaireModal(false)}
+        initialData={questionnaireInitialData}
+        onClose={() => {
+          setShowQuestionnaireModal(false);
+          setEditingQuestionnaireIndex(null);
+          setQuestionnaireInitialData(null);
+        }}
+        onSave={(taskData) => {
+          if (editingQuestionnaireIndex != null) {
+            updateTask(taskData, editingQuestionnaireIndex);
+          } else {
+            addTaskToProtocol(taskData);
+          }
+          setShowQuestionnaireModal(false);
+          setEditingQuestionnaireIndex(null);
+          setQuestionnaireInitialData(null);
+        }}
       />
     </div>
   );

@@ -12,7 +12,7 @@ export interface TaskParamDef {
 }
 
 export interface TaskBase {
-  type: "voice" | "camera" | "motoric";
+  type: "voice" | "camera" | "motoric" | "questionnaire";
   recording: RecordingMode;
   params: Record<string, TaskParamDef>;
   repeat?: number;
@@ -21,6 +21,15 @@ export interface TaskBase {
 
 // Define all base tasks here (typed)
 export const taskBaseConfig: Record<string, TaskBase> = {
+  questionnaire: {
+    type: "questionnaire",
+    recording: { mode: "delayedStop", duration: 5 },
+    params: {
+      quest_name: { default: "{{title}}" },
+      quest_descr: { default: "{{description}}" },
+    },
+  },
+
   phonation: {
     type: "voice",
     recording: { mode: "delayedStop", duration: 5 },

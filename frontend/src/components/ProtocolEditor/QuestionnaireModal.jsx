@@ -1,13 +1,26 @@
 // src/components/ProtocolEditor/QuestionnaireModal.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "./Modal";
 
-export default function QuestionnaireModal({ open, onClose, onSave }) {
+export default function QuestionnaireModal({ open, onClose, onSave, initialData }) {
   const { t } = useTranslation("admin");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title || "");
+      setDescription(initialData.description || "");
+      setQuestions(initialData.questions || []);
+    } else {
+      setTitle("");
+      setDescription("");
+      setQuestions([]);
+    }
+  }, [initialData, open]);
+  
 
   const addQuestion = () => {
     setQuestions((prev) => [
@@ -70,10 +83,15 @@ export default function QuestionnaireModal({ open, onClose, onSave }) {
   };
 
   const handleSave = () => {
-    const questionnaire = { title, description, questions };
-    console.log("Questionnaire JSON:", JSON.stringify(questionnaire, null, 2));
-    onSave(questionnaire);
-  };
+    const params = { title, description, questions };
+    const questionnaireTask = {
+      type: "questionnaire",
+      category: "questionnaire",
+      params
+    };
+    console.log(questionnaireTask);
+    onSave(questionnaireTask);
+  };  
 
   if (!open) return null;
 

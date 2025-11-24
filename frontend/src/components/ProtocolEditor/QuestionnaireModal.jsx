@@ -2,25 +2,27 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "./Modal";
+import "./QuestionnaireModal.css"; 
 
 export default function QuestionnaireModal({ open, onClose, onSave, initialData }) {
-  const { t } = useTranslation("admin");
+  // ... (state and handlers remain the same) ...
+  const { t } = useTranslation(["admin", "common"]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState([]);
 
+  // Load initial data or reset
   useEffect(() => {
-    if (initialData) {
+    if (open && initialData) {
       setTitle(initialData.title || "");
       setDescription(initialData.description || "");
       setQuestions(initialData.questions || []);
-    } else {
+    } else if (open && !initialData) {
       setTitle("");
       setDescription("");
       setQuestions([]);
     }
   }, [initialData, open]);
-  
 
   const addQuestion = () => {
     setQuestions((prev) => [
@@ -28,7 +30,7 @@ export default function QuestionnaireModal({ open, onClose, onSave, initialData 
       {
         id: Date.now(),
         text: "",
-        type: "open", // default type
+        type: "open",
         options: [],
       },
     ]);
@@ -40,12 +42,11 @@ export default function QuestionnaireModal({ open, onClose, onSave, initialData 
     );
   };
 
+  // --- Option Handlers ---
   const addOption = (questionId) => {
     setQuestions((prev) =>
       prev.map((q) =>
-        q.id === questionId
-          ? { ...q, options: [...q.options, ""] }
-          : q
+        q.id === questionId ? { ...q, options: [...(q.options || []), ""] } : q
       )
     );
   };
@@ -56,9 +57,7 @@ export default function QuestionnaireModal({ open, onClose, onSave, initialData 
         q.id === questionId
           ? {
               ...q,
-              options: q.options.map((opt, i) =>
-                i === index ? value : opt
-              ),
+              options: q.options.map((opt, i) => (i === index ? value : opt)),
             }
           : q
       )
@@ -83,16 +82,9 @@ export default function QuestionnaireModal({ open, onClose, onSave, initialData 
   };
 
   const handleSave = () => {
-    const questionnaireTask = {
-      type: "questionnaire",
-      category: "questionnaire",
-      title,
-      description,
-      questions
-    };
-    console.log(questionnaireTask);
-    onSave(questionnaireTask);
-  };  
+    // Send flat data back to Editor
+    onSave({ title, description, questions });
+  };
 
   if (!open) return null;
 
@@ -100,108 +92,118 @@ export default function QuestionnaireModal({ open, onClose, onSave, initialData 
     <Modal open={open} onClose={onClose} onSave={handleSave}>
       <div className="modal-title">{t("protocolEditor.addQuestionnaire")}</div>
 
-      <div className="questionnaire-form">
-        {/* Header Section */}
-        <div className="questionnaire-header">
-          <label>{t("protocolEditor.questionnaire.questionnaireTitle")}</label>
-          <input
-            type="text"
-            value={title}
-            placeholder={t("protocolEditor.questionnaire.enterTitle")}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+      <div className="questionnaire-modal-form">
+        {/* ... (Header Section Remains the Same) ... */}
+        <div className="qm-header-section">
+          <div className="qm-input-group">
+            <label>{t("protocolEditor.questionnaire.questionnaireTitle")}</label>
+            <input
+              className="qm-input"
+              type="text"
+              value={title}
+              placeholder={t("protocolEditor.questionnaire.enterTitle")}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
 
-          <label>{t("protocolEditor.questionnaire.questionnaireDescription")}</label>
-          <textarea
-            value={description}
-            placeholder={t("protocolEditor.questionnaire.enterDescription")}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={2}
-          />
+          <div className="qm-input-group">
+            <label>{t("protocolEditor.questionnaire.questionnaireDescription")}</label>
+            <textarea
+              className="qm-textarea"
+              value={description}
+              placeholder={t("protocolEditor.questionnaire.enterDescription")}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={2}
+            />
+          </div>
         </div>
 
-        {/* Questions Section */}
-        <div className="question-section">
+        <div className="qm-questions-list">
           {questions.map((q, idx) => (
-            <div key={q.id} className="question-block compact">
-            <div className="question-header">
-              <strong>{t("protocolEditor.questionnaire.question")} {idx + 1}</strong>
-              <button
-                className="btn-remove-question-icon"
-                onClick={() => removeQuestion(q.id)}
-                title={t("protocolEditor.questionnaire.removeQuestion")}
-              >
-                ✖
-              </button>
-            </div>
-            
-            <div className="form-group small">
-              <label>{t("protocolEditor.questionnaire.question")}</label>
-              <input
-                type="text"
-                value={q.text}
-                placeholder={t("protocolEditor.questionnaire.enterQuestionText")}
-                onChange={(e) => updateQuestion(q.id, "text", e.target.value)}
-              />
-            </div>
-          
-            <div className="form-group small">
-              <label>{t("protocolEditor.questionnaire.answerType")}</label>
-              <select
-                value={q.type}
-                onChange={(e) => {
-                  const newType = e.target.value;
-                  updateQuestion(q.id, "type", newType);
-                  if (newType === "open") updateQuestion(q.id, "options", []);
-                }}
-              >
-                <option value="open">{t("protocolEditor.questionnaire.Open answer")}</option>
-                <option value="single">{t("protocolEditor.questionnaire.Single choice")}</option>
-                <option value="multiple">{t("protocolEditor.questionnaire.Multiple choice")}</option>
-                <option value="dropdown">{t("protocolEditor.questionnaire.Dropdown")}</option>
-              </select>
-            </div>
+            <div key={q.id} className="qm-question-card">
+              
+              <div className="qm-card-header">
+                <span className="qm-question-label">
+                  {t("protocolEditor.questionnaire.question")} {idx + 1}
+                </span>
+                <button
+                  className="qm-btn-remove-question"
+                  onClick={() => removeQuestion(q.id)}
+                  title={t("protocolEditor.questionnaire.removeQuestion")}
+                >
+                  ✕
+                </button>
+              </div>
 
-              {/* Options for non-open types */}
-              {q.type !== "open" && (
-                <div className="options-section">
-                  <div className="question-header">
-                  <label>{t("protocolEditor.questionnaire.answerOptions")}</label>
-                  <button
-                    className="btn-add-option"
-                    onClick={() => addOption(q.id)}
+              {/* Flex Row Container */}
+              <div className="qm-card-body">
+                <div className="qm-input-group">
+                  <input
+                    className="qm-input question-text" 
+                    type="text"
+                    value={q.text}
+                    placeholder={t("protocolEditor.questionnaire.enterQuestionText")}
+                    onChange={(e) => updateQuestion(q.id, "text", e.target.value)}
+                  />
+                </div>
+
+                <div className="qm-input-group">
+                  <select
+                    className="qm-select type-select" 
+                    value={q.type}
+                    onChange={(e) => {
+                      const newType = e.target.value;
+                      updateQuestion(q.id, "type", newType);
+                      if (newType === "open") updateQuestion(q.id, "options", []);
+                    }}
                   >
-                    + {t("protocolEditor.questionnaire.addOption")}
-                  </button>
-                  </div>
-                  {q.options.map((opt, i) => (
-                    <div key={i} className="option-item">
-                      <input
-                        type="text"
-                        value={opt}
-                        placeholder={`${t("protocolEditor.questionnaire.Option")} ${i + 1}`}
-                        onChange={(e) =>
-                          updateOption(q.id, i, e.target.value)
-                        }
-                      />
-                      <button
-                        className="btn-remove-option"
-                        onClick={() => removeOption(q.id, i)}
-                      >
-                        ✖
-                      </button>
-                    </div>
-                  ))}
-                  
+                    <option value="open">{t("protocolEditor.questionnaire.Open answer")}</option>
+                    <option value="single">{t("protocolEditor.questionnaire.Single choice")}</option>
+                    <option value="multiple">{t("protocolEditor.questionnaire.Multiple choice")}</option>
+                    <option value="dropdown">{t("protocolEditor.questionnaire.Dropdown")}</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Options Section (Moved out of flex row to stack below) */}
+              {q.type !== "open" && (
+                <div className="qm-options-section">
+                   {/* ... (Options Logic Remains the Same) ... */}
+                   <label className="qm-options-label">
+                      {t("protocolEditor.questionnaire.answerOptions")}
+                    </label>
+                    
+                    {q.options && q.options.map((opt, i) => (
+                      <div key={i} className="qm-option-row">
+                        <input
+                          className="qm-input"
+                          type="text"
+                          value={opt}
+                          placeholder={`${t("protocolEditor.questionnaire.Option")} ${i + 1}`}
+                          onChange={(e) => updateOption(q.id, i, e.target.value)}
+                        />
+                        <button
+                          className="qm-btn-remove-option"
+                          onClick={() => removeOption(q.id, i)}
+                          title="Remove option"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+
+                    <button className="qm-btn-add-option" onClick={() => addOption(q.id)}>
+                      + {t("protocolEditor.questionnaire.addOption")}
+                    </button>
                 </div>
               )}
             </div>
           ))}
-
-          <button className="btn-add-questionnaire" onClick={addQuestion}>
-            + {t("protocolEditor.questionnaire.addQuestion")}
-          </button>
         </div>
+
+        <button className="qm-btn-add-question" onClick={addQuestion}>
+          + {t("protocolEditor.questionnaire.addQuestion")}
+        </button>
       </div>
     </Modal>
   );

@@ -26,7 +26,13 @@
     "taskLabels": {
       "voice": "Řečová úloha",
       "motor": "Motorická úloha",
-      "camera": "Kamerová úloha"
+      "camera": "Kamerová úloha",
+      "questionnaire": "Dotazník"
+    },
+    "questionnaire": {
+      "selectOption": "Vyberte možnost...",
+      "typeAnswer": "Zde napište svou odpověď...",
+      "required": "* povinné"
     }
   }
   

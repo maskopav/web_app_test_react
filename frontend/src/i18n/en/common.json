@@ -27,7 +27,13 @@
     "taskLabels": {
       "voice": "Vocal Task",
       "motor": "Motor Task",
-      "camera": "Camera Task"
+      "camera": "Camera Task",
+      "questionnaire": "Questionnaire"
+    },
+    "questionnaire": {
+      "selectOption": "Select an option...",
+      "typeAnswer": "Type your answer here...",
+      "required": "* required"
     }
   }
   

@@ -2,7 +2,7 @@
     "questionnaire": {
     "name": "Questionnaire",
     "description": "A customizable form with questions.",
-    "title": "{{title}}",
+    "title": "Questionnaire: {{title}}",
     "instructions": "Please answer the following questions.",
     "params": {
       "title": { "label": "Title" },

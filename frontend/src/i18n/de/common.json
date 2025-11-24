@@ -25,6 +25,11 @@
       "voice": "Vocal Task",
       "motor": "Motor Task",
       "camera": "Camera Task"
+    },
+    "questionnaire": {
+      "selectOption": "Wählen Sie eine Option...",
+      "typeAnswer": "Geben Sie hier Ihre Antwort ein...",
+      "required": "* erforderlich"
     }
   }
   

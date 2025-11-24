@@ -129,15 +129,11 @@ export default function ParticipantInterfacePage() {
       );
     // 2. Render Questionnaire
     if (currentTask.type === "questionnaire") {
-      // The data we saved (title, questions) is now in resolvedParams
-      // because resolveTask merges params into resolvedParams
-      const { title, description, questions } = currentTask.resolvedParams;
-
       // Construct the data object expected by your Questionnaire component
       const questionnaireData = {
-        title,
-        description,
-        questions
+        title: currentTask.title,
+        instructions: currentTask.instructions,
+        questions: currentTask.resolvedParams.questions
       };
 
       return (

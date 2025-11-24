@@ -1,15 +1,16 @@
-// src/components/Questionnaire/Questionnaire.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import "./Questionnaire.css";
 
 export default function Questionnaire({ data, onNextTask }) {
-  const { t } = useTranslation(["common", "admin"]);
+  const { t } = useTranslation(["common"]);
   const [answers, setAnswers] = useState({});
+  const [isValid, setIsValid] = useState(false);
 
+  // --- 1. Handle Input Changes ---
   const handleChange = (questionId, value, type) => {
     setAnswers((prev) => {
-      // Handle multiple choice (checkboxes) specifically
+      // Handle Multiple Choice (Checkboxes)
       if (type === "multiple") {
         const current = prev[questionId] || [];
         if (current.includes(value)) {
@@ -18,24 +19,47 @@ export default function Questionnaire({ data, onNextTask }) {
           return { ...prev, [questionId]: [...current, value] };
         }
       }
-      // Handle other types (single value)
+      // Handle Single Value Types (Text, Radio, Dropdown)
       return { ...prev, [questionId]: value };
     });
   };
 
+  // --- 2. Validation Effect ---
+  useEffect(() => {
+    if (!data || !data.questions) return;
+
+    const allAnswered = data.questions.every((q) => {
+      const val = answers[q.id];
+
+      // Check based on type
+      if (q.type === "multiple") {
+        return Array.isArray(val) && val.length > 0;
+      }
+      if (q.type === "open") {
+        return typeof val === "string" && val.trim().length > 0;
+      }
+      // For single/dropdown/radio, just check if value exists
+      return val !== undefined && val !== "" && val !== null;
+    });
+
+    setIsValid(allAnswered);
+  }, [answers, data]);
+
+  // --- 3. Submission ---
   const handleSubmit = () => {
-    // Package the result
+    if (!isValid) return;
+
     const result = {
       taskType: "questionnaire",
       questionnaireTitle: data.title,
       timestamp: new Date().toISOString(),
       answers: Object.entries(answers).map(([qId, val]) => ({
         questionId: qId,
-        questionText: data.questions.find(q => q.id === Number(qId))?.text,
-        answer: val
-      }))
+        questionText: data.questions.find((q) => q.id === Number(qId))?.text,
+        answer: val,
+      })),
     };
-    
+
     onNextTask(result);
   };
 
@@ -43,31 +67,39 @@ export default function Questionnaire({ data, onNextTask }) {
 
   return (
     <div className="questionnaire-container">
+      {/* Header */}
       <div className="questionnaire-header-section">
         <h2>{data.title}</h2>
-        <p className="questionnaire-description">data.instructions</p>
+        {data.instructions && (
+          <p className="questionnaire-instructions">{data.instructions}</p>
+        )}
       </div>
 
+      {/* Questions List */}
       <div className="questions-list">
         {data.questions.map((q, index) => (
           <div key={q.id} className="question-card">
-            <h4 className="question-text">
-              <span className="question-number">{index + 1}.</span> {q.text}
-            </h4>
+            <div className="question-header">
+              <span className="question-number">{index + 1}.</span>
+              <h4 className="question-text">{q.text}</h4>
+              <span className="question-required">
+                {t("questionnaire.required")}
+              </span>
+            </div>
 
             <div className="answer-area">
-              {/* OPEN ANSWER */}
+              {/* --- OPEN ANSWER --- */}
               {q.type === "open" && (
                 <textarea
                   className="answer-input-text"
                   rows={3}
-                  placeholder={t("protocolEditor.questionnaire.enterAnswer", { ns: "admin" })}
+                  placeholder={t("questionnaire.typeAnswer")}
                   value={answers[q.id] || ""}
                   onChange={(e) => handleChange(q.id, e.target.value, "open")}
                 />
               )}
 
-              {/* SINGLE CHOICE (RADIO) */}
+              {/* --- SINGLE CHOICE (RADIO) --- */}
               {q.type === "single" && (
                 <div className="options-group">
                   {q.options?.map((opt, i) => (
@@ -85,7 +117,7 @@ export default function Questionnaire({ data, onNextTask }) {
                 </div>
               )}
 
-              {/* MULTIPLE CHOICE (CHECKBOX) */}
+              {/* --- MULTIPLE CHOICE (CHECKBOX) --- */}
               {q.type === "multiple" && (
                 <div className="options-group">
                   {q.options?.map((opt, i) => (
@@ -103,15 +135,17 @@ export default function Questionnaire({ data, onNextTask }) {
                 </div>
               )}
 
-              {/* DROPDOWN */}
+              {/* --- DROPDOWN --- */}
               {q.type === "dropdown" && (
                 <select
                   className="answer-select"
                   value={answers[q.id] || ""}
-                  onChange={(e) => handleChange(q.id, e.target.value, "dropdown")}
+                  onChange={(e) =>
+                    handleChange(q.id, e.target.value, "dropdown")
+                  }
                 >
                   <option value="" disabled>
-                    -- {t("protocolEditor.questionnaire.selectOption", { ns: "admin" })} --
+                    -- {t("questionnaire.selectOption")} --
                   </option>
                   {q.options?.map((opt, i) => (
                     <option key={i} value={opt}>
@@ -125,9 +159,15 @@ export default function Questionnaire({ data, onNextTask }) {
         ))}
       </div>
 
+      {/* Footer / Submit */}
       <div className="questionnaire-footer">
-        <button className="btn-submit-questionnaire" onClick={handleSubmit}>
-          {t("buttons.next", { ns: "common" })}
+        <button
+          className="btn-submit-questionnaire"
+          onClick={handleSubmit}
+          disabled={!isValid}
+          title={!isValid ? t("questionnaire.required") : ""}
+        >
+          {t("buttons.next")}
         </button>
       </div>
     </div>

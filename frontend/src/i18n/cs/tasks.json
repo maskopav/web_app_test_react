@@ -1,4 +1,15 @@
 {
+  "questionnaire": {
+    "name": "Dotazník",
+    "description": "Upravitelný formulář otázek a odpovědí.",
+    "title": "Dotazník: {{title}}",
+    "instructions": "Prosím zodpovězte na následující otázky.",
+    "params": {
+      "title": { "label": "Název" },
+      "description": { "label": "Popis" },
+      "questions": { "label": "Otázky" }
+    }
+  },
   "phonation": {
     "name": "Prodloužená fonace",
     "description": "Účastník udržuje jeden samohláskový zvuk (např. /a/, /e/, /i/, /o/, /u/) po stanovenou dobu za účelem analýzy stability a kontroly hlasu. Záznam probíhá v režimu *opožděného zastavení* — tlačítko STOP se objeví až po uplynutí nastavené doby. Administrátor by měl nastavit samohlásku ('phoneme'), počet opakování ('repeat') a časový interval, po kterém se zobrazí tlačítko STOP ('duration').",

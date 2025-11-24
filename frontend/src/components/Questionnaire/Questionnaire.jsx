@@ -44,8 +44,8 @@ export default function Questionnaire({ data, onNextTask }) {
   return (
     <div className="questionnaire-container">
       <div className="questionnaire-header-section">
-        <h2>{data.title || t("protocolEditor.questionnaire.title", { ns: "admin", defaultValue: "Questionnaire" })}</h2>
-        {data.description && <p className="questionnaire-description">{data.description}</p>}
+        <h2>{data.title}</h2>
+        <p className="questionnaire-description">data.instructions</p>
       </div>
 
       <div className="questions-list">
@@ -61,7 +61,7 @@ export default function Questionnaire({ data, onNextTask }) {
                 <textarea
                   className="answer-input-text"
                   rows={3}
-                  placeholder={t("protocolEditor.questionnaire.enterAnswer", { ns: "admin", defaultValue: "Your answer..." })}
+                  placeholder={t("protocolEditor.questionnaire.enterAnswer", { ns: "admin" })}
                   value={answers[q.id] || ""}
                   onChange={(e) => handleChange(q.id, e.target.value, "open")}
                 />
@@ -111,7 +111,7 @@ export default function Questionnaire({ data, onNextTask }) {
                   onChange={(e) => handleChange(q.id, e.target.value, "dropdown")}
                 >
                   <option value="" disabled>
-                    -- {t("protocolEditor.questionnaire.selectOption", { ns: "admin", defaultValue: "Select an option" })} --
+                    -- {t("protocolEditor.questionnaire.selectOption", { ns: "admin" })} --
                   </option>
                   {q.options?.map((opt, i) => (
                     <option key={i} value={opt}>

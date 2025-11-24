@@ -7,15 +7,26 @@ import InfoTooltip from "./InfoTooltip";
 
 export default function TaskList({ onCreate }) {
   const { t } = useTranslation(["admin", "tasks", "common"]);
-  const [expandedTypes, setExpandedTypes] = useState({});
 
-  // Group tasks by their `type`
-  const tasksByType = Object.entries(taskBaseConfig).reduce((acc, [category, task]) => {
+  // Calculate groups first (so we can use keys for state)
+  const tasksByType = Object.entries(taskBaseConfig)
+  .filter(([_, task]) => task.type !== "questionnaire") //For questionnaire there is a special button
+  .reduce((acc, [category, task]) => {
     const type = task.type || "other";
     if (!acc[type]) acc[type] = [];
     acc[type].push({ category, ...task });
     return acc;
   }, {});
+
+  //  Initialize all types to TRUE (expanded list of tasks)
+  const [expandedTypes, setExpandedTypes] = useState(() => {
+  const initialState = {};
+  // Loop through all types we found and set them to open
+  Object.keys(tasksByType).forEach((type) => {
+    initialState[type] = true;
+  });
+  return initialState;
+  });
 
   const toggleType = (type) => {
     setExpandedTypes((prev) => ({ ...prev, [type]: !prev[type] }));

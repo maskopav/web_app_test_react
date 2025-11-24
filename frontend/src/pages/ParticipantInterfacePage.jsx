@@ -85,11 +85,13 @@ export default function ParticipantInterfacePage() {
   // --- Handlers
   const handleTaskComplete = (data) => {
     console.log("✅ Task Completed:", data);
-    setResults(prev => [...prev, data]);
+    // Placeholder
+    //setResults(prev => [...prev, data]);
     
     // Move to next
     setTaskIndex((i) => i + 1);
   };
+
   function handleBack() {
     if (location.state?.returnTo === "dashboard") {
       navigate(`/projects/${protocolData.projectId}/protocols`);
@@ -101,6 +103,7 @@ export default function ParticipantInterfacePage() {
       state: { protocol: protocolData, testingMode, editingMode },
     });
   }
+
   const handleSkip = () => setTaskIndex((i) => Math.min(i + 1, runtimeTasks.length));
 
   const renderCurrentTask = () => {
@@ -142,9 +145,8 @@ export default function ParticipantInterfacePage() {
           key={taskIndex}
           data={questionnaireData}
           onNextTask={(results) => {
-             console.log("Questionnaire results:", results);
              // Save results logic here if needed
-             handleNextTask();
+             handleTaskComplete(results);
           }}
         />
       );

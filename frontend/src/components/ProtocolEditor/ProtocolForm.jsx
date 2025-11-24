@@ -144,13 +144,13 @@ export default function ProtocolForm({
                     return (
                       <span key={key}>
                         {i > 0 && " • "}
-                        <strong>{p.label}:</strong> <em>{resolvedVal}</em>
+                        <strong>{p.label}: </strong> <em>{resolvedVal}</em>
                       </span>
                     );
                   })}
                   {/* Manually show question count if needed */}
                   {task.questions?.length > 0 && (
-                    <span> • <strong>Questions:</strong> <em>{task.questions.length}</em></span>
+                    <span> • <strong>{t("questionnaire.params.questions.label", { ns: "tasks" })}:</strong> <em>{task.questions.length}</em></span>
                   )}
                 </div>
               </li>

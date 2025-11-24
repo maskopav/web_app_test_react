@@ -83,11 +83,12 @@ export default function QuestionnaireModal({ open, onClose, onSave, initialData 
   };
 
   const handleSave = () => {
-    const params = { title, description, questions };
     const questionnaireTask = {
       type: "questionnaire",
       category: "questionnaire",
-      params
+      title,
+      description,
+      questions
     };
     console.log(questionnaireTask);
     onSave(questionnaireTask);

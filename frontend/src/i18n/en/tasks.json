@@ -1,20 +1,15 @@
 {
     "questionnaire": {
-      "name": "Questionnaire",
-      "description": "",
-      "title": "Questionnaire",
-      "instructions": "Fill in the answers please.",
-      "params": {
-        "quest_name": {
-          "label": "Name",
-          "title": "/{{title}}/"
-        },
-        "quest_descr": {
-          "label": "Description",
-          "description": "/{{description}}/"
-        }
-      }
-    },
+    "name": "Questionnaire",
+    "description": "A customizable form with questions.",
+    "title": "{{title}}",
+    "instructions": "Please answer the following questions.",
+    "params": {
+      "title": { "label": "Title" },
+      "description": { "label": "Description" },
+      "questions": { "label": "Questions" }
+    }
+  },
     "phonation": {
       "name": "Sustained phonation",
       "description": "The participant sustains a single vowel sound (e.g., /a/, /e/, /i/, /o/, /u/) to analyze voice stability and control. Recording uses *delayed stop mode* — the STOP button becomes available only after the set duration expires. The administrator should set the vowel to be produced ('phoneme'), the number of repetitions ('repeat'), and the time interval after which the STOP button appears ('duration').",

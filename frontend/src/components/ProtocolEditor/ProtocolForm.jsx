@@ -136,12 +136,22 @@ export default function ProtocolForm({
                   )}
                 </div>
                 <div className="param-inline">
-                  {Object.entries(params).map(([key, p], i) => (
-                    <span key={key}>
-                      {i > 0 && " • "}
-                      <strong>{p.label}:</strong> <em>{resolved[key] ?? task[key]}</em>
-                    </span>
-                  ))}
+                  {Object.entries(params).map(([key, p], i) => {
+                    // Skip rendering the full questions array in the small list view
+                    if (key === 'questions') return null; 
+
+                    const resolvedVal = resolved[key] ?? task[key];
+                    return (
+                      <span key={key}>
+                        {i > 0 && " • "}
+                        <strong>{p.label}:</strong> <em>{resolvedVal}</em>
+                      </span>
+                    );
+                  })}
+                  {/* Manually show question count if needed */}
+                  {task.questions?.length > 0 && (
+                    <span> • <strong>Questions:</strong> <em>{task.questions.length}</em></span>
+                  )}
                 </div>
               </li>
             );

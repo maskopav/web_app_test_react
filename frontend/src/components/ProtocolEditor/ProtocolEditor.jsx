@@ -32,22 +32,26 @@ export function ProtocolEditor({
   const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
   const { saveNewProtocol } = useProtocolManager();
 
+  // State: Tasks & Protocol Data 
   const [tasks, setTasks] = useState(initialTasks);
-  const [editingTask, setEditingTask] = useState(null);
-  const [editingData, setEditingData] = useState(null);
-  const [creatingNewTask, setCreatingNewTask] = useState(false);
-  const [reorderMode, setReorderMode] = useState(false);
-  const [dragIndex, setDragIndex] = useState(null);
-  const [showQuestionnaireModal, setShowQuestionnaireModal] = useState(false);
-
   const [protocolData, setProtocolData] = useState(protocol || selectedProtocol || {});
 
-  const protocols = mappings?.protocols || [];
+  // State: Modals & Editing
+  // Tracks which task index is currently being edited (null = creating new)
+  const [editingIndex, setEditingIndex] = useState(null);
+  // Holds the data being edited (for both regular tasks and questionnaires)
+  const [editingData, setEditingData] = useState(null);
+  // Controls visibility of the standard Task Modal
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  // Controls visibility of the Questionnaire Modal
+  const [showQuestionnaireModal, setShowQuestionnaireModal] = useState(false);
+
+  // --- State: UI & Validation ---
+  const [reorderMode, setReorderMode] = useState(false);
+  const [dragIndex, setDragIndex] = useState(null);
   const [nameError, setNameError] = useState("");
 
-  const [editingQuestionnaireIndex, setEditingQuestionnaireIndex] = useState(null);
-  const [questionnaireInitialData, setQuestionnaireInitialData] = useState(null);
-
+  const protocols = mappings?.protocols || [];
 
   useEffect(() => {
     if (protocol) {
@@ -63,6 +67,7 @@ export function ProtocolEditor({
     }
   }, [protocolData, setSelectedProtocol]);  
 
+  // Effect: Validate Name
   useEffect(() => {
     if (!protocolData?.name) {
       setNameError("");
@@ -81,6 +86,7 @@ export function ProtocolEditor({
     }
   }, [protocolData?.name, protocols]);
 
+  // Effect: Notify Parent on Change
   useEffect(() => {
     if (onChange) {
       onChange(tasks);
@@ -95,30 +101,84 @@ export function ProtocolEditor({
     return <p>Error: {error.message}</p>;
   }
 
-  function startCreatingTask(category) {
+  // Start creating a standard task (opens TaskModal)
+  function handleCreateTask(category) {
     const base = taskBaseConfig[category];
     if (!base) return;
-    const task = {
+
+    const newTaskDefaults = {
       type: base.type,
       category,
       recording: base.recording,
       ...getDefaultParams(category),
     };
-    setEditingData(task);
-    setCreatingNewTask(true);
+
+    setEditingIndex(null); // New task
+    setEditingData(newTaskDefaults);
+    setShowTaskModal(true);
   }
 
-  function addTaskToProtocol(taskData) {
-    setTasks((prev) => [...prev, taskData]);
+  // Start creating a questionnaire (opens QuestionnaireModal)
+  function handleCreateQuestionnaire() {
+    setEditingIndex(null); // New task
+    setEditingData(null); // No initial data
+    setShowQuestionnaireModal(true);
   }
 
-  function updateTask(updatedData, index) {
-    setTasks((prev) =>
-      prev.map((t, i) => (i === index ? { ...t, ...updatedData } : t))
-    );    
+  // Edit an existing task (determines type and opens correct modal)
+  function handleEditTask(index) {
+    const taskToEdit = tasks[index];
+    setEditingIndex(index);
+    setEditingData(taskToEdit); // Load existing data
+
+    if (taskToEdit.category === "questionnaire") {
+      setShowQuestionnaireModal(true);
+    } else {
+      setShowTaskModal(true);
+    }
+  }
+  // Save task (Create or Update) - Unified Handler
+  function handleSaveTask(taskData) {
+    setTasks((prev) => {
+      if (editingIndex !== null) {
+        // Update existing at index
+        return prev.map((t, i) => (i === editingIndex ? { ...t, ...taskData } : t));
+      } else {
+        // Create new
+        return [...prev, taskData];
+      }
+    });
+
+    // Close all modals and reset states
+    closeModals();
   }
 
-  // Drag & Drop
+  // Close Modals Helper
+  function closeModals() {
+    setShowTaskModal(false);
+    setShowQuestionnaireModal(false);
+    setEditingIndex(null);
+    setEditingData(null);
+  }
+
+  // Delete Task
+  function handleDeleteTask(index) {
+    setTasks((prev) => prev.filter((_, i) => i !== index));
+  }
+  
+  // --- Handlers: Questionnaire Specific Save ---
+  // Used by QuestionnaireModal to format data before saving
+  const handleSaveQuestionnaire = (data) => {
+    // Ensure data is flat and has correct type
+    const questionnaireTask = {
+      category: "questionnaire",
+      type: "questionnaire",
+      ...data, // Spread { title, description, questions } flatly
+    };
+    handleSaveTask(questionnaireTask);
+  };
+
+  // --- Handlers: Drag & Drop ---
   const handleDragStart = (i) => setDragIndex(i);
   const handleDrop = (targetIndex) => {
     if (dragIndex === null || dragIndex === targetIndex) return;
@@ -126,21 +186,23 @@ export function ProtocolEditor({
       const updated = [...prev];
       const [moved] = updated.splice(dragIndex, 1);
       updated.splice(targetIndex, 0, moved);
-      onChange(updated);
       return updated;
     });
     setDragIndex(null);
   };
 
-  // Save to backend
-  async function handleSave() {
+  // --- Handlers: Protocol Actions ---
+  async function handleSaveProtocol() {
     try {
-      const result = await saveNewProtocol(tasks, protocolData, projectId, editingMode);
+      const result = await saveNewProtocol(
+        tasks,
+        protocolData,
+        projectId,
+        editingMode
+      );
       alert("Protocol saved successfully!");
       onSave(result);
-      // Clean environment
       setSelectedProtocol(null);
-      // Redirect to dashboard
       navigate(`/projects/${projectId}/protocols`);
     } catch (err) {
       alert("Failed to save protocol. Check console.");
@@ -148,29 +210,22 @@ export function ProtocolEditor({
   }
 
   function handleShowProtocol() {
-    // Ensure tasks are synced into global context
-    setSelectedProtocol({
-      ...protocolData,
-      tasks,
+    setSelectedProtocol({ ...protocolData, tasks });
+    navigate("/participant/test", {
+      state: {
+        protocol: { ...protocolData, tasks },
+        testingMode,
+        editingMode,
+      },
     });
-  
-    // Redirect to participant view in testing mode (additional back, skip buttons, data is not being saved)
-    navigate("/participant/test", 
-      { 
-        state: { 
-          protocol: { ...protocolData, tasks }, 
-          testingMode,
-          editingMode
-        }
-    });
-  }  
+  }
 
   return (
     <div className="admin-container">
       <h2>{t("protocolEditor.title")}</h2>
 
       <div className="admin-grid">
-        <TaskList onCreate={startCreatingTask} />
+        <TaskList onCreate={handleCreateTask} />
 
         <ProtocolForm
           tasks={tasks}
@@ -178,30 +233,13 @@ export function ProtocolEditor({
           setProtocolData={setProtocolData}
           reorderMode={reorderMode}
           setReorderMode={setReorderMode}
-          onEdit={(idx) => {
-            const task = tasks[idx];
-            if (task.category === "questionnaire") {
-              setEditingQuestionnaireIndex(idx);
-              setQuestionnaireInitialData(task.params);  // prefill form
-              setShowQuestionnaireModal(true);
-              return;
-            }
-            // regular task editing
-            setEditingTask(idx);
-            setEditingData(tasks[idx]);
-          }}          
-          onDelete={(i) =>
-            setTasks((prev) => {
-              const next = prev.filter((_, idx) => idx !== i);
-              onChange(next);
-              return next;
-            })
-          }
+          onEdit={handleEditTask}
+          onDelete={handleDeleteTask}
           onDragStart={handleDragStart}
           onDrop={handleDrop}
           dragIndex={dragIndex}
-          onAddQuestionnaire={() => setShowQuestionnaireModal(true)}
-          onSave={handleSave}
+          onAddQuestionnaire={handleCreateQuestionnaire}
+          onSave={handleSaveProtocol}
           onShowProtocol={handleShowProtocol}
           nameError={nameError} 
           editingMode={editingMode} 
@@ -211,44 +249,21 @@ export function ProtocolEditor({
 
       {/* Task edit/create modal */}
       <TaskModal
-        open={editingTask != null || creatingNewTask}
-        creatingNewTask={creatingNewTask}
-        editingTask={editingTask}
+        open={showTaskModal}
+        creatingNewTask={editingIndex === null} // Derived state
+        editingTask={editingIndex}
         editingData={editingData}
         tasks={tasks}
         setEditingData={setEditingData}
-        onClose={() => {
-          setEditingTask(null);
-          setEditingData(null);
-          setCreatingNewTask(false);
-        }}
-        onSave={(data) => {
-          if (creatingNewTask) addTaskToProtocol(data);
-          else if (editingTask != null) updateTask(data, editingTask);
-          setEditingTask(null);
-          setEditingData(null);
-          setCreatingNewTask(false);
-        }}
+        onClose={closeModals}
+        onSave={handleSaveTask}
       />
 
       <QuestionnaireModal
         open={showQuestionnaireModal}
-        initialData={questionnaireInitialData}
-        onClose={() => {
-          setShowQuestionnaireModal(false);
-          setEditingQuestionnaireIndex(null);
-          setQuestionnaireInitialData(null);
-        }}
-        onSave={(taskData) => {
-          if (editingQuestionnaireIndex != null) {
-            updateTask(taskData, editingQuestionnaireIndex);
-          } else {
-            addTaskToProtocol(taskData);
-          }
-          setShowQuestionnaireModal(false);
-          setEditingQuestionnaireIndex(null);
-          setQuestionnaireInitialData(null);
-        }}
+        initialData={editingData} // Pass loaded data for editing
+        onClose={closeModals}
+        onSave={handleSaveQuestionnaire}
       />
     </div>
   );

@@ -22,11 +22,12 @@ export interface TaskBase {
 // Define all base tasks here (typed)
 export const taskBaseConfig: Record<string, TaskBase> = {
   questionnaire: {
-    type: "questionnaire",
-    recording: { mode: "delayedStop", duration: 5 },
+    type: "questionnaire", // This allows us to distinguish it in the UI
+    recording: { mode: "basicStop" }, // Placeholder (not used, but required by type)
     params: {
-      quest_name: { default: "{{title}}" },
-      quest_descr: { default: "{{description}}" },
+      title: { default: "Questionnaire" },
+      description: { default: "" },
+      questions: { default: [] } // Critical: Must be here to accept the array
     },
   },
 

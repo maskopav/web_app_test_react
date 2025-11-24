@@ -5,6 +5,7 @@ import { ProtocolContext } from "../context/ProtocolContext";
 import { createTask } from "../tasks";
 import { resolveTasks, resolveTask } from "../utils/taskResolver";
 import { VoiceRecorder } from "../components/VoiceRecorder/VoiceRecorder";
+import Questionnaire from "../components/Questionnaire/Questionnaire";
 import CompletionScreen from "../components/CompletionScreen";
 import "./Pages.css";
 
@@ -49,20 +50,46 @@ export default function ParticipantInterfacePage() {
     };
   }, [protocolData, i18n]);
 
-  // Generate runtime tasks from the selected protocol
+  // Generate runtime tasks + inject Questionnaire if present from the selected protocol
   const runtimeTasks = useMemo(() => {
     if (!selectedProtocol) return [];
+
+    // 1. Prepare Voice Tasks
     const configured = selectedProtocol.tasks ?? [];
-    const raw = configured.map((t) => createTask(t.category, t));
-    return resolveTasks(raw);
+    const rawVoiceTasks = configured.map((t) => createTask(t.category, t));
+    const resolvedVoiceTasks = resolveTasks(rawVoiceTasks);
+    
+    // 2. Check for Questionnaire
+    // Assuming protocolData.questionnaire contains the JSON object from the editor
+    // or it was fetched and attached to the protocol object.
+    if (selectedProtocol.questionnaire) {
+      const qTask = {
+        type: "questionnaire",
+        data: selectedProtocol.questionnaire,
+        category: "questionnaire" // for label lookup
+      };
+      
+      // Decide position: usually at the end or beginning. 
+      // Let's append it to the end for now.
+      return [...resolvedVoiceTasks, qTask];
+    }
+
+    return resolvedVoiceTasks;
   }, [selectedProtocol, i18n.language]);
+
 
   // --- early return only after all hooks are declared
   if (!protocolData) return <p>No protocol selected.</p>;
   if (!langReady) return <p>Loading translations...</p>;
 
-  // --- handlers
-  const handleNextTask = () => setTaskIndex((i) => i + 1);
+  // --- Handlers
+  const handleTaskComplete = (data) => {
+    console.log("✅ Task Completed:", data);
+    setResults(prev => [...prev, data]);
+    
+    // Move to next
+    setTaskIndex((i) => i + 1);
+  };
   function handleBack() {
     if (location.state?.returnTo === "dashboard") {
       navigate(`/projects/${protocolData.projectId}/protocols`);
@@ -79,9 +106,11 @@ export default function ParticipantInterfacePage() {
   const renderCurrentTask = () => {
     const rawTask = runtimeTasks[taskIndex];
     if (!rawTask) return <CompletionScreen />;
+
     const currentTask = resolveTask(rawTask, t);
     console.log("▶ Current task:", currentTask);
 
+    // 1. Render Voice Task
     if (currentTask.type === "voice")
       return (
         <VoiceRecorder
@@ -92,10 +121,35 @@ export default function ParticipantInterfacePage() {
           audioExample={currentTask.illustration}
           mode={currentTask.recording.mode}
           duration={currentTask.recording.duration}
-          onNextTask={handleNextTask}
+          onNextTask={handleTaskComplete}
         />
       );
-    return null;
+    // 2. Render Questionnaire
+    if (currentTask.type === "questionnaire") {
+      // The data we saved (title, questions) is now in resolvedParams
+      // because resolveTask merges params into resolvedParams
+      const { title, description, questions } = currentTask.resolvedParams;
+
+      // Construct the data object expected by your Questionnaire component
+      const questionnaireData = {
+        title,
+        description,
+        questions
+      };
+
+      return (
+        <Questionnaire
+          key={taskIndex}
+          data={questionnaireData}
+          onNextTask={(results) => {
+             console.log("Questionnaire results:", results);
+             // Save results logic here if needed
+             handleNextTask();
+          }}
+        />
+      );
+    }
+    return <p>Unknown task type: {currentTask.type}</p>;
   };
 
   const currentTask = runtimeTasks[taskIndex];

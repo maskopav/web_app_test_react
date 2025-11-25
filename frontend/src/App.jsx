@@ -9,7 +9,8 @@ import ProtocolEditorPage from "./pages/ProtocolEditorPage";
 // import MasterDashboardPage from "./pages/MasterDashboardPage";
 import ParticipantInterfacePage from "./pages/ParticipantInterfacePage";
 import ParticipantInterfaceLoader from "./pages/ParticipantInterfaceLoader";
-import ParticipantProtocolPage from "./pages/ParticipantProtocolPage"
+import ParticipantProtocolPage from "./pages/ParticipantProtocolPage";
+import ParticipantDashboardPage from "./pages/ParticipantDashboardPage";
 import ParticipantProtocolEnrollmentPage from "./pages/ParticipantProtocolEnrollmentPage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -20,6 +21,7 @@ export default function App() {
       {/* Temporary testing routes */}
       <Route path="/" element={<Navigate to="/projects/1" replace />} />
       <Route path="/projects/:projectId" element={<ProjectDashboardPage />} />
+      <Route path="/projects/:projectId/participants" element={<ParticipantDashboardPage />} />
       <Route path="/projects/:projectId/participant-protocols" element={<ParticipantProtocolPage />} />
       <Route path="/projects/:projectId/enrollment/assign" element={<ParticipantProtocolEnrollmentPage />} />
       <Route path="/projects/:projectId/protocols" element={<ProtocolDashboardPage />} />

@@ -3,6 +3,7 @@ import express from "express";
 import mappingsRouter from "./src/routes/mappings.js";
 import protocolsRouter from "./src/routes/protocols.js";
 import participantProtocolsRouter from "./src/routes/participantProtocols.js";
+import participantsRouter from "./src/routes/participants.js";
 
 import cors from "cors";
 
@@ -25,6 +26,7 @@ app.get('/envtest', (req, res) => {
 app.use("/mappings", mappingsRouter);
 app.use("/protocols", protocolsRouter); 
 app.use("/participant-protocol", participantProtocolsRouter);
+app.use("/participants", participantsRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

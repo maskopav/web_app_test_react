@@ -7,14 +7,18 @@ import { logToFile } from "../utils/logger.js";
 export const getParticipants = async (req, res) => {
   const { project_id } = req.query;
   try {
-    // Use the new view if available, or fallback to raw query
-    // Here we use the logic to fetch distinct participants for a project
-    const sql = `
-      SELECT * FROM v_participant_protocols
-      WHERE project_id = ?
-      ORDER BY full_name ASC
-    `;
-    const rows = await executeQuery(sql, [project_id]);
+    let sql = `SELECT * FROM v_participant_protocols`;
+    const params = [];
+
+    // Only filter if project_id is provided
+    if (project_id) {
+      sql += ` WHERE project_id = ?`;
+      params.push(project_id);
+    }
+
+    sql += ` ORDER BY full_name ASC`;
+
+    const rows = await executeQuery(sql, params);
     res.json(rows);
   } catch (err) {
     console.error(err);

@@ -1,0 +1,273 @@
+import React, { useState, useMemo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import { createParticipant, getParticipants } from "../../api/participants";
+import Modal from "../ProtocolEditor/Modal";
+import "./ParticipantsDashboard.css"; 
+
+export default function AddParticipantModal({ 
+  open, 
+  onClose, 
+  projectId, 
+  protocols, 
+  onSuccess 
+}) {
+  const { t } = useTranslation(["admin", "common"]);
+
+  const initialFormState = {
+    full_name: "",
+    external_id: "",
+    birth_date: "",
+    sex: "",
+    contact_email: "",
+    contact_phone: "",
+    notes: "",
+    protocol_id: ""
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
+  const [existingParticipants, setExistingParticipants] = useState([]);
+
+  // --- Fetch ALL participants for validation when modal opens ---
+  useEffect(() => {
+    if (open) {
+      // Call without projectId to get the global list from backend
+      getParticipants()
+        .then(data => setExistingParticipants(data))
+        .catch(err => console.error("Failed to load existing participants for validation", err));
+    }
+  }, [open]);
+
+  // --- Validation Logic ---
+  const isFormValid = useMemo(() => {
+    // 1. Protocol is mandatory
+    if (!formData.protocol_id) return false;
+
+    // 2. Identity Check: (Name + DOB + Sex) OR (External ID)
+    const hasFullName = formData.full_name.trim().length > 0;
+    const hasDob = formData.birth_date.trim().length > 0;
+    // Check if sex is valid (not empty and not the default dash if used)
+    const hasSex = formData.sex.trim().length > 0 && formData.sex !== "-"; 
+    const hasExternalId = formData.external_id.trim().length > 0;
+
+    const hasPersonalIdentity = hasFullName && hasDob && hasSex;
+
+    return hasPersonalIdentity || hasExternalId;
+  }, [formData]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!isFormValid) return;
+
+    // --- FRONTEND DUPLICATE CHECK ---
+    const inputExtId = formData.external_id.trim();
+    const inputName = formData.full_name.trim().toLowerCase();
+    const inputDob = formData.birth_date;
+    const inputSex = formData.sex;
+
+    const duplicate = existingParticipants.find(p => {
+      // 1. External ID match (if provided)
+      if (inputExtId && p.external_id && p.external_id.trim() === inputExtId) {
+        return true;
+      }
+      // 2. Personal Info Check (Sequential: Name -> DOB -> Sex)
+      if (inputName && inputDob && inputSex) {
+        
+        // A. Filter by Name first (Quick string compare)
+        const pName = (p.full_name || "").toLowerCase();
+        if (pName !== inputName) {
+            return false; // Name doesn't match, skip rest
+        }
+
+        // B. Filter by DOB (Only runs if name matched)
+        const pDob = (String(p.birth_date) || "").slice(0, 10); 
+        if (pDob !== inputDob) {
+            return false; // DOB doesn't match, skip rest
+        }
+
+        // C. Filter by Sex (Only runs if name & DOB matched)
+        const pSex = (p.sex || "");
+        if (pSex !== inputSex) {
+            return false; // Sex doesn't match
+        }
+        // If we got here, everything matched!
+        return true;
+      }
+      return false;
+    });
+
+    if (duplicate) {
+      alert(
+        `${t("participantDashboard.alerts.createError")}: \n` +
+        `Participant already exists in the database!\n` +
+        `(Matched: ${duplicate.full_name}, ID: ${duplicate.external_id || "N/A"})`
+      );
+      return; // Stop submission
+    }
+
+    // --- DATA SANITIZATION (Fixing the Date Error) ---
+    const payload = {
+        ...formData,
+        project_id: projectId,
+        // Convert empty strings to NULL for the database
+        birth_date: formData.birth_date || null,
+        sex: formData.sex || null,
+        external_id: formData.external_id || null,
+        contact_email: formData.contact_email || null,
+        contact_phone: formData.contact_phone || null,
+        notes: formData.notes || null
+    };
+
+    // --- Proceed to Save ---
+    try {
+      await createParticipant(payload);
+      setFormData(initialFormState); // Reset form
+      onSuccess(); // Trigger refresh in parent
+      onClose();
+    } catch (err) {
+      alert(t("participantDashboard.alerts.createError") + ": " + err.message);
+    }
+  };
+
+  return (
+    <Modal 
+      open={open} 
+      onClose={onClose} 
+      title={t("participantDashboard.modal.title")}
+      onSave={handleSubmit}
+      showSaveButton={false}
+    >
+      <div className="participant-form">
+        <p className="participant-instruction">
+          {t("participantDashboard.modal.instruction")}
+        </p>
+
+        {/* Row 1: Name & External ID */}
+        <div className="form-row">
+          <div className="form-col flex-2">
+            <label className="form-label">{t("participantDashboard.modal.labels.fullName")}</label>
+            <input 
+              className="participant-input"
+              name="full_name" 
+              value={formData.full_name} 
+              onChange={handleInputChange} 
+              placeholder={t("participantDashboard.modal.placeholders.fullName")} 
+            />
+          </div>
+
+          <div className="form-col flex-1">
+            <label className="form-label">{t("participantDashboard.modal.labels.externalId")}</label>
+            <input 
+              className="participant-input"
+              name="external_id" 
+              value={formData.external_id} 
+              onChange={handleInputChange} 
+              placeholder={t("participantDashboard.modal.placeholders.externalId")} 
+            />
+          </div>
+        </div>
+
+        {/* Row 2: DOB & Sex */}
+        <div className="form-row">
+          <div className="form-col flex-1">
+            <label className="form-label">{t("participantDashboard.modal.labels.birthDate")}</label>
+            <input 
+              className="participant-input"
+              type="date" 
+              name="birth_date" 
+              value={formData.birth_date} 
+              onChange={handleInputChange} 
+            />
+          </div>
+
+          <div className="form-col flex-1">
+            <label className="form-label">{t("participantDashboard.modal.labels.sex")}</label>
+            <select className="participant-input" name="sex" value={formData.sex} onChange={handleInputChange}>
+              <option value="">-- Select --</option>
+              <option value="female">{t("participantDashboard.modal.gender.female")}</option>
+              <option value="male">{t("participantDashboard.modal.gender.male")}</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Row 3: Email & Phone */}
+        <div className="form-row">
+          <div className="form-col flex-1">
+            <label className="form-label">{t("participantDashboard.modal.labels.email")}</label>
+            <input 
+              className="participant-input"
+              type="email" 
+              name="contact_email" 
+              value={formData.contact_email} 
+              onChange={handleInputChange} 
+            />
+          </div>
+          <div className="form-col flex-1">
+            <label className="form-label">{t("participantDashboard.modal.labels.phone")}</label>
+            <input 
+              className="participant-input"
+              type="tel" 
+              name="contact_phone" 
+              value={formData.contact_phone} 
+              onChange={handleInputChange} 
+            />
+          </div>
+        </div>
+
+        {/* Notes */}
+        <div className="form-col">
+          <label className="form-label">{t("participantDashboard.modal.labels.notes")}</label>
+          <textarea 
+            className="participant-input"
+            name="notes" 
+            value={formData.notes} 
+            onChange={handleInputChange} 
+            rows={1} 
+          />
+        </div>
+
+        {/* Protocol Assignment */}
+        <div className="form-col protocol-select-container">
+          <label className="form-label">
+            {t("participantDashboard.modal.labels.protocol")} 
+            <span className="label-required">*</span>
+          </label>
+          <select 
+            className={`participant-input protocol-select ${formData.protocol_id ? 'valid' : ''}`}
+            name="protocol_id" 
+            value={formData.protocol_id} 
+            onChange={handleInputChange}
+          >
+            <option value="">{t("participantDashboard.modal.placeholders.selectProtocol")}</option>
+            {protocols.map(proto => (
+              <option key={proto.id} value={proto.id}>
+                {proto.name} (v{proto.version})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Actions & Errors */}
+        {!isFormValid && (
+          <div className="validation-error-msg">
+            {t("participantDashboard.modal.validationError")}
+          </div>
+        )}
+        
+        <div className="modal-actions">
+           <button 
+              className="btn-save" 
+              onClick={handleSubmit} 
+              disabled={!isFormValid}
+              style={{ opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? 'pointer' : 'not-allowed' }}
+           >
+              {t("participantDashboard.buttons.save")}
+           </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}

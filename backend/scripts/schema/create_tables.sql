@@ -99,8 +99,8 @@ CREATE TABLE `languages` (
 CREATE TABLE `participants` (
   `id` integer PRIMARY KEY AUTO_INCREMENT,
   `external_id` varchar(255) UNIQUE COMMENT 'Optional external ID if linked to hospital or registry',
-  `full_name` varchar(255) NOT NULL,
-  `birth_date` date NOT NULL,
+  `full_name` varchar(255) DEFAULT NULL,
+  `birth_date` date DEFAULT NULL,
   `sex` varchar(10),
   `contact_email` varchar(255),
   `contact_phone` varchar(255),
@@ -118,7 +118,7 @@ CREATE TABLE `participant_protocols` (
   `access_token` char(64) UNIQUE NOT NULL COMMENT 'UUID or hash to reconstruct the URL on the backend',
   `start_date` date,
   `end_date` date,
-  `is_active` BOOLEAN DEFAULT TRUE
+  `is_active` BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE `sessions` (

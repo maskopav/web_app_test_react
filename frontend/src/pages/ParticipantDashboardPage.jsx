@@ -20,7 +20,10 @@ export default function ParticipantDashboardPage() {
   const [participants, setParticipants] = useState([]);
   const [protocols, setProtocols] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
+
+  // Modal State
+  const [showModal, setShowModal] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState(null);
 
   // --- Data Loading ---
   const loadData = async () => {
@@ -43,6 +46,16 @@ export default function ParticipantDashboardPage() {
     loadData();
   }, [projectId]);
 
+  const handleAddClick = () => {
+    setSelectedParticipant(null); // Clear selection for Add mode
+    setShowModal(true);
+  };
+
+  const handleEditClick = (participant) => {
+    setSelectedParticipant(participant); // Set data for Edit mode
+    setShowModal(true);
+  };
+
   return (
     <div className="project-dashboard-page">
       {/* Top Bar */}
@@ -58,7 +71,7 @@ export default function ParticipantDashboardPage() {
         {/* Header */}
         <div className="participant-list-header">
           <h2>{t("participantDashboard.title")}</h2>
-          <button className="btn-create" onClick={() => setShowAddModal(true)}>
+          <button className="btn-create" onClick={handleAddClick}>
             {t("participantDashboard.addParticipant")}
           </button>
         </div>
@@ -67,15 +80,17 @@ export default function ParticipantDashboardPage() {
         <ParticipantTable 
           participants={participants} 
           loading={loading} 
+          onEdit={handleEditClick}
         />
       </div>
 
       {/* Add Modal Component */}
       <AddParticipantModal
-        open={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        open={showModal}
+        onClose={() => setShowModal(false)}
         projectId={projectId}
         protocols={protocols}
+        participantToEdit={selectedParticipant}
         onSuccess={() => {
           // Refresh list after successful creation
           getParticipants(projectId).then(setParticipants);

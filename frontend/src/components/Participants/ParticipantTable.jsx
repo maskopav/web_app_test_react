@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import "./ParticipantsDashboard.css"; 
 
-export default function ParticipantTable({ participants, loading }) {
+export default function ParticipantTable({ participants, loading, onEdit }) {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
@@ -40,7 +40,7 @@ export default function ParticipantTable({ participants, loading }) {
                   <td>{p.contact_phone || "—"}</td>
                   <td className="cell-notes" title={p.notes}>{p.notes}</td>
                   <td className="actions">
-                    <button className="btn-edit" onClick={() => alert("Edit feature coming soon")}>
+                    <button className="btn-edit" onClick={() => onEdit(p)}>
                       {t("participantDashboard.buttons.edit")}
                     </button>
                   </td>

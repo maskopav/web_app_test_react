@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { createParticipant, getParticipants } from "../../api/participants";
+import { createParticipant, updateParticipant, getParticipants } from "../../api/participants";
 import Modal from "../ProtocolEditor/Modal";
 import "./ParticipantsDashboard.css"; 
 
@@ -9,9 +9,11 @@ export default function AddParticipantModal({
   onClose, 
   projectId, 
   protocols, 
-  onSuccess 
+  onSuccess,
+  participantToEdit = null // If provided -> EDIT mode
 }) {
   const { t } = useTranslation(["admin", "common"]);
+  const isEditMode = !!participantToEdit;
 
   const initialFormState = {
     full_name: "",
@@ -27,22 +29,37 @@ export default function AddParticipantModal({
   const [formData, setFormData] = useState(initialFormState);
   const [existingParticipants, setExistingParticipants] = useState([]);
 
-  // --- Fetch ALL participants for validation when modal opens ---
+  // --- Fetch ALL participants when modal opens ---
   useEffect(() => {
     if (open) {
       // Call without projectId to get the global list from backend
       getParticipants()
         .then(data => setExistingParticipants(data))
-        .catch(err => console.error("Failed to load existing participants for validation", err));
+        .catch(err => console.error("Failed to load existing participants", err));
+    // If editing, populate form
+    if (participantToEdit) {
+        setFormData({
+          full_name: participantToEdit.full_name || "",
+          external_id: participantToEdit.external_id || "",
+          birth_date: participantToEdit.birth_date ? String(participantToEdit.birth_date).slice(0, 10) : "",
+          sex: participantToEdit.sex || "",
+          contact_email: participantToEdit.contact_email || "",
+          contact_phone: participantToEdit.contact_phone || "",
+          notes: participantToEdit.notes || "",
+          protocol_id: "dummy" // Dummy value to pass validation in Edit mode (field is hidden)
+        });
+      } else {
+        setFormData(initialFormState);
+      }
     }
-  }, [open]);
+  }, [open, participantToEdit]);
 
   // --- Validation Logic ---
   const isFormValid = useMemo(() => {
-    // 1. Protocol is mandatory
-    if (!formData.protocol_id) return false;
+    // Protocol is mandatory only in Add mode
+    if (!isEditMode && !formData.protocol_id) return false;
 
-    // 2. Identity Check: (Name + DOB + Sex) OR (External ID)
+    // Identity Check: (Name + DOB + Sex) OR (External ID)
     const hasFullName = formData.full_name.trim().length > 0;
     const hasDob = formData.birth_date.trim().length > 0;
     // Check if sex is valid (not empty and not the default dash if used)
@@ -52,7 +69,7 @@ export default function AddParticipantModal({
     const hasPersonalIdentity = hasFullName && hasDob && hasSex;
 
     return hasPersonalIdentity || hasExternalId;
-  }, [formData]);
+  }, [formData, isEditMode]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,6 +86,9 @@ export default function AddParticipantModal({
     const inputSex = formData.sex;
 
     const duplicate = existingParticipants.find(p => {
+      // Skip checking against self in Edit mode
+      if (isEditMode && p.participant_id === participantToEdit.participant_id) return false;
+
       // 1. External ID match (if provided)
       if (inputExtId && p.external_id && p.external_id.trim() === inputExtId) {
         return true;
@@ -108,11 +128,9 @@ export default function AddParticipantModal({
       return; // Stop submission
     }
 
-    // --- DATA SANITIZATION (Fixing the Date Error) ---
+    // Payload Preparation
     const payload = {
         ...formData,
-        project_id: projectId,
-        // Convert empty strings to NULL for the database
         birth_date: formData.birth_date || null,
         sex: formData.sex || null,
         external_id: formData.external_id || null,
@@ -123,27 +141,35 @@ export default function AddParticipantModal({
 
     // --- Proceed to Save ---
     try {
-      await createParticipant(payload);
-      setFormData(initialFormState); // Reset form
-      onSuccess(); // Trigger refresh in parent
-      onClose();
-    } catch (err) {
-      alert(t("participantDashboard.alerts.createError") + ": " + err.message);
-    }
+        if (isEditMode) {
+          // Update Mode
+          await updateParticipant(participantToEdit.participant_id, payload);
+        } else {
+          // Create Mode
+          await createParticipant({ ...payload, project_id: projectId });
+        }
+        
+        onSuccess(); 
+        onClose();
+      } catch (err) {
+        alert(t("participantDashboard.alerts.createError") + ": " + err.message);
+      }
   };
 
   return (
     <Modal 
       open={open} 
       onClose={onClose} 
-      title={t("participantDashboard.modal.title")}
+      title={isEditMode ? t("participantDashboard.modal.editTitle") : t("participantDashboard.modal.title")}
       onSave={handleSubmit}
       showSaveButton={false}
     >
       <div className="participant-form">
-        <p className="participant-instruction">
-          {t("participantDashboard.modal.instruction")}
-        </p>
+        {!isEditMode && (
+          <p className="participant-instruction">
+            {t("participantDashboard.modal.instruction")}
+          </p>
+        )}
 
         {/* Row 1: Name & External ID */}
         <div className="form-row">
@@ -229,26 +255,28 @@ export default function AddParticipantModal({
           />
         </div>
 
-        {/* Protocol Assignment */}
-        <div className="form-col protocol-select-container">
-          <label className="form-label">
-            {t("participantDashboard.modal.labels.protocol")} 
-            <span className="label-required">*</span>
-          </label>
-          <select 
-            className={`participant-input protocol-select ${formData.protocol_id ? 'valid' : ''}`}
-            name="protocol_id" 
-            value={formData.protocol_id} 
-            onChange={handleInputChange}
-          >
-            <option value="">{t("participantDashboard.modal.placeholders.selectProtocol")}</option>
-            {protocols.map(proto => (
-              <option key={proto.id} value={proto.id}>
-                {proto.name} (v{proto.version})
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Protocol Assignment (HIDDEN IN EDIT MODE) */}
+        {!isEditMode && (
+            <div className="form-col protocol-select-container">
+            <label className="form-label">
+                {t("participantDashboard.modal.labels.protocol")} 
+                <span className="label-required">*</span>
+            </label>
+            <select 
+                className={`participant-input protocol-select ${formData.protocol_id ? 'valid' : ''}`}
+                name="protocol_id" 
+                value={formData.protocol_id} 
+                onChange={handleInputChange}
+            >
+                <option value="">{t("participantDashboard.modal.placeholders.selectProtocol")}</option>
+                {protocols.map(proto => (
+                <option key={proto.id} value={proto.id}>
+                    {proto.name} (v{proto.version})
+                </option>
+                ))}
+            </select>
+            </div>
+        )}
 
         {/* Actions & Errors */}
         {!isFormValid && (
@@ -264,7 +292,7 @@ export default function AddParticipantModal({
               disabled={!isFormValid}
               style={{ opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? 'pointer' : 'not-allowed' }}
            >
-              {t("participantDashboard.buttons.save")}
+              {isEditMode ? t("participantDashboard.buttons.update") : t("participantDashboard.buttons.save")}
            </button>
         </div>
       </div>

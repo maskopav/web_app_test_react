@@ -22,3 +22,15 @@ export async function createParticipant(data) {
   if (!res.ok) throw new Error(json.error || "Failed to create participant");
   return json;
 }
+
+export async function updateParticipant(id, data) {
+    const res = await fetch(`${API_BASE}/participants/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Failed to update participant");
+    return json;
+  }

@@ -11,7 +11,6 @@ import ParticipantInterfacePage from "./pages/ParticipantInterfacePage";
 import ParticipantInterfaceLoader from "./pages/ParticipantInterfaceLoader";
 import ParticipantProtocolPage from "./pages/ParticipantProtocolPage";
 import ParticipantDashboardPage from "./pages/ParticipantDashboardPage";
-import ParticipantProtocolEnrollmentPage from "./pages/ParticipantProtocolEnrollmentPage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -23,7 +22,6 @@ export default function App() {
       <Route path="/projects/:projectId" element={<ProjectDashboardPage />} />
       <Route path="/projects/:projectId/participants" element={<ParticipantDashboardPage />} />
       <Route path="/projects/:projectId/participant-protocols" element={<ParticipantProtocolPage />} />
-      <Route path="/projects/:projectId/enrollment/assign" element={<ParticipantProtocolEnrollmentPage />} />
       <Route path="/projects/:projectId/protocols" element={<ProtocolDashboardPage />} />
       <Route path="/projects/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
       <Route path="/participant/test" element={<ParticipantInterfacePage />} />

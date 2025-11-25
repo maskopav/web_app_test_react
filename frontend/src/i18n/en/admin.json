@@ -23,7 +23,7 @@
       "instruction": "Please identify the participant. You must provide either a Full Name (with birth date and sex) OR an External ID (hospital ID).",
       "labels": {
         "fullName": "Full Name",
-        "externalId": "External ID / Hospital ID",
+        "externalId": "External ID",
         "birthDate": "Birth Date",
         "sex": "Sex",
         "email": "Email (optional)",

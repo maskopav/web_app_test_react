@@ -160,3 +160,29 @@ export const getProtocolById = async (req, res) => {
     res.status(500).json({ error: 'Failed to load protocol' });
   }
 };
+
+// GET /api/protocols?project_id=X
+export const getProtocolsByProjectId = async (req, res) => {
+  const { project_id } = req.query;
+  logToFile(`📖 getProtocolsByProjectId called with id=${project_id}`);
+
+  try {
+    let query = "SELECT * FROM protocols";
+    const params = [];
+
+    if (project_id) {
+      query = `
+        SELECT p.* FROM protocols p
+        JOIN project_protocols pp ON p.id = pp.protocol_id
+        WHERE pp.project_id = ?
+      `;
+      params.push(project_id);
+    }
+
+    const rows = await executeQuery(query, params);
+    res.json(rows);
+  } catch (err) {
+    logToFile(`❌ Error fetching protocols: ${err.stack || err}`);
+    res.status(500).json({ error: 'Failed to load protocols by projectId' });
+  }
+};

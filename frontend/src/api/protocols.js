@@ -25,4 +25,10 @@ export async function getProtocolById(protocolId) {
   if (!res.ok) throw new Error("Failed to fetch protocol");
   return res.json(); // expected: { protocolData, tasks }
 }
-  
+ 
+export async function getProtocolsByProjectId(projectId) {
+  console.log("Fetching protocols by projectId=%d", projectId);
+  const res = await fetch(`${API_BASE}/protocols?project_id=${projectId}`);
+  if (!res.ok) throw new Error("Failed to fetch protocol");
+  return res.json();
+} 

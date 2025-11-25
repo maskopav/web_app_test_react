@@ -3,6 +3,50 @@
     "title": "Přehled projektu",
     "subtitle": "Načtený projekt:"
   },
+  
+  "participantDashboard": {
+    "title": "Participants Management",
+    "addParticipant": "Add New Participant",
+    "noData": "No participants found in this project.",
+    "table": {
+      "name": "Full Name",
+      "externalId": "External ID",
+      "birthDate": "Birth Date",
+      "sex": "Sex",
+      "email": "Contact Email",
+      "notes": "Notes",
+      "actions": "Actions"
+    },
+    "modal": {
+      "title": "Add New Participant",
+      "instruction": "Please identify the participant. You must provide either a Full Name (with birth date and sex) OR an External ID (hospital ID).",
+      "labels": {
+        "fullName": "Full Name",
+        "externalId": "External ID / Hospital ID",
+        "birthDate": "Birth Date",
+        "sex": "Sex",
+        "email": "Email (optional)",
+        "protocol": "Initial Protocol Assignment",
+        "notes": "Notes"
+      },
+      "placeholders": {
+        "fullName": "e.g. John Doe",
+        "externalId": "e.g. EXT-12345",
+        "selectProtocol": "-- Select Protocol --"
+      },
+      "gender": {
+        "male": "Male",
+        "female": "Female",
+        "other": "Other"
+      },
+      "validationError": "Please assign a protocol and fill either (Name + DOB + Sex) OR External ID."
+    },
+    "buttons": {
+      "edit": "Edit",
+      "save": "Create Participant"
+    }
+  },
+
   "protocolDashboard": {
     "title": "Správa protokolů",
     "createNew": "Vytvořit nový protokol",

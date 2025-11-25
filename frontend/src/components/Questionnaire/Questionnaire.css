@@ -14,19 +14,19 @@
   text-align: center;
   margin-bottom: 0rem;
   padding-bottom: 0rem;
-  border-bottom: 1px solid var(--border);
 }
 
 .questionnaire-header-section h2 {
   margin: 0 0 0.2rem 0;
-  color: var(--primary);
+  color: var(--text);
   font-size: 1.6rem;
+  font-weight: 600;
 }
 
-questionnaire-instructions {
-  font-size: 1.2rem;
+.questionnaire-instructions {
+  font-size: 1.4rem;
   color: var(--muted);
-  margin: 0;
+  margin-bottom: 1rem;
 }
 
 /* Question List */
@@ -39,7 +39,7 @@ questionnaire-instructions {
 /* Question Card */
 .question-card {
   background: #fff;
-  border: 1px solid var(--border);
+  border: 3px solid var(--border);
   border-radius: var(--radius);
   padding: 1rem 1.5rem;
   box-shadow: var(--shadow);
@@ -47,7 +47,7 @@ questionnaire-instructions {
 }
 
 .question-card:hover {
-  border-color: var(--primary);
+  border-color: var(--grey);
 }
 
 .question-header {
@@ -87,7 +87,7 @@ questionnaire-instructions {
 .answer-input-text {
   width: 100%;
   padding: 0.4rem;
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   border-radius: var(--sharp-radius);
   font-size: 1rem;
   font-family: inherit;
@@ -99,7 +99,7 @@ questionnaire-instructions {
 .answer-input-text:focus,
 .answer-select:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--grey);
   box-shadow: 0 0 0 3px rgba(55, 100, 223, 0.1);
 }
 
@@ -160,10 +160,10 @@ questionnaire-instructions {
 .btn-submit-questionnaire {
   background: var(--success);
   color: white;
-  font-size: 1.2rem;
+
   padding: 0.8rem 4rem;
   width: auto;
-  border-radius: 2rem;
+  border-radius: var(--radius);
   border: none;
   box-shadow: var(--shadow);
   cursor: pointer;

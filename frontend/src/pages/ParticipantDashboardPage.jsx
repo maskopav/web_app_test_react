@@ -1,3 +1,4 @@
+// src/pages/ParticipantDashboardPage.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -72,6 +73,12 @@ export default function ParticipantDashboardPage() {
     setShowModal(true);
   };
 
+  const handleSuccess = () => {
+    // Refresh both tables (Participants & Assignments)
+    // Creating a participant creates an assignment, so both lists change.
+    loadData();
+  };
+
   const handleAssignmentChange = () => {
     // Refresh assignments when user activates/deactivates a protocol
     fetchParticipantProtocolView({ project_id: projectId })
@@ -142,10 +149,7 @@ export default function ParticipantDashboardPage() {
         projectId={projectId}
         protocols={protocols}
         participantToEdit={selectedParticipant}
-        onSuccess={() => {
-          // Refresh list after successful creation
-          getParticipants(projectId).then(setParticipants);
-        }}
+        onSuccess={handleSuccess}
       />
     </div>
   );

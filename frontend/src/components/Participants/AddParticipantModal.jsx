@@ -1,3 +1,4 @@
+// src/components/Participants/AddParticipantModal.jsx
 import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { createParticipant, updateParticipant, getParticipants } from "../../api/participants";

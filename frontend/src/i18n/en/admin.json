@@ -16,6 +16,7 @@
       "email": "Contact Email",
       "phone": "Contact Phone",
       "notes": "Notes",
+      "protocolName": "Protocol",
       "actions": "Actions"
     },
     "modal": {

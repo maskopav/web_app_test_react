@@ -7,6 +7,9 @@ export default function ParticipantTable({ participants, loading, onEdit }) {
 
   return (
     <div className="protocol-list card">
+      <div className="protocol-list-header">
+          <h3>{t("participantProtocol.title")}</h3>
+      </div>
       <div className="protocol-table-wrapper">
         <table className="protocol-table">
           <thead>
@@ -18,6 +21,7 @@ export default function ParticipantTable({ participants, loading, onEdit }) {
               <th>{t("participantDashboard.table.email")}</th>
               <th>{t("participantDashboard.table.phone")}</th>
               <th>{t("participantDashboard.table.notes")}</th>
+              <th>{t("participantDashboard.table.protocolName")}</th>
               <th>{t("participantDashboard.table.actions")}</th>
             </tr>
           </thead>
@@ -39,6 +43,7 @@ export default function ParticipantTable({ participants, loading, onEdit }) {
                   <td>{p.contact_email || "—"}</td>
                   <td>{p.contact_phone || "—"}</td>
                   <td className="cell-notes" title={p.notes}>{p.notes}</td>
+                  <td>{p.protocol_name}</td>
                   <td className="actions">
                     <button className="btn-edit" onClick={() => onEdit(p)}>
                       {t("participantDashboard.buttons.edit")}

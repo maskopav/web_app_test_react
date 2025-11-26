@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
 import { getParticipants } from "../api/participants";
 import { getProtocolsByProjectId } from "../api/protocols"; // Make sure this import exists
+import { fetchParticipantProtocolView } from "../api/participantProtocols";
 
-// Import the refactored components
+// Import components
 import ParticipantTable from "../components/Participants/ParticipantTable";
 import AddParticipantModal from "../components/Participants/AddParticipantModal";
+import ParticipantProtocolTable from "../components/ParticipantProtocol/ParticipantProtocol";
 
 import "./Pages.css";
 import "../components/Protocols/Protocols.css"; 
@@ -20,6 +22,8 @@ export default function ParticipantDashboardPage() {
   const [participants, setParticipants] = useState([]);
   const [protocols, setProtocols] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [rows, setRows] = useState([]);
+  const didLoad = useRef(false);
 
   // Modal State
   const [showModal, setShowModal] = useState(false);
@@ -45,6 +49,25 @@ export default function ParticipantDashboardPage() {
   useEffect(() => {
     loadData();
   }, [projectId]);
+
+  useEffect(() => {
+    if (didLoad.current) return;
+    didLoad.current = true;
+
+    async function load() {
+      try {
+        const data = await fetchParticipantProtocolView({ project_id: projectId });
+        setRows(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, [projectId]);
+
 
   const handleAddClick = () => {
     setSelectedParticipant(null); // Clear selection for Add mode
@@ -96,6 +119,18 @@ export default function ParticipantDashboardPage() {
           getParticipants(projectId).then(setParticipants);
         }}
       />
+
+      {loading ? (
+        <p>{t("loading")}</p>
+      ) : (
+        <ParticipantProtocolTable 
+        rows={rows}
+        onRefresh={() => {
+            // reload table after changes
+            fetchParticipantProtocolView({ project_id: projectId }).then(setRows);
+        }}
+        />
+      )}
     </div>
   );
 }

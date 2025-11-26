@@ -1,0 +1,117 @@
+/* frontend/src/pages/ParticipantDashboardPage.css */
+
+/* Ensure the page takes full viewport height minus headers */
+.full-height {
+    height: 95.4vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent main page scroll, let internal tables scroll */
+  }
+  
+  /* The main container splitting the screen */
+  .dashboard-split-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem 1rem 1rem 1rem;
+    min-height: 0; /* Crucial for flex children scrolling */
+  }
+  
+  /* Each section (Top and Bottom) */
+  .dashboard-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: var(--grey);
+    border: 1px solid #e0e0e0; /* or var(--border) */
+    border-radius: 8px;
+    min-height: 0; /* Allows children to shrink/scroll */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  /* Header inside sections */
+  .section-header {
+    padding: 0.8rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px 8px 0 0;
+    flex-shrink: 0;
+  }
+  
+  .section-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--muted);
+  }
+  
+  
+  .btn-create.small {
+    padding: 0.4rem 0.8rem;
+    font-size: 1.1rem;
+    width: auto;
+    margin: 0;
+  }
+  
+  /* Wrapper to force the inner tables to respect height */
+  .table-wrapper-fix {
+    flex: 1;
+    overflow: hidden; /* Contains the inner scrollable table */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* --- Overrides for existing components to fit this layout --- */
+  
+  /* Force the imported tables to fill space and scroll internally */
+  .table-wrapper-fix .protocol-list.card {
+    box-shadow: none;
+    border: none;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 96%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .table-wrapper-fix .protocol-list-header {
+    display: none; /* Hide the internal headers of components since we added section headers */
+  }
+  
+  .table-wrapper-fix .protocol-table-wrapper {
+    margin: 0;
+    max-height: none !important; /* Override any 50vh limits */
+    height: 100%;
+    overflow-y: auto;
+    border-radius: 0;
+  }
+  
+  .table-wrapper-fix .protocol-table thead th {
+    top: 0;
+    position: sticky;
+    background: #fff; /* Ensure header isn't transparent on scroll */
+    z-index: 10;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  
+  /* Responsive: On mobile, stack them normally and allow page scroll */
+  @media (max-width: 768px) {
+    .full-height {
+      height: auto;
+      overflow: auto;
+    }
+    
+    .dashboard-split-container {
+      height: auto;
+    }
+  
+    .dashboard-section {
+      min-height: 400px; /* Give at least some height on mobile */
+    }
+  }

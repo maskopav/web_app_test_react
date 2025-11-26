@@ -9,7 +9,6 @@ import ProtocolEditorPage from "./pages/ProtocolEditorPage";
 // import MasterDashboardPage from "./pages/MasterDashboardPage";
 import ParticipantInterfacePage from "./pages/ParticipantInterfacePage";
 import ParticipantInterfaceLoader from "./pages/ParticipantInterfaceLoader";
-import ParticipantProtocolPage from "./pages/ParticipantProtocolPage";
 import ParticipantDashboardPage from "./pages/ParticipantDashboardPage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -21,7 +20,6 @@ export default function App() {
       <Route path="/" element={<Navigate to="/projects/1" replace />} />
       <Route path="/projects/:projectId" element={<ProjectDashboardPage />} />
       <Route path="/projects/:projectId/participants" element={<ParticipantDashboardPage />} />
-      <Route path="/projects/:projectId/participant-protocols" element={<ParticipantProtocolPage />} />
       <Route path="/projects/:projectId/protocols" element={<ProtocolDashboardPage />} />
       <Route path="/projects/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
       <Route path="/participant/test" element={<ParticipantInterfacePage />} />

@@ -6,6 +6,7 @@
   
   "participantDashboard": {
     "title": "Participants Management",
+    "subtitle": "Create and manage participant profiles. Initial existing protocol must be linked (starts as inactive).",
     "addParticipant": "Add New Participant",
     "noData": "No participants found in this project.",
     "table": {
@@ -125,10 +126,11 @@
     }
   },
   "participantProtocol": {
-    "title": "Participant–Protocol Assignments",
+    "title": "Protocol Assignments",
+    "subtitle": "Manage enrollments. Activate access to generate links & QR codes.",
     "noAssignments": "No assignments found",
     "table": {
-      "participant": "Participant",
+      "participant": "Full Name",
       "externalId": "External ID",
       "protocol": "Protocol",
       "version": "Version",

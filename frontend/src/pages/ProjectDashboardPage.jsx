@@ -24,7 +24,6 @@ export default function ProjectDashboardPage() {
 
   const goProtocols = () => navigate(`/projects/${projectId}/protocols`);
   const goParticipants = () => navigate(`/projects/${projectId}/participants`);
-  const goAssignments = () => navigate(`/projects/${projectId}/participant-protocols`);
   const goData = () => navigate(`/projects/${projectId}/data`);
 
   return (
@@ -76,16 +75,13 @@ export default function ProjectDashboardPage() {
 
         <div className="action-buttons">
           <button className="dashboard-btn" onClick={goParticipants}>
-            Participants management
+            Participants & Protocol Assignments management
           </button>
 
           <button className="dashboard-btn" onClick={goProtocols}>
             Protocols management
           </button>
 
-          <button className="dashboard-btn" onClick={goAssignments}>
-            Participant access & assignments
-          </button>
 
           <button className="dashboard-btn" onClick={goData}>
             Data explorer

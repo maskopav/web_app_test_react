@@ -13,6 +13,11 @@ export default function ParticipantInterfaceLoader() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Ensure mappings (languages and tasks) are loaded before running logic.
+    // This effect will re-run automatically when 'mappings' updates.
+    if (!mappings || !mappings.languages || !mappings.tasks) {
+      return;
+    }
     async function load() {
       try {
         // --- 1) call backend to resolve token

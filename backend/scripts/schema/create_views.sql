@@ -26,7 +26,8 @@ SELECT
     -- protocol
     proto.id                         AS protocol_id,
     proto.name                       AS protocol_name,
-    proto.version                    AS protocol_version
+    proto.version                    AS protocol_version,
+    proto.is_current                 AS is_current_protocol
 
 FROM participant_protocols pp
 JOIN participants p

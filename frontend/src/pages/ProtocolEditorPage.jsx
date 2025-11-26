@@ -6,6 +6,7 @@ import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitche
 import ProtocolEditor from "../components/ProtocolEditor";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { useMappings } from "../context/MappingContext";
+import { useConfirm } from "../components/ConfirmDialog/ConfirmDialogContext";
 import "./Pages.css"
 
 function attachIds(protocol, projectId, protocolId) {
@@ -24,6 +25,7 @@ export default function ProtocolEditorPage() {
   const navigate = useNavigate();
   const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
   const { refreshMappings } = useMappings();
+  const confirm = useConfirm();
 
   const [configuredTasks, setConfiguredTasks] = useState(state?.protocol?.tasks || selectedProtocol?.tasks || []);
   const [protocolData, setProtocolData] = useState(
@@ -48,6 +50,8 @@ export default function ProtocolEditorPage() {
   }, [protocolId, protocolData]);
 
   async function handleSave() {
+    // ProtocolEditor.jsx: handleSaveProtocol calls saveNewProtocol -> then onSave(result).
+    // This means the saving happens INSIDE ProtocolEditor. 
     console.log("✅ Protocol saved, refreshing mappings...");
     try {
       await refreshMappings(["protocols"]); // reload relevant tables
@@ -58,11 +62,15 @@ export default function ProtocolEditorPage() {
   }
 
   // Back navigation handler
-  const handleBackToDashboard = () => {
-    const userConfirmed = window.confirm(
-      "Are you sure you want to go back? Any unsaved changes will be lost."
-    );
-    if (userConfirmed) {
+  async function handleBackToDashboard() {
+    const isConfirmed = await confirm({
+      title: "Any unsaved changes will be lost!",
+      message: "Are you sure you want to go back? Any unsaved changes will be lost.",
+      confirmText: "Yes, go back",
+      cancelText: "Cancel"
+    });
+
+    if (isConfirmed) {
       // Clean environment
       setSelectedProtocol(null);
       // Redirect to dashboard

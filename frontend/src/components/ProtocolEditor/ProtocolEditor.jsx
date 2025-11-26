@@ -13,6 +13,7 @@ import QuestionnaireModal from "./QuestionnaireModal";
 import { useMappings } from "../../context/MappingContext";
 import { useProtocolManager } from "../../hooks/useProtocolManager";
 import { ProtocolContext } from "../../context/ProtocolContext";
+import { useConfirm } from "../ConfirmDialog/ConfirmDialogContext"; // Import confirm
 
 import "./ProtocolEditor.css";
 
@@ -31,6 +32,8 @@ export function ProtocolEditor({
   const { mappings, loading, error } = useMappings();
   const { selectedProtocol, setSelectedProtocol } = useContext(ProtocolContext);
   const { saveNewProtocol } = useProtocolManager();
+
+  const confirm = useConfirm();
 
   // State: Tasks & Protocol Data 
   const [tasks, setTasks] = useState(initialTasks);
@@ -193,6 +196,18 @@ export function ProtocolEditor({
 
   // --- Handlers: Protocol Actions ---
   async function handleSaveProtocol() {
+    // If Editing Mode: Ask for confirmation
+    if (editingMode) {
+      const isConfirmed = await confirm({
+          title: "Update Active Protocol?",
+          message: "You are updating an existing protocol. All participants assigned to this protocol will be automatically moved to this new version. Their existing unique links will continue to work but will load this new content.\n\nAre you sure you want to proceed?",
+          confirmText: "Yes, Update Everyone",
+          cancelText: "Cancel"
+      });
+
+      if (!isConfirmed) return;
+    }
+
     try {
       const result = await saveNewProtocol(
         tasks,
@@ -200,7 +215,6 @@ export function ProtocolEditor({
         projectId,
         editingMode
       );
-      alert("Protocol saved successfully!");
       onSave(result);
       setSelectedProtocol(null);
       navigate(`/projects/${projectId}/protocols`);

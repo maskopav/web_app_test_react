@@ -40,7 +40,7 @@
   }
   
   .btn-confirm {
-    background: #007bff;
+    background: var(--primary);
     color: white;
     padding: 8px 16px;
     border-radius: 6px;

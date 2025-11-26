@@ -89,7 +89,7 @@ export const getParticipantProtocolView = async (req, res) => {
   const { project_id, participant_id } = req.query;
 
   try {
-    let query = `SELECT * FROM v_participant_protocols WHERE 1=1`;
+    let query = `SELECT * FROM v_participant_protocols WHERE 1=1 AND is_current_protocol = 1`;
     const params = [];
 
     if (project_id) {

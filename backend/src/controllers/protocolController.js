@@ -34,16 +34,23 @@ export const saveProtocol = async (req, res) => {
       }
 
       let newVersion = version || 1;
+      let oldProtocolId = null;
 
       if (editingMode) {
-        // find latest version
-        const [verRows] = await conn.query(
-          `SELECT COALESCE(MAX(version), 0) AS max_version FROM protocols WHERE protocol_group_id = ?`,
+        // 1. Find current active version ID before we update it
+        const [currentRows] = await conn.query(
+          `SELECT id, version FROM protocols WHERE protocol_group_id = ? AND is_current = 1 ORDER BY version DESC`,
           [groupId]
         );
-        newVersion = verRows[0].max_version + 1;
+        
+        
+        if (currentRows.length > 0) {
+          oldProtocolId = currentRows[0].id;
+          newVersion = currentRows[0].version + 1;
+          logToFile(currentRows);
+        }
 
-        // mark old versions as not current
+        // 2. Mark old versions as not current
         await conn.query(
           `UPDATE protocols SET is_current = 0, updated_at = NOW() WHERE protocol_group_id = ? AND is_current = 1`,
           [groupId]
@@ -65,8 +72,8 @@ export const saveProtocol = async (req, res) => {
         ]
       );
 
-      const protocol_id = result.insertId;
-      logToFile(`✅ Inserted protocol with id=${protocol_id}, group_id=${groupId}, version=${version}`);
+      const newProtocolId = result.insertId;
+      logToFile(`✅ Inserted protocol with id=${newProtocolId}, group_id=${groupId}, version=${newVersion}`);
 
       const insertTask = `INSERT INTO protocol_tasks
         (protocol_id, task_id, task_order, params)
@@ -75,17 +82,16 @@ export const saveProtocol = async (req, res) => {
       for (let i = 0; i < tasks.length; i++) {
         const t = tasks[i];
         await conn.query(insertTask, [
-          protocol_id,
+          newProtocolId,
           t.task_id,
           t.task_order || i + 1,
           JSON.stringify(t.params || {}),
         ]);
-        logToFile(`→ Added task ${t.task_id} to protocol ${protocol_id}`);
+        logToFile(`→ Added task ${t.task_id} to protocol ${newProtocolId}`);
       }
 
       // Generate unique token
       let accessToken = generateAccessToken();
-
       let unique = false;
       while (!unique) {
         const [rows] = await conn.query(
@@ -96,20 +102,56 @@ export const saveProtocol = async (req, res) => {
         else accessToken = generateAccessToken();
       }
 
-      // Insert project_protocol
-      // TEMP: project_id = 1 (choose correct project later)
-      await conn.query(
-        `
-          INSERT INTO project_protocols
-          (project_id, protocol_id, access_token)
-          VALUES (?, ?, ?)
-        `,
-        [project_id, protocol_id, accessToken]
+      // Insert NEW project_protocols link
+      const [ppResult] = await conn.query(
+        `INSERT INTO project_protocols (project_id, protocol_id, access_token) VALUES (?, ?, ?)`,
+        [project_id, newProtocolId, accessToken]
       );
+      
+      const newProjectProtocolId = ppResult.insertId;
+      logToFile(`→ Created project_protocol ID ${newProjectProtocolId}`);
 
-      logToFile(`→ Created project_protocol with token ${accessToken}`);
+      // --- MIGRATION LOGIC ---
+      // If editing an existing protocol within a project, migrate participants
+      if (editingMode && oldProtocolId && project_id) {
+                // 1. Find the OLD project_protocol ID
+        const [oldPpRows] = await conn.query(
+          `SELECT id FROM project_protocols WHERE project_id = ? AND protocol_id = ?;`,
+          [project_id, oldProtocolId]
+        );
 
-      return protocol_id;
+        logToFile(`🔄 Starting participant migration from Protocol ID ${oldProtocolId} to ${newProtocolId} for ${oldPpRows.length} participants.`);
+        if (oldPpRows.length > 0) {
+          const oldProjectProtocolId = oldPpRows[0].id;
+
+          // 2. Find all ACTIVE participants assigned to the old protocol
+          const [participantsToMigrate] = await conn.query(
+            `SELECT id, participant_id, access_token, start_date, is_active FROM participant_protocols 
+             WHERE project_protocol_id = ? and end_date is NULL;`,
+            [oldProjectProtocolId]
+          );
+
+          for (const p of participantsToMigrate) {
+            // 3. Archive old record
+            await conn.query(
+              `UPDATE participant_protocols 
+               SET is_active = 0, end_date = NOW(), access_token = NULL
+               WHERE id = ?;`,
+              [p.id]
+            );
+
+            // 4. Insert new record with SAME token
+            await conn.query(
+              `INSERT INTO participant_protocols 
+               (participant_id, project_protocol_id, access_token, start_date, is_active)
+               VALUES (?, ?, ?, ?, ?);`,
+              [p.participant_id, newProjectProtocolId, p.access_token, p.start_date, p.is_active]
+            );
+          }
+        }
+      }
+
+      return newProtocolId;
     });
 
     res.json({ success: true, protocol_id: protocol_id });
@@ -127,7 +169,7 @@ export const getProtocolById = async (req, res) => {
   try {
     // Get protocol details
     const protocolRows = await executeQuery(
-      `SELECT * FROM protocols WHERE id = ?`,
+      `SELECT * FROM protocols WHERE id = ? AND is_current = 1`,
       [id]
     );
 

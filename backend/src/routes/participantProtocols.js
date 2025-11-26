@@ -1,7 +1,6 @@
 // src/routes/participantProtocols.js
 import express from "express";
-import { 
-  createParticipantProtocol, 
+import {  
   resolveParticipantToken,
   getParticipantProtocolView,
   getParticipantProtocolViewById,
@@ -10,9 +9,6 @@ import {
 } from "../controllers/participantProtocolController.js";
 
 const router = express.Router();
-
-// POST /api/participant-protocols/create
-router.post("/create", createParticipantProtocol);
 
 // Assign (activate)
 router.post("/activate", activateParticipantProtocol);

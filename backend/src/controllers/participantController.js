@@ -39,7 +39,7 @@ export const createParticipant = async (req, res) => {
     protocol_id // The selected protocol to assign immediately
   } = req.body;
 
-  logToFile(`👤 Creating participant: ${full_name} for project ${project_id}`);
+  logToFile(`👤 Creating participant: ${full_name},${external_id} for project ${project_id}`);
 
   try {
     await executeTransaction(async (conn) => {
@@ -64,18 +64,33 @@ export const createParticipant = async (req, res) => {
       const projectProtocolId = ppRows[0].id;
 
       // 3. Assign Protocol (Create participant_protocol record)
-      const token = generateAccessToken();
-      await conn.query(
+      // Generate unique token
+      let token = generateAccessToken();
+      let unique = false;
+
+      while (!unique) {
+      const [rows] = await conn.query(
+        `SELECT id FROM participant_protocols WHERE access_token = ?`,
+        [token]
+      );
+      if (rows.length === 0) unique = true;
+      else token = generateAccessToken();
+      }
+
+      const [result] = await conn.query(
         `INSERT INTO participant_protocols 
-         (participant_id, project_protocol_id)
-         VALUES (?, ?)`,
-        [newParticipantId, projectProtocolId]
+         (participant_id, project_protocol_id, access_token)
+         VALUES (?, ?, ?)`,
+        [newParticipantId, projectProtocolId, token]
       );
       
-      logToFile(`✅ Created participant ${newParticipantId} and assigned protocol ${projectProtocolId}`);
+      res.json({ 
+        success: true,
+        participant_protocol_id: result.insertId,
+        unique_token: token
+        });
+        logToFile(`✅ Created participant, id: ${res.participant_protocol_id}, token: ${res.unique_token} `);
     });
-
-    res.json({ success: true });
   } catch (err) {
     console.error("Create participant error:", err);
     res.status(500).json({ error: err.message || "Failed to create participant" });
@@ -124,7 +139,7 @@ export const updateParticipant = async (req, res) => {
     // 2. Update
     const updateSql = `
       UPDATE participants 
-      SET full_name=?, external_id=?, birth_date=?, sex=?, contact_email=?, contact_phone=?, notes=?
+      SET full_name=?, external_id=?, birth_date=?, sex=?, contact_email=?, contact_phone=?, notes=?, updated_at=NOW()
       WHERE id=?
     `;
 

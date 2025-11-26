@@ -31,7 +31,8 @@ export default function ParticipantDashboardPage() {
   const [protocols, setProtocols] = useState([]); // for the modal dropdown
   
   const [loading, setLoading] = useState(true);
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedParticipant, setSelectedParticipant] = useState(null);
 
   // --- Data Loading ---
   async function loadData() {
@@ -61,8 +62,14 @@ export default function ParticipantDashboardPage() {
   }, [projectId]);
 
   // --- Handlers ---
-  const handleParticipantCreated = () => {
-    loadData(); // Refresh both tables as a new participant creates an assignment too
+  const handleAddClick = () => {
+    setSelectedParticipant(null); // Clear selection for Add mode
+    setShowModal(true);
+  };
+
+  const handleEditClick = (participant) => {
+    setSelectedParticipant(participant); // Set data for Edit mode
+    setShowModal(true);
   };
 
   const handleAssignmentChange = () => {
@@ -93,7 +100,7 @@ export default function ParticipantDashboardPage() {
                     {t("participantDashboard.subtitle")}
                 </span>
             </div>
-            <button className="btn-create small" onClick={() => setShowAddModal(true)}>
+            <button className="btn-create small" onClick={handleAddClick}>
               + {t("participantDashboard.addParticipant")}
             </button>
           </div>
@@ -102,7 +109,7 @@ export default function ParticipantDashboardPage() {
             <ParticipantTable 
               participants={participants} 
               loading={loading}
-              onEdit={(p) => alert(`Editing ${p.full_name} (Not implemented)`)}
+              onEdit={handleEditClick}
             />
           </div>
         </section>
@@ -130,11 +137,15 @@ export default function ParticipantDashboardPage() {
 
       {/* Add Participant Modal */}
       <AddParticipantModal
-        open={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        open={showModal}
+        onClose={() => setShowModal(false)}
         projectId={projectId}
         protocols={protocols}
-        onSuccess={handleParticipantCreated}
+        participantToEdit={selectedParticipant}
+        onSuccess={() => {
+          // Refresh list after successful creation
+          getParticipants(projectId).then(setParticipants);
+        }}
       />
     </div>
   );

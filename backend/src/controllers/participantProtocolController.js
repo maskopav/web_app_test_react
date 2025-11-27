@@ -37,7 +37,7 @@ export async function resolveParticipantToken(req, res) {
     // 3. Load tasks for the protocol
     const tasks = await executeQuery(
       `
-        SELECT task_id, task_order, params
+        SELECT id, task_id, task_order, params
         FROM protocol_tasks
         WHERE protocol_id = ?
         ORDER BY task_order ASC
@@ -46,6 +46,7 @@ export async function resolveParticipantToken(req, res) {
     );
 
     const formattedTasks = tasks.map(t => ({
+      protocol_task_id: t.id,
       task_id: t.task_id,
       task_order: t.task_order,
       params: typeof t.params === "string" ? JSON.parse(t.params) : t.params

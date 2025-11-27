@@ -1,3 +1,4 @@
+// src/pages/ParticipantInterfacePage.jsx
 import React, { useState, useContext, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -7,6 +8,7 @@ import { resolveTasks, resolveTask } from "../utils/taskResolver";
 import { VoiceRecorder } from "../components/VoiceRecorder/VoiceRecorder";
 import Questionnaire from "../components/Questionnaire/Questionnaire";
 import CompletionScreen from "../components/CompletionScreen";
+import { uploadRecording } from "../api/recordings";
 import "./Pages.css";
 
 export default function ParticipantInterfacePage() {
@@ -24,6 +26,7 @@ export default function ParticipantInterfacePage() {
   // For saving recordings in the future.....
   const participant = location.state?.participant;
   const accessToken = location.state?.token;
+  const sessionId = location.state?.sessionId;
 
   // Restore protocol in context
   useEffect(() => {
@@ -56,7 +59,11 @@ export default function ParticipantInterfacePage() {
 
     // 1. Prepare Voice Tasks
     const configured = selectedProtocol.tasks ?? [];
-    const rawVoiceTasks = configured.map((t) => createTask(t.category, t));
+    // We explicitly attach protocolTaskId here so it persists through resolution
+    const rawVoiceTasks = configured.map((t) => ({
+      ...createTask(t.category, t),
+      protocolTaskId: t.protocol_task_id 
+    }));
     const resolvedVoiceTasks = resolveTasks(rawVoiceTasks);
     
     // 2. Check for Questionnaire
@@ -83,12 +90,50 @@ export default function ParticipantInterfacePage() {
   if (!langReady) return <p>Loading translations...</p>;
 
   // --- Handlers
-  const handleTaskComplete = (data) => {
-    console.log("✅ Task Completed:", data);
-    // Placeholder
-    //setResults(prev => [...prev, data]);
+  async function handleTaskComplete(data) {
+    console.log("✅ Task Completed, saving...", data);
     
-    // Move to next
+    try {
+      // 1. Identify the current task to get metadata
+      // The `data` object from VoiceRecorder comes with audioURL (blob url)
+      // We need to fetch the actual Blob from that URL to send it
+      let blob = null;
+      if (data.audioURL) {
+        const response = await fetch(data.audioURL);
+        blob = await response.blob();
+      }
+
+      const currentTaskObj = runtimeTasks[taskIndex]; // The task definition
+      console.log(currentTaskObj);
+      // Extract metadata
+      const paramValue = currentTaskObj.params[0];
+      const repeatIndex = currentTaskObj._repeatIndex || 1;
+
+      // 2. Upload
+      if (blob && accessToken) {
+        await uploadRecording(blob, {
+          token: accessToken,
+          sessionId: sessionId,
+          protocolTaskId: currentTaskObj.protocolTaskId,
+          taskCategory: currentTaskObj.category,
+          taskOrder: taskIndex + 1, // Assumes taskIndex matches DB order
+          duration: data.recordingTime || 0,
+          taskParam: paramValue,
+          repeatIndex: repeatIndex,
+          timeStamp: data.timestamp
+        });
+        console.log("Upload successful");
+      } else if (currentTaskObj.type === "questionnaire") {
+        // Handle questionnaire JSON save (can use a different API endpoint later)
+        console.log("Questionnaire save logic here");
+      }
+
+    } catch (err) {
+      console.error("Failed to save result:", err);
+      // Optional: Show error to user or retry
+    }
+    
+    // Move to next (existing logic)
     setTaskIndex((i) => i + 1);
   };
 

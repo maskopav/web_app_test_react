@@ -1,8 +1,10 @@
-import { useEffect, useState, useContext } from "react";
+// src/pages/ParticipantInterfaceLoader.jsx
+import { useEffect, useState, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { useMappings } from "../context/MappingContext";
 import { fetchParticipantProtocol } from "../api/participantProtocols";
+import { initSession } from "../api/sessions";
 
 export default function ParticipantInterfaceLoader() {
   const { token } = useParams();
@@ -12,29 +14,49 @@ export default function ParticipantInterfaceLoader() {
 
   const [loading, setLoading] = useState(true);
 
+  // Ref to track if we have already started initialization
+  const didInit = useRef(false);
+
   useEffect(() => {
     // Ensure mappings (languages and tasks) are loaded before running logic.
     // This effect will re-run automatically when 'mappings' updates.
     if (!mappings || !mappings.languages || !mappings.tasks) {
       return;
     }
+
+    // Prevent double-execution (React Strict Mode fix)
+    if (didInit.current) {
+      return;
+    }
+    didInit.current = true; // Mark as running
+
     async function load() {
       try {
-        // --- 1) call backend to resolve token
+        // 1. call backend to resolve token
         const response = await fetchParticipantProtocol(token);
         console.log(response);
-
         // response contains:
         // {
         //   participant: {...}
         //   project_protocol: {...}
         //   protocol: {... raw protocol ...}
         // }
-
         const rawProtocol = response.protocol;
         if (!rawProtocol) throw new Error("Protocol missing");
 
-        // --- 2) map raw protocol using existing function
+        // 2. Initialize Session (Track visit)
+        // We do this in parallel or sequence. Sequence is safer to ensure we have a session ID.
+        let sessionId = null;
+        try {
+            const sessionData = await initSession(token);
+            sessionId = sessionData.sessionId;
+            console.log("Session started:", sessionId);
+        } catch (err) {
+            console.error("Warning: Could not init session, proceeding anyway", err);
+            // Decide if you want to block user or let them continue without tracking
+        }
+
+        // 3. Map Data using existing function
         const mapped = mapProtocol(rawProtocol, mappings);
 
         // save to global context
@@ -48,7 +70,8 @@ export default function ParticipantInterfaceLoader() {
             testingMode: false,
             editingMode: false,
             participant: response.participant,
-            token
+            token,
+            sessionId
           }
         });
 
@@ -77,6 +100,7 @@ function mapProtocol(raw, mappings) {
       ...t.params,
       category: taskDef?.category || "unknown",
       task_order: t.task_order,
+      protocol_task_id: t.protocol_task_id
     };
   });
   return {

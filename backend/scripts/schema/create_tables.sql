@@ -127,7 +127,9 @@ CREATE TABLE `sessions` (
   `session_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `progress` JSON COMMENT 'Stores completed task IDs and timestamps',
   `completed` boolean DEFAULT false,
-  `environment_notes` text
+  `user_agent` varchar(512) DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `device_metadata` JSON DEFAULT NULL COMMENT 'Screen size, platform, etc.'
 );
 
 CREATE TABLE `recordings` (

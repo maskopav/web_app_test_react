@@ -11,7 +11,7 @@ export default function AddParticipantModal({
   projectId, 
   protocols, 
   onSuccess,
-  participantToEdit = null // If provided -> EDIT mode
+  participantToEdit = null 
 }) {
   const { t } = useTranslation(["admin", "common"]);
   const isEditMode = !!participantToEdit;
@@ -29,16 +29,17 @@ export default function AddParticipantModal({
 
   const [formData, setFormData] = useState(initialFormState);
   const [existingParticipants, setExistingParticipants] = useState([]);
+  const [submitError, setSubmitError] = useState(""); // <--- New Error State
 
   // --- Fetch ALL participants when modal opens ---
   useEffect(() => {
     if (open) {
-      // Call without projectId to get the global list from backend
+      setSubmitError(""); // Clear errors on open
       getParticipants()
         .then(data => setExistingParticipants(data))
         .catch(err => console.error("Failed to load existing participants", err));
-    // If editing, populate form
-    if (participantToEdit) {
+      
+      if (participantToEdit) {
         setFormData({
           full_name: participantToEdit.full_name || "",
           external_id: participantToEdit.external_id || "",
@@ -47,7 +48,7 @@ export default function AddParticipantModal({
           contact_email: participantToEdit.contact_email || "",
           contact_phone: participantToEdit.contact_phone || "",
           notes: participantToEdit.notes || "",
-          protocol_id: "dummy" // Dummy value to pass validation in Edit mode (field is hidden)
+          protocol_id: "dummy" 
         });
       } else {
         setFormData(initialFormState);
@@ -57,13 +58,10 @@ export default function AddParticipantModal({
 
   // --- Validation Logic ---
   const isFormValid = useMemo(() => {
-    // Protocol is mandatory only in Add mode
     if (!isEditMode && !formData.protocol_id) return false;
 
-    // Identity Check: (Name + DOB + Sex) OR (External ID)
     const hasFullName = formData.full_name.trim().length > 0;
     const hasDob = formData.birth_date.trim().length > 0;
-    // Check if sex is valid (not empty and not the default dash if used)
     const hasSex = formData.sex.trim().length > 0 && formData.sex !== "-"; 
     const hasExternalId = formData.external_id.trim().length > 0;
 
@@ -75,9 +73,12 @@ export default function AddParticipantModal({
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts correcting input
+    if (submitError) setSubmitError(""); 
   };
 
   const handleSubmit = async () => {
+    setSubmitError("");
     if (!isFormValid) return;
 
     // --- FRONTEND DUPLICATE CHECK ---
@@ -87,46 +88,34 @@ export default function AddParticipantModal({
     const inputSex = formData.sex;
 
     const duplicate = existingParticipants.find(p => {
-      // Skip checking against self in Edit mode
       if (isEditMode && p.participant_id === participantToEdit.participant_id) return false;
 
-      // 1. External ID match (if provided)
+      // 1. External ID match
       if (inputExtId && p.external_id && p.external_id.trim() === inputExtId) {
         return true;
       }
-      // 2. Personal Info Check (Sequential: Name -> DOB -> Sex)
+      // 2. Personal Info Check
       if (inputName && inputDob && inputSex) {
-        
-        // A. Filter by Name first (Quick string compare)
         const pName = (p.full_name || "").toLowerCase();
-        if (pName !== inputName) {
-            return false; // Name doesn't match, skip rest
-        }
+        if (pName !== inputName) return false;
 
-        // B. Filter by DOB (Only runs if name matched)
         const pDob = (String(p.birth_date) || "").slice(0, 10); 
-        if (pDob !== inputDob) {
-            return false; // DOB doesn't match, skip rest
-        }
+        if (pDob !== inputDob) return false;
 
-        // C. Filter by Sex (Only runs if name & DOB matched)
         const pSex = (p.sex || "");
-        if (pSex !== inputSex) {
-            return false; // Sex doesn't match
-        }
-        // If we got here, everything matched!
+        if (pSex !== inputSex) return false;
+        
         return true;
       }
       return false;
     });
 
     if (duplicate) {
-      alert(
-        `${t("participantDashboard.alerts.createError")}: \n` +
-        `Participant already exists in the database!\n` +
-        `(Matched: ${duplicate.full_name}, ID: ${duplicate.external_id || "N/A"})`
+      // Set error state instead of alert
+      setSubmitError(
+        `${t("participantDashboard.alerts.createError")}: Participant already exists (ID: ${duplicate.external_id || "N/A"})`
       );
-      return; // Stop submission
+      return; 
     }
 
     // Payload Preparation
@@ -143,17 +132,15 @@ export default function AddParticipantModal({
     // --- Proceed to Save ---
     try {
         if (isEditMode) {
-          // Update Mode
           await updateParticipant(participantToEdit.participant_id, payload);
         } else {
-          // Create Mode
           await createParticipant({ ...payload, project_id: projectId });
         }
         
         onSuccess(); 
         onClose();
       } catch (err) {
-        alert(t("participantDashboard.alerts.createError") + ": " + err.message);
+        setSubmitError(t("participantDashboard.alerts.createError") + ": " + err.message);
       }
   };
 
@@ -279,12 +266,19 @@ export default function AddParticipantModal({
             </div>
         )}
 
-        {/* Actions & Errors */}
-        {!isFormValid && (
-          <div className="validation-error-msg">
-            {t("participantDashboard.modal.validationError")}
-          </div>
-        )}
+        {/* --- ERROR DISPLAY SECTION --- */}
+        <div style={{ minHeight: '1.2em', marginTop: '0.5rem' }}>
+            {!isFormValid && (
+                <div className="validation-error-msg">
+                    {t("participantDashboard.modal.validationError")}
+                </div>
+            )}
+            {submitError && (
+                <div className="validation-error-msg">
+                    {submitError}
+                </div>
+            )}
+        </div>
         
         <div className="modal-actions">
            <button 

@@ -1,5 +1,5 @@
 // src/pages/ParticipantInterfacePage.jsx
-import React, { useState, useContext, useMemo, useEffect } from "react";
+import React, { useState, useContext, useMemo, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ProtocolContext } from "../context/ProtocolContext";
@@ -8,6 +8,7 @@ import { resolveTasks, resolveTask } from "../utils/taskResolver";
 import { VoiceRecorder } from "../components/VoiceRecorder/VoiceRecorder";
 import Questionnaire from "../components/Questionnaire/Questionnaire";
 import CompletionScreen from "../components/CompletionScreen";
+import { trackProgress } from "../api/sessions";
 import { uploadRecording } from "../api/recordings";
 import "./Pages.css";
 
@@ -19,6 +20,10 @@ export default function ParticipantInterfacePage() {
 
   const [taskIndex, setTaskIndex] = useState(0);
   const [langReady, setLangReady] = useState(false);
+
+  // Add a Ref to track the last logged task 
+  // We initialize it to -1 so that index 0 is always logged the first time.
+  const lastLoggedIndex = useRef(-1);
 
   const testingMode = location.state?.testingMode ?? false;
   const editingMode = location.state?.editingMode ?? false;
@@ -85,6 +90,30 @@ export default function ParticipantInterfacePage() {
   }, [selectedProtocol, i18n.language]);
 
 
+  //  Central Logger Helper 
+  const logInteraction = (action, extra = {}) => {
+    if (!sessionId) return;
+    
+    const currentTask = runtimeTasks[taskIndex];
+    const eventData = {
+      protocolTaskId: currentTask?.protocolTaskId,
+      taskIndex: taskIndex + 1, // Human readable 1-based
+      action, // 'task_opened', 'button_start', etc.
+      ...extra
+    };
+    
+    trackProgress(sessionId, eventData);
+  };
+
+  // Log "Task Open" on index change
+  useEffect(() => {
+    if (runtimeTasks[taskIndex] && lastLoggedIndex.current !== taskIndex) {
+      logInteraction("task_opened");
+      lastLoggedIndex.current = taskIndex;
+    }
+  }, [taskIndex, runtimeTasks]);
+
+
   // --- early return only after all hooks are declared
   if (!protocolData) return <p>No protocol selected.</p>;
   if (!langReady) return <p>Loading translations...</p>;
@@ -132,6 +161,15 @@ export default function ParticipantInterfacePage() {
       console.error("Failed to save result:", err);
       // Optional: Show error to user or retry
     }
+
+    // Log the "Save" action
+    logInteraction("task_saved", { recordingDuration: data.recordingTime });
+
+    // Check Completion
+    if (taskIndex + 1 >= runtimeTasks.length) {
+      console.log("🏁 Session Completed");
+      trackProgress(sessionId, null, true); // markCompleted = true
+    }
     
     // Move to next (existing logic)
     setTaskIndex((i) => i + 1);
@@ -170,6 +208,7 @@ export default function ParticipantInterfacePage() {
           mode={currentTask.recording.mode}
           duration={currentTask.recording.duration}
           onNextTask={handleTaskComplete}
+          onLogEvent={logInteraction}
         />
       );
     // 2. Render Questionnaire

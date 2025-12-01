@@ -24,3 +24,28 @@ export async function initSession(token) {
 
   return res.json(); // Returns { success: true, sessionId: 123 }
 }
+
+export async function trackProgress(sessionId, eventData, markCompleted = false) {
+  if (!sessionId) return; // specific safeguard
+
+  // Construct the payload
+  const payload = {
+    sessionId,
+    markCompleted
+  };
+
+  // Only add event if provided
+  if (eventData) {
+    payload.event = {
+      timestamp: new Date().toISOString(),
+      ...eventData
+    };
+  }
+
+  // Fire and forget (don't await strict response to keep UI snappy)
+  fetch(`${API_BASE}/sessions/progress`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }).catch(err => console.warn("Failed to log progress:", err));
+}

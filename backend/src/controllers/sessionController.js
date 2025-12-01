@@ -53,3 +53,48 @@ export const initSession = async (req, res) => {
     res.status(500).json({ error: "Failed to initialize session" });
   }
 };
+
+// POST /api/sessions/progress
+// backend/src/controllers/sessionController.js
+
+// ... (imports)
+
+// POST /api/sessions/progress
+export const updateProgress = async (req, res) => {
+  const { sessionId, event, markCompleted } = req.body;
+
+  if (!sessionId) {
+    return res.status(400).json({ error: "Missing session ID" });
+  }
+
+  try {
+    const connection = await pool.getConnection();
+    try {
+      // 1. Append Event to Progress Log
+      if (event) {
+        // CHANGED: Used JSON_EXTRACT(?, '$') instead of CAST(? AS JSON)
+        await connection.query(
+          `UPDATE sessions 
+           SET progress = JSON_ARRAY_APPEND(COALESCE(progress, JSON_ARRAY()), '$', JSON_EXTRACT(?, '$'))
+           WHERE id = ?`,
+          [JSON.stringify(event), sessionId]
+        );
+      }
+
+      // 2. Mark as Completed
+      if (markCompleted) {
+        await connection.query(
+          `UPDATE sessions SET completed = 1 WHERE id = ?`,
+          [sessionId]
+        );
+      }
+
+      res.json({ success: true });
+    } finally {
+      connection.release();
+    }
+  } catch (err) {
+    console.error("❌ Progress Update Error:", err);
+    res.status(200).json({ warning: "Logging failed", error: err.message });
+  }
+};

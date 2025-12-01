@@ -18,6 +18,7 @@ export const VoiceRecorder = ({
     duration,
     onNextTask,
     onRecordingComplete = () => {},
+    onLogEvent = () => {},
     onError = (err) => console.error(err),
     showVisualizer = true,
     autoPermission = true,
@@ -52,6 +53,24 @@ export const VoiceRecorder = ({
         stopExample,
         RECORDING_STATES
     } = voiceRecorder;
+
+    
+    // --- Wrappers ---
+    const handleStart = () => {
+        onLogEvent("button_start");
+        startRecording();
+    };
+
+    const handleRepeat = () => {
+        onLogEvent("button_repeat");
+        repeatRecording();
+    };
+
+    // We pass the logger to the example button so it can log clicks itself
+    const handlePlayExample = () => {
+        onLogEvent("button_illustration");
+        playExample();
+    };
 
     // Auto-request permission on mount if enabled
     React.useEffect(() => {
@@ -112,7 +131,7 @@ export const VoiceRecorder = ({
                 <AudioExampleButton 
                 recordingStatus={recordingStatus}
                 audioExample={audioExample} 
-                playExample={playExample} 
+                playExample={handlePlayExample} 
                 />
             )}
             </RecordingTimer>
@@ -124,7 +143,7 @@ export const VoiceRecorder = ({
             recordingStatus={recordingStatus}
             disableControls={mode === 'countDown'}
             permission={permission}
-            onStart={startRecording}
+            onStart={handleStart}
             onPause={pauseRecording}
             onResume={resumeRecording}
             onStop={stopRecording}
@@ -137,7 +156,7 @@ export const VoiceRecorder = ({
             <PlaybackSection
             audioURL={audioURL}
             recordingStatus={recordingStatus}
-            onRepeat={repeatRecording}
+            onRepeat={handleRepeat}
             onNextTask={handleNextTask}
             showNextButton={showNextButton}
             />

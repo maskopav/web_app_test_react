@@ -169,7 +169,7 @@ export const getProtocolById = async (req, res) => {
   try {
     // Get protocol details
     const protocolRows = await executeQuery(
-      `SELECT * FROM protocols WHERE id = ? AND is_current = 1`,
+      `SELECT * FROM protocols WHERE id = ?`,
       [id]
     );
 

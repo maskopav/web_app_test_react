@@ -48,7 +48,10 @@ export default function ParticipantDashboardPage() {
 
       setParticipants(partsData);
       setAssignments(assignsData);
-      setProtocols(protosData);
+
+      // Filter for current protocols only
+      const currentProtocols = protosData.filter(p => p.is_current === 1);
+      setProtocols(currentProtocols);
     } catch (err) {
       console.error("Failed to load dashboard data", err);
     } finally {

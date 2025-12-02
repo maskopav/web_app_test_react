@@ -3,7 +3,8 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { createParticipant, updateParticipant, getParticipants } from "../../api/participants";
 import Modal from "../ProtocolEditor/Modal";
-import "./ParticipantsDashboard.css"; 
+// CHANGED: Import the new dedicated CSS file
+import "./AddParticipantModal.css"; 
 
 export default function AddParticipantModal({ 
   open, 
@@ -29,7 +30,7 @@ export default function AddParticipantModal({
 
   const [formData, setFormData] = useState(initialFormState);
   const [existingParticipants, setExistingParticipants] = useState([]);
-  const [submitError, setSubmitError] = useState(""); // <--- New Error State
+  const [submitError, setSubmitError] = useState("");
 
   // --- Fetch ALL participants when modal opens ---
   useEffect(() => {
@@ -73,7 +74,6 @@ export default function AddParticipantModal({
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user starts correcting input
     if (submitError) setSubmitError(""); 
   };
 
@@ -90,11 +90,9 @@ export default function AddParticipantModal({
     const duplicate = existingParticipants.find(p => {
       if (isEditMode && p.participant_id === participantToEdit.participant_id) return false;
 
-      // 1. External ID match
       if (inputExtId && p.external_id && p.external_id.trim() === inputExtId) {
         return true;
       }
-      // 2. Personal Info Check
       if (inputName && inputDob && inputSex) {
         const pName = (p.full_name || "").toLowerCase();
         if (pName !== inputName) return false;
@@ -111,14 +109,12 @@ export default function AddParticipantModal({
     });
 
     if (duplicate) {
-      // Set error state instead of alert
       setSubmitError(
         `${t("participantDashboard.alerts.createError")}: Participant already exists (ID: ${duplicate.external_id || "N/A"})`
       );
       return; 
     }
 
-    // Payload Preparation
     const payload = {
         ...formData,
         birth_date: formData.birth_date || null,
@@ -129,7 +125,6 @@ export default function AddParticipantModal({
         notes: formData.notes || null
     };
 
-    // --- Proceed to Save ---
     try {
         if (isEditMode) {
           await updateParticipant(participantToEdit.participant_id, payload);
@@ -245,13 +240,13 @@ export default function AddParticipantModal({
 
         {/* Protocol Assignment (HIDDEN IN EDIT MODE) */}
         {!isEditMode && (
-            <div className="form-col protocol-select-container">
+            <div className="form-col select-container">
             <label className="form-label">
                 {t("participantDashboard.modal.labels.protocol")} 
                 <span className="label-required">*</span>
             </label>
             <select 
-                className={`participant-input protocol-select ${formData.protocol_id ? 'valid' : ''}`}
+                className={`participant-input select ${formData.protocol_id ? 'valid' : ''}`}
                 name="protocol_id" 
                 value={formData.protocol_id} 
                 onChange={handleInputChange}

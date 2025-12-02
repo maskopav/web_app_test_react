@@ -1,17 +1,14 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import "./ParticipantsDashboard.css"; 
+import "./ParticipantTable.css"; 
 
 export default function ParticipantTable({ participants, loading, onEdit }) {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
-    <div className="protocol-list card">
-      <div className="protocol-list-header">
-          <h3>{t("participantProtocol.title")}</h3>
-      </div>
-      <div className="protocol-table-wrapper">
-        <table className="protocol-table">
+    <div className="section card">
+      <div className="table-scroll-area">
+        <table className="table">
           <thead>
             <tr>
               <th>{t("participantDashboard.table.name")}</th>

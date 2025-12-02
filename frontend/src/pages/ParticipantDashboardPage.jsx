@@ -13,7 +13,7 @@ import { fetchParticipantProtocolView } from "../api/participantProtocols";
 // Components
 import ParticipantTable from "../components/Participants/ParticipantTable";
 import AddParticipantModal from "../components/Participants/AddParticipantModal";
-import ParticipantProtocolTable from "../components/ParticipantProtocol/ParticipantProtocol";
+import ParticipantProtocolTable from "../components/Participants/ParticipantProtocolTable";
 
 // Styles
 import "./Pages.css";
@@ -24,7 +24,7 @@ export default function ParticipantDashboardPage() {
   const { t } = useTranslation(["admin", "common"]);
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const { refreshMappings } = useMappings(); // used to refresh dropdowns context if needed
+  const { refreshMappings, mappings } = useMappings(); // used to refresh dropdowns context if needed
 
   // --- State ---
   const [participants, setParticipants] = useState([]);
@@ -65,6 +65,10 @@ export default function ParticipantDashboardPage() {
     loadData();
   }, [projectId]);
 
+  // Resolve project name for the title
+  const currentProject = mappings?.projects?.find(p => p.id === Number(projectId));
+  const projectName = currentProject?.name || "";
+
   // --- Handlers ---
   const handleAddClick = () => {
     setSelectedParticipant(null); // Clear selection for Add mode
@@ -90,7 +94,7 @@ export default function ParticipantDashboardPage() {
   };
 
   return (
-    <div className="project-dashboard-page full-height">
+    <div className="dashboard-page">
       {/* Top Bar */}
       <div className="top-bar">
         <button className="btn-back" onClick={() => navigate(`/projects/${projectId}`)}>
@@ -99,13 +103,20 @@ export default function ParticipantDashboardPage() {
         <LanguageSwitcher />
       </div>
 
+      {/* Page Title with Project Name */}
+      <h2 className="page-title">
+        {projectName ? `${projectName}: ` : ""}
+        {t("participantDashboard.title")}
+      </h2>
+
+      {/* Main Content */}
       <div className="dashboard-split-container">
         
         {/* --- SECTION 1: Participants Management --- */}
-        <section className="dashboard-section">
-          <div className="section-header">
+        <section className="card compact-create">
+          <div className="section-header create-header-row">
             <div className="header-text-group">
-                <h3>{t("participantDashboard.title")}</h3>
+                <div className="section-title">{t("participantDashboard.title")}</div>
                 <span className="section-subtitle">
                     {t("participantDashboard.subtitle")}
                 </span>
@@ -114,33 +125,29 @@ export default function ParticipantDashboardPage() {
               + {t("participantDashboard.addParticipant")}
             </button>
           </div>
-          
-          <div className="table-wrapper-fix">
+  
             <ParticipantTable 
               participants={participants} 
               loading={loading}
               onEdit={handleEditClick}
             />
-          </div>
         </section>
 
         {/* --- SECTION 2: Protocol Assignments --- */}
-        <section className="dashboard-section">
+        <section className="dashboard-section card">
           <div className="section-header">
             <div className="header-text-group">
-                <h3>{t("participantProtocol.title", "Protocol Assignments")}</h3>
+                <div className="section-title">{t("participantProtocol.title", "Protocol Assignments")}</div>
                 <span className="section-subtitle">
                     {t("participantProtocol.subtitle")}
                 </span>
             </div>
           </div>
 
-          <div className="table-wrapper-fix">
             <ParticipantProtocolTable 
               rows={assignments} 
               onRefresh={handleAssignmentChange}
             />
-          </div>
         </section>
 
       </div>

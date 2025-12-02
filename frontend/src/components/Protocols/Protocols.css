@@ -1,48 +1,25 @@
-.protocols-container {
-  padding: 0rem;
-  max-width: 97vw;
-  max-height: 93vh;
-  margin: auto;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.card {
-  background: var(--grey);
-  border-radius: var(--radius);
-  box-shadow: var(--sharp-shadow);
-  padding: 0.8rem 1rem; /* Compact padding */
-  margin-bottom: 0.8rem;
-}
-
-.page-title {
-  margin: 0.2rem;
-  padding-left: 0.2rem;
-  /* Minimal padding requested */
-}
 
 /* --- Compact Create Section --- */
-.protocol-create-header {
+.create-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
 }
 
-.protocol-create-header h3 {
+.create-header h3 {
   margin: 0;
   font-size: 1.1rem;
 }
 
-.protocol-create-fields {
+.create-fields {
   display: flex;
   align-items: flex-end; /* Align inputs to bottom */
   gap: 15px;
   width: 100%;
 }
 
-.protocol-label {
+.label {
   font-weight: 600;
   font-size: 0.85rem;
   margin-bottom: 0.2rem;
@@ -81,7 +58,7 @@
   color: #555;
 }
 
-.protocol-input {
+.input {
   padding: 0.4rem 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -102,7 +79,7 @@
 }
 
 /* --- Table Section Layout --- */
-.protocol-section-header {
+.section-title {
   margin: 0 0 0.2rem 0;
   color: var(--primary);
   font-weight: 700;
@@ -113,13 +90,18 @@
   align-items: center;
 }
 
+.section-header {
+  display: flex;
+  align-items: center;
+}
+
 .create-header-row {
   justify-content: space-between;
   margin:0;
 }
 
 /* The Independent Scroll Container */
-.protocol-table-scroll-area {
+.table-scroll-area {
   overflow-y: auto;
   overflow-x: auto;
   max-height: 35vh; /* Each table gets about 1/3 of screen height */
@@ -133,14 +115,14 @@
 }
 
 /* --- Table Styles --- */
-.protocol-table {
+.table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
 }
 
-.protocol-table th,
-.protocol-table td {
+.table th,
+.table td {
   padding: 0rem 0.2rem;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
@@ -148,30 +130,30 @@
 }
 
 /* Sticky Header Logic */
-.protocol-table thead th {
+.table thead th {
   padding: 0.3rem 0.2rem;
   background: #f3f4f6;
   font-weight: 600;
-  position: sticky; /* Sticks inside .protocol-table-scroll-area */
+  position: sticky; /* Sticks inside .table-scroll-area */
   top: 0;
   z-index: 10;
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.protocol-table tbody tr:nth-child(even) {
+.table tbody tr:nth-child(even) {
   background: #fafafa;
 }
 
-.protocol-table tbody tr:hover {
-  background: #f0fdf4; /* Light green hover */
+.table tbody tr:hover {
+  background: #dfdede; 
 }
 
-.protocol-table .highlighted {
+.table .highlighted {
   font-weight: 700;
   color: var(--primary);
 }
 
-.protocol-table .empty-row {
+.table .empty-row {
   text-align: center;
   color: var(--muted);
   padding: 1.5rem;

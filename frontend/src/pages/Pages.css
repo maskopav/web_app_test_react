@@ -24,6 +24,13 @@ body {
   margin: 0;
 }
 
+.dashboard-page {
+  margin: 0px 15px;
+  height: fit-content;
+  max-width: 97vw;
+  max-height: 80vh;
+}
+
 .app-container {
   display: flex;
   justify-content: center;
@@ -43,6 +50,21 @@ body {
   gap: 0;                          /* we let space-between handle spacing */
   margin-top: 0;
 }
+
+.page-title {
+  margin: 0.2rem;
+  padding-left: 0.2rem;
+  /* Minimal padding requested */
+}
+
+.card {
+  background: var(--grey);
+  border-radius: var(--radius);
+  box-shadow: var(--sharp-shadow);
+  padding: 0.8rem 1rem; /* Compact padding */
+  margin-bottom: 0.8rem;
+}
+
 
 .top-controls-participant {
   display: flex;

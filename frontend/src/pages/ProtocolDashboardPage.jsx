@@ -46,7 +46,7 @@ export default function ProtocolDashboardPage() {
   };
 
   return (
-    <div className="protocol-dashboard-page">
+    <div className="dashboard-page">
       <div className="top-bar"> 
         <button
           className="btn-back"

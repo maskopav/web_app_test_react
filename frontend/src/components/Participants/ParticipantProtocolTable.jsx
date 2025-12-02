@@ -1,6 +1,6 @@
 // src/components/ParticipantProtocol/ParticipantProtocol.jsx
 import React, { useState } from "react";
-import "./ParticipantProtocol.css";
+import "./ParticipantProtocolTable.css";
 import {
   activateParticipantProtocol,
   deactivateParticipantProtocol,
@@ -73,13 +73,9 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
   }
 
   return (
-      <div className="protocol-list card">
-        <div className="protocol-list-header">
-          <h3>{t("participantProtocol.title")}</h3>
-        </div>
-
-        <div className="protocol-table-wrapper">
-          <table className="protocol-table">
+      <div className="section card">
+        <div className="table-scroll-area">
+          <table className="table">
             <thead>
               <tr>
                 <th>{t("participantProtocol.table.participant")}</th>

@@ -54,10 +54,10 @@ export default function Protocols({ onSelectProtocol }) {
 
   // Internal helper for table sections
   const ProtocolTableSection = ({ list, title, allowEdit, isHistory }) => (
-    <div className="protocol-section card">
-      <h4 className="protocol-section-header">{title}</h4>
-      <div className="protocol-table-scroll-area">
-        <table className="protocol-table">
+    <div className="section card">
+      <h4 className="section-title">{title}</h4>
+      <div className="table-scroll-area">
+        <table className="table">
           <thead>
             <tr>
               <th>{t("protocolDashboard.table.name")}</th>
@@ -125,15 +125,15 @@ export default function Protocols({ onSelectProtocol }) {
   );
 
   return (
-    <div className="protocols-container">
+    <div>
       {/* Header Title - Smaller padding */}
       <h2 className="page-title">{projectName + ': ' + t("protocolDashboard.title")}</h2>
 
       {/* Create Section - Header with Button + Inputs Row */}
       <div className="card compact-create">
         {/* Header Row: Title on Left, Button on Right */}
-        <div className="protocol-section-header create-header-row">
-          <span>{t("protocolDashboard.createNew")}</span>
+        <div className="section-header create-header-row">
+          <span className="section-title">{t("protocolDashboard.createNew")}</span>
           <button
             className="btn-create"
             disabled={!protocolName.trim() || nameExists}
@@ -156,7 +156,7 @@ export default function Protocols({ onSelectProtocol }) {
               <label>{t("protocolDashboard.namePlaceholder")}:</label>
               <input
                 type="text"
-                className={`protocol-input ${nameExists ? "input-error" : ""}`}
+                className={`input ${nameExists ? "input-error" : ""}`}
                 value={protocolName}
                 onChange={(e) => setProtocolName(e.target.value)}
               />
@@ -166,7 +166,7 @@ export default function Protocols({ onSelectProtocol }) {
               <label>{t("protocolDashboard.descriptionPlaceholder")}:</label>
               <input
                 type="text"
-                className="protocol-input"
+                className="input"
                 value={protocolDescription}
                 onChange={(e) => setProtocolDescription(e.target.value)}
               />

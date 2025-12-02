@@ -73,7 +73,9 @@
       "language": "Language",
       "description": "Description",
       "version": "Version",
-      "questionnaire": "Questionnaire",
+      "tasks": "N tasks",
+      "quests": "N Quest.",
+      "projectName": "Project Name",
       "createdAt": "Created at",
       "actions": "Actions"
     }

@@ -67,7 +67,9 @@
       "language": "Jazyk",
       "description": "Popis",
       "version": "Verze",
-      "questionnaire": "Dotazník",
+      "tasks": "N úkolů",
+      "quests": "N dotazníků",
+      "projectName": "Jméno projektu",
       "createdAt": "Vytvořeno",
       "actions": "Akce"
     }

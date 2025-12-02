@@ -209,15 +209,12 @@ export const getProtocolsByProjectId = async (req, res) => {
   logToFile(`📖 getProtocolsByProjectId called with id=${project_id}`);
 
   try {
-    let query = "SELECT * FROM protocols";
+    let query = "SELECT * FROM v_project_protocols ORDER BY project_id, protocol_group_id, version DESC";
     const params = [];
 
     if (project_id) {
       query = `
-        SELECT p.* FROM protocols p
-        JOIN project_protocols pp ON p.id = pp.protocol_id
-        WHERE pp.project_id = ?
-      `;
+      SELECT * FROM v_project_protocols WHERE project_id = ? ORDER BY project_id, protocol_group_id, version DESC`
       params.push(project_id);
     }
 

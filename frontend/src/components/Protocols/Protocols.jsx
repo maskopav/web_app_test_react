@@ -1,19 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useMappings } from "../../context/MappingContext";
 import ProtocolLanguageSelector from "../ProtocolLanguageSelector";
 import { useProtocolActions } from "../../hooks/useProtocolActions";
+import { useParams } from "react-router-dom";
+import { getProtocolsByProjectId } from "../../api/protocols";
 import "./Protocols.css";
 
 export default function Protocols({ onSelectProtocol }) {
   const { t } = useTranslation(["admin", "common"]);
-  const { mappings, loading, error } = useMappings();
+  const { mappings } = useMappings();
+  const { projectId } = useParams();
+  const [protocols, setProtocols] = useState([]);
+  const [loadingProtocols, setLoadingProtocols] = useState(false);
   const [protocolName, setProtocolName] = useState("");
   const [protocolDescription, setProtocolDescription] = useState("");
   const [protocolLanguage, setProtocolLanguage] = useState("en");
   const { viewProtocol, editProtocol, duplicateProtocol } = useProtocolActions();
 
-  const protocols = mappings?.protocols || [];
   const languages = mappings?.languages || [];
 
   const existingNames = protocols.map((p) => p.name.toLowerCase().trim());
@@ -22,14 +26,34 @@ export default function Protocols({ onSelectProtocol }) {
   const getLangName = (id) =>
     languages.find((l) => l.id === id)?.name || id;
 
-  const currentProtocols = protocols.filter(p => p.is_current == 1);
+  const currentProject = mappings?.projects?.find(p => p.id === Number(projectId));
+  const projectName = currentProject?.name || "Current Project";
+
+  useEffect(() => {
+    if (!projectId) return;
+
+    async function loadProjectProtocols() {
+      setLoadingProtocols(true);
+      try {
+        const data = await getProtocolsByProjectId();
+        setProtocols(data);
+      } catch (err) {
+        console.error("Failed to load project protocols:", err);
+      } finally {
+        setLoadingProtocols(false);
+      }
+    }
+
+    loadProjectProtocols();
+  }, [projectId]);
+
+  const currentProtocols = protocols.filter(p => p.is_current == 1).filter(p => p.project_id == projectId);
   const archivedProtocols = protocols.filter(p => p.is_current != 1);
 
-  if (loading) return <p>{t("loading")}</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  if (loadingProtocols) return <p>{t("loading")}</p>;
 
   // Internal helper for table sections
-  const ProtocolTableSection = ({ list, title, allowEdit }) => (
+  const ProtocolTableSection = ({ list, title, allowEdit, isHistory }) => (
     <div className="protocol-section card">
       <h4 className="protocol-section-header">{title}</h4>
       <div className="protocol-table-scroll-area">
@@ -40,15 +64,17 @@ export default function Protocols({ onSelectProtocol }) {
               <th>{t("protocolDashboard.table.language")}</th>
               <th>{t("protocolDashboard.table.description")}</th>
               <th>{t("protocolDashboard.table.version")}</th>
-              <th>{t("protocolDashboard.table.questionnaire")}</th>
+              <th>{t("protocolDashboard.table.tasks")}</th> 
+              <th>{t("protocolDashboard.table.quests")}</th>
               <th>{t("protocolDashboard.table.createdAt")}</th>
+              {isHistory && <th>{t("protocolDashboard.table.projectName")}</th>}
               <th>{t("protocolDashboard.table.actions")}</th>
             </tr>
           </thead>
           <tbody>
             {list.length === 0 ? (
               <tr>
-                <td colSpan="7" className="empty-row">
+                <td colSpan={isHistory ? "9" : "8"} className="empty-row">
                   {t("protocolDashboard.noData", "No protocols found.")}
                 </td>
               </tr>
@@ -59,8 +85,11 @@ export default function Protocols({ onSelectProtocol }) {
                   <td>{getLangName(p.language_id)}</td>
                   <td>{p.description}</td>
                   <td>{p.version}</td>
-                  <td>{p.questionnaires_id}</td>
+                  {/* Display Aggregated Counts */}
+                  <td>{p.n_tasks}</td>
+                  <td>{p.n_quest}</td>
                   <td>{p.created_at?.slice(0, 10)}</td>
+                  {isHistory && <td>{p.project_name}</td>}
                   <td className="actions">
                     <button
                       className="btn-view"
@@ -98,7 +127,7 @@ export default function Protocols({ onSelectProtocol }) {
   return (
     <div className="protocols-container">
       {/* Header Title - Smaller padding */}
-      <h2 className="page-title">{t("protocolDashboard.title")}</h2>
+      <h2 className="page-title">{projectName + ': ' + t("protocolDashboard.title")}</h2>
 
       {/* Create Section - Header with Button + Inputs Row */}
       <div className="card compact-create">
@@ -164,12 +193,14 @@ export default function Protocols({ onSelectProtocol }) {
         list={currentProtocols}
         title={t("protocolDashboard.currentProtocols")}
         allowEdit={true}
+        isHistory={false}
       />
 
       <ProtocolTableSection
         list={archivedProtocols}
         title={t("protocolDashboard.archivedProtocols")}
         allowEdit={false}
+        isHistory={true}
       />
     </div>
   );

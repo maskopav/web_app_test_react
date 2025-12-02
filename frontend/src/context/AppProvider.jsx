@@ -8,7 +8,7 @@ import { ProtocolProvider } from "./ProtocolContext";
 import { ConfirmDialogProvider } from "../components/ConfirmDialog/ConfirmDialogContext";
 
 export const AppProvider = ({ children }) => {
-  const mappingTables = ["projects", "protocols", "task_types", "languages", "tasks"]; // mapping tables called globally once
+  const mappingTables = ["projects", "task_types", "languages", "tasks"]; // mapping tables called globally once
 
   return (
       <MappingProvider tables={mappingTables}>

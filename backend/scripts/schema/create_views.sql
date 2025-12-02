@@ -41,3 +41,38 @@ JOIN projects pr
 
 JOIN protocols proto
     ON proto.id = ppr.protocol_id;
+
+
+CREATE OR REPLACE VIEW v_project_protocols AS
+SELECT 
+    p.id,
+    p.protocol_group_id,
+    p.name,
+    p.language_id,
+    p.description,
+    p.version,
+    p.is_current,
+    p.created_at,
+    p.created_by,
+    p.updated_at,
+    p.updated_by,
+    -- Join Data
+    pp.project_id,
+    pr.name AS project_name,
+    pr.end_date AS project_end_date,
+    -- Aggregated Counts (Default to 0 if NULL)
+    COALESCE(agg.n_tasks, 0) AS n_tasks,
+    COALESCE(agg.n_quest, 0) AS n_quest
+FROM protocols p
+JOIN project_protocols pp ON p.id = pp.protocol_id
+JOIN projects pr ON pp.project_id = pr.id
+-- Efficient Aggregation Join
+LEFT JOIN (
+    SELECT 
+        pt.protocol_id, 
+        SUM(IF(t.category != 'questionnaire', 1, 0)) AS n_tasks,
+        SUM(IF(t.category = 'questionnaire', 1, 0)) AS n_quest
+    FROM protocol_tasks pt 
+    JOIN tasks t ON pt.task_id = t.id 
+    GROUP BY pt.protocol_id
+) agg ON agg.protocol_id = p.id;

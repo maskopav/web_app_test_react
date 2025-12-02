@@ -26,7 +26,12 @@ export async function getProtocolById(protocolId) {
 }
  
 export async function getProtocolsByProjectId(projectId) {
-  const res = await fetch(`${API_BASE}/protocols?project_id=${projectId}`);
-  if (!res.ok) throw new Error("Failed to fetch protocol");
+  // If projectId is provided, filter by it. Otherwise, fetch all.
+  const url = projectId 
+    ? `${API_BASE}/protocols?project_id=${projectId}` 
+    : `${API_BASE}/protocols`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch protocols");
   return res.json();
-} 
+}

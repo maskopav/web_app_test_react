@@ -64,7 +64,7 @@ body {
   border-radius: var(--radius);
   box-shadow: var(--sharp-shadow);
   padding: 0.8rem 1rem; /* Compact padding */
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem;
 }
 
 

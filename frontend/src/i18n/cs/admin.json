@@ -130,6 +130,8 @@
       "externalId": "Externí ID",
       "protocol": "Protokol",
       "version": "Verze",
+      "nTasks": "N úkolů",      
+      "nQuest": "N dotazníků",
       "project": "Projekt",
       "start": "Začátek",
       "end": "Konec",

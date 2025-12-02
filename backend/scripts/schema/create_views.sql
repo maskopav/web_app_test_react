@@ -27,7 +27,11 @@ SELECT
     proto.id                         AS protocol_id,
     proto.name                       AS protocol_name,
     proto.version                    AS protocol_version,
-    proto.is_current                 AS is_current_protocol
+    proto.is_current                 AS is_current_protocol,
+
+    -- Aggregated Counts
+    COALESCE(agg.n_tasks, 0)         AS n_tasks,
+    COALESCE(agg.n_quest, 0)         AS n_quest
 
 FROM participant_protocols pp
 JOIN participants p
@@ -40,7 +44,17 @@ JOIN projects pr
     ON pr.id = ppr.project_id
 
 JOIN protocols proto
-    ON proto.id = ppr.protocol_id;
+    ON proto.id = ppr.protocol_id
+
+LEFT JOIN (
+    SELECT 
+        pt.protocol_id, 
+        SUM(IF(t.category != 'questionnaire', 1, 0)) AS n_tasks,
+        SUM(IF(t.category = 'questionnaire', 1, 0)) AS n_quest
+    FROM protocol_tasks pt 
+    JOIN tasks t ON pt.task_id = t.id 
+    GROUP BY pt.protocol_id
+) agg ON agg.protocol_id = proto.id;
 
 
 CREATE OR REPLACE VIEW v_project_protocols AS

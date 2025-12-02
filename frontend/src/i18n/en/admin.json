@@ -137,6 +137,8 @@
       "externalId": "External ID",
       "protocol": "Protocol",
       "version": "Version",
+      "nTasks": "N Tasks",      
+      "nQuest": "N Quest.",
       "project": "Project",
       "start": "Start date",
       "end": "End date",

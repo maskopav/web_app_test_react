@@ -82,6 +82,8 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
                 <th>{t("participantProtocol.table.externalId")}</th>
                 <th>{t("participantProtocol.table.protocol")}</th>
                 <th>{t("participantProtocol.table.version")}</th>
+                <th>{t("participantProtocol.table.nTasks")}</th>
+                <th>{t("participantProtocol.table.nQuest")}</th>
                 <th>{t("participantProtocol.table.start")}</th>
                 <th>{t("participantProtocol.table.end")}</th>
                 <th>{t("participantProtocol.table.status")}</th>
@@ -92,7 +94,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="empty-row">
+                  <td colSpan="10" className="empty-row">
                     {t("participantProtocol.noAssignments")}
                   </td>
                 </tr>
@@ -103,6 +105,8 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
                     <td>{r.external_id || "-"}</td>
                     <td>{r.protocol_name}</td>
                     <td>{r.protocol_version}</td>
+                    <td>{r.n_tasks}</td>
+                    <td>{r.n_quest}</td>
                     <td>{r.start_date?.slice(0, 10)}</td>
                     <td>{r.end_date?.slice(0, 10) || "-"}</td>
                     <td>

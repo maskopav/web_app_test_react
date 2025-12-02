@@ -125,7 +125,7 @@ export default function Protocols({ onSelectProtocol }) {
   );
 
   return (
-    <div>
+    <>
       {/* Header Title - Smaller padding */}
       <h2 className="page-title">{projectName + ': ' + t("protocolDashboard.title")}</h2>
 
@@ -202,6 +202,6 @@ export default function Protocols({ onSelectProtocol }) {
         allowEdit={false}
         isHistory={true}
       />
-    </div>
+    </>
   );
 }

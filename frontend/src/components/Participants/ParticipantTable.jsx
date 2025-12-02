@@ -6,7 +6,6 @@ export default function ParticipantTable({ participants, loading, onEdit }) {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
-    <div className="section card">
       <div className="table-scroll-area">
         <table className="table">
           <thead>
@@ -52,6 +51,5 @@ export default function ParticipantTable({ participants, loading, onEdit }) {
           </tbody>
         </table>
       </div>
-    </div>
   );
 }

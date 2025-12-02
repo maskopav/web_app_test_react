@@ -83,8 +83,17 @@
   margin: 0 0 0.2rem 0;
   color: var(--primary);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.1rem;
   border-left: 4px solid var(--primary);
+  padding-left: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.section-subtitle {
+  margin: 0 0 0.4rem 0;
+  font-weight: 600;
+  font-size: 0.95rem;
   padding-left: 0.5rem;
   display: flex;
   align-items: center;
@@ -104,7 +113,7 @@
 .table-scroll-area {
   overflow-y: auto;
   overflow-x: auto;
-  max-height: 35vh; /* Each table gets about 1/3 of screen height */
+  max-height: 27vh; /* Each table gets about 1/3 of screen height */
   border: 1px solid #e5e7eb;
   border-radius: var(--radius);
   background: var(--card-bg);

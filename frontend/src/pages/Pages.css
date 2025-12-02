@@ -25,10 +25,12 @@ body {
 }
 
 .dashboard-page {
-  margin: 0px 15px;
-  height: fit-content;
-  max-width: 97vw;
-  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  width: 98%;            /* Full width */
+  height: 98vh;          /* Full viewport height */
+  background-color: var(--bg);
+  padding: 0% 1%;
 }
 
 .app-container {

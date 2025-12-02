@@ -73,7 +73,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
   }
 
   return (
-      <div className="section card">
+      <>
         <div className="table-scroll-area">
           <table className="table">
             <thead>
@@ -176,6 +176,6 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
           onClose={() => setShowModal(false)}
         />
       )}
-    </div>
+    </>
   );
 }

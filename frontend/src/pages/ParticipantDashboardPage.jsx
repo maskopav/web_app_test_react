@@ -18,7 +18,6 @@ import ParticipantProtocolTable from "../components/Participants/ParticipantProt
 // Styles
 import "./Pages.css";
 import "../components/Protocols/Protocols.css"; 
-import "./ParticipantDashboardPage.css"; 
 
 export default function ParticipantDashboardPage() {
   const { t } = useTranslation(["admin", "common"]);
@@ -61,7 +60,7 @@ export default function ParticipantDashboardPage() {
 
   // Initial load
   useEffect(() => {
-    refreshMappings(["protocols", "project_protocols"]);
+    refreshMappings(["projects"]);
     loadData();
   }, [projectId]);
 
@@ -125,7 +124,6 @@ export default function ParticipantDashboardPage() {
               + {t("participantDashboard.addParticipant")}
             </button>
           </div>
-  
             <ParticipantTable 
               participants={participants} 
               loading={loading}

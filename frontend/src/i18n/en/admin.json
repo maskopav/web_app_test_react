@@ -56,7 +56,8 @@
   "protocolDashboard": {
     "title": "Protocols Management",
     "createNew": "Create New Protocol",
-    "existingProtocols": "Existing Protocols",
+    "currentProtocols": "Current Protocols",
+    "archivedProtocols": "Archived / History Protocols",
     "namePlaceholder": "Protocol name",
     "nameExists": "A protocol with this name already exists.",
     "descriptionPlaceholder": "Description (optional)",

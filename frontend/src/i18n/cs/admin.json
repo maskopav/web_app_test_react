@@ -50,7 +50,8 @@
   "protocolDashboard": {
     "title": "Správa protokolů",
     "createNew": "Vytvořit nový protokol",
-    "existingProtocols": "Existující protokoly",
+    "currentProtocols": "Aktuální protokoly",
+    "archivedProtocols": "Historie protokolů",
     "namePlaceholder": "Název protokolu",
     "nameExists": "Protokol s tímto názvem již existuje.",
     "descriptionPlaceholder": "Popis (nepovinné)",

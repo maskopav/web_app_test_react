@@ -1,161 +1,203 @@
 .protocols-container {
-  padding: 0.2rem;
-  max-width: 95vw;
-  height: auto;
+  padding: 0rem;
+  max-width: 97vw;
+  max-height: 93vh;
   margin: auto;
-}
-
-.protocols-header {
+  height: 100%;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
+  flex-direction: column;
 }
 
 .card {
   background: var(--grey);
   border-radius: var(--radius);
   box-shadow: var(--sharp-shadow);
-  padding: 1rem;
-  margin-bottom: 1rem;
+  padding: 0.8rem 1rem; /* Compact padding */
+  margin-bottom: 0.8rem;
 }
 
-/* --- Create section --- */
+.page-title {
+  margin: 0.2rem;
+  padding-left: 0.2rem;
+  /* Minimal padding requested */
+}
+
+/* --- Compact Create Section --- */
 .protocol-create-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.protocol-create-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
 }
 
 .protocol-create-fields {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
+  align-items: flex-end; /* Align inputs to bottom */
+  gap: 15px;
   width: 100%;
 }
 
-
-/* Name field — smaller proportion */
-.protocol-create-fields .input-wrapper:first-child {
-  flex: 1 1 20%;
-}
-
-/* Description field — biggest proportion in the middle */
-.protocol-create-fields .input-wrapper:nth-child(2) {
-  flex: 3 1 50%;
-}
-
-/* Language selector — fits content */
-.protocol-create-fields .protocol-field {
-  flex: 0 1 auto;
-}
-
-/* Labels aligned above inputs */
 .protocol-label {
   font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+
+/* --- Create Inputs Area --- */
+.create-inputs-row {
+  display: flex;
+  align-items: flex-end; /* Align bottom of inputs */
+  gap: 15px;
+  width: 100%;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group.name-group {
+  flex: 0 0 25%; /* Fixed width for name */
+}
+
+.input-group.grow {
+  flex: 1; /* Description takes remaining space */
+}
+
+.input-group.lang-group {
+  flex: 0 0 auto; /* Language fits content */
+  min-width: 120px;
+}
+
+.input-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+  color: #555;
 }
 
 .protocol-input {
-  flex: 1;
-  padding: 0.7rem;
-  border: 1px solid #d1d5db;
-  border-radius: var(--radius);
-  font-size: 1rem;
-}
-
-.protocol-input.optional {
-  background: #f5f6f8;
-  width: 600px;
-  height: 1.1rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  width: 100%;
+  height: 36px; /* Explicit height to match select box/buttons */
+  box-sizing: border-box;
 }
 
 .btn-create {
   width: auto;
   background: var(--success);
-  padding: 0.6rem 0.8rem;
+  padding: 0.4rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  margin: 0 important;
 }
 
-.protocol-list-header {
-  padding: 0px 20px;
+/* --- Table Section Layout --- */
+.protocol-section-header {
+  margin: 0 0 0.2rem 0;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 1rem;
+  border-left: 4px solid var(--primary);
+  padding-left: 0.5rem;
+  display: flex;
+  align-items: center;
 }
 
+.create-header-row {
+  justify-content: space-between;
+  margin:0;
+}
 
-/* --- Table --- */
-.protocol-table-wrapper {
+/* The Independent Scroll Container */
+.protocol-table-scroll-area {
+  overflow-y: auto;
   overflow-x: auto;
-  max-height: 50vh;
-  margin: 0.5rem;
-  background: var(--card-bg);
+  max-height: 35vh; /* Each table gets about 1/3 of screen height */
+  border: 1px solid #e5e7eb;
   border-radius: var(--radius);
+  background: var(--card-bg);
 }
 
+.section-spacer {
+  height: 0.5rem; /* Space between the two tables */
+}
+
+/* --- Table Styles --- */
 .protocol-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.99rem;
+  font-size: 0.9rem;
 }
 
 .protocol-table th,
 .protocol-table td {
-  padding: 0.6rem 0.5rem;
+  padding: 0rem 0.2rem;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
 }
 
+/* Sticky Header Logic */
 .protocol-table thead th {
+  padding: 0.3rem 0.2rem;
   background: #f3f4f6;
   font-weight: 600;
-  position: sticky;
+  position: sticky; /* Sticks inside .protocol-table-scroll-area */
   top: 0;
-  z-index: 2;
+  z-index: 10;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .protocol-table tbody tr:nth-child(even) {
   background: #fafafa;
 }
 
+.protocol-table tbody tr:hover {
+  background: #f0fdf4; /* Light green hover */
+}
+
 .protocol-table .highlighted {
-  font-weight: 800;
+  font-weight: 700;
   color: var(--primary);
 }
 
 .protocol-table .empty-row {
   text-align: center;
   color: var(--muted);
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
-/* --- Action buttons --- */
+/* --- Action Buttons --- */
 .actions {
   display: flex;
-  gap: 0.3rem;
+  gap: 4px;
 }
 
 .actions button {
-  flex: 1 1 auto;
-  font-size: 0.99rem;
-  padding: 0.2rem 0.2rem;
-  margin: 0rem;
-  border-radius: 0.6rem;
-  box-shadow: none;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  color: white;
 }
 
-.btn-view {
-  background: var(--purple);
-}
-.btn-edit {
-  background: var(--primary);
-}
-.btn-duplicate {
-  background: var(--warning);
-}
+.btn-view { background: var(--purple); }
+.btn-edit { background: var(--primary); }
+.btn-duplicate { background: var(--warning); }
 
-.protocol-filter {
-  margin-left: auto;
-  padding: 0.5rem 0.8rem;
-  border-radius: var(--radius);
-  border: 1px solid #ddd;
+.error-text {
+  color: #dc2626;
   font-size: 0.9rem;
+  margin-top: 0.2rem;
 }

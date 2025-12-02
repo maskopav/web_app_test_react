@@ -1,6 +1,6 @@
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import "./AssignmentSuccessModal.css";
 
 export default function AssignmentSuccessModal({ link, emailText, onClose }) {
@@ -12,6 +12,17 @@ export default function AssignmentSuccessModal({ link, emailText, onClose }) {
         <button className="modal-close" onClick={onClose}>✖</button>
         
         <h2>{t("assignmentModal.title")}</h2>
+
+        <div className="assignment-warning">
+            <Trans
+              i18nKey="assignmentModal.warning"
+              ns="admin"
+              components={{ 
+                strong: <strong />, 
+                br: <br /> 
+              }}
+            />
+        </div>
 
         <p className="assignment-descr">{t("assignmentModal.description")}</p>
 

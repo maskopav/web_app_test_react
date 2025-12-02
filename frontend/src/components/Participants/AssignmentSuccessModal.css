@@ -45,7 +45,6 @@
 
   .assignment-descr {
     margin: 0;
-    font-size: 1.2rem;
   }
   
   .link-box {
@@ -93,5 +92,20 @@
     border-radius: 6px;
     border: none;
     margin: 0;
+  }
+
+  .assignment-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  
+  .assignment-warning strong {
+    font-weight: 700;
   }
   

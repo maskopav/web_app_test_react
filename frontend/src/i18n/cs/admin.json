@@ -163,6 +163,7 @@
 
   "assignmentModal": {
     "title": "Protokol přiřazen",
+    "warning": "⚠️ <strong>Důležité:</strong> Tento odkaz je určen <strong>pouze pro účastníka</strong>. Jeho otevřením se spustí reálný sběr dat.<br/>Chcete-li protokol otestovat bez uložení dat, přejděte na kartu <strong>Protokoly</strong> a klikněte na tlačítko <strong>Zobrazit</strong>.",
     "description": "Účastník může otevřít protokol přes:",
     "copyLink": "Zkopírovat odkaz",
     "qrTitle": "QR kód",

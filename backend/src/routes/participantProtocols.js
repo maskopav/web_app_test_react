@@ -5,7 +5,8 @@ import {
   getParticipantProtocolView,
   getParticipantProtocolViewById,
   activateParticipantProtocol,
-  deactivateParticipantProtocol
+  deactivateParticipantProtocol,
+  assignProtocol
 } from "../controllers/participantProtocolController.js";
 
 const router = express.Router();
@@ -15,6 +16,9 @@ router.post("/activate", activateParticipantProtocol);
 
 // End assignment (deactivate)
 router.post("/deactivate", deactivateParticipantProtocol);
+
+// Assign other protocol to existing participant
+router.post("/assign", assignProtocol);
 
 // GET /api/participant-protocol/:token
 /// e.g. http://localhost:3000/participant-protocol/99b8883a-c142-11f0-9f82-1063c8a646e0

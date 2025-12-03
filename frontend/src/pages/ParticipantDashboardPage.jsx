@@ -74,6 +74,7 @@ export default function ParticipantDashboardPage() {
   // --- Handlers ---
   const handleAddClick = () => {
     setSelectedParticipant(null); // Clear selection for Add mode
+    setIsAssignMode(false);
     setShowModal(true);
   };
 

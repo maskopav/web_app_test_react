@@ -45,8 +45,6 @@ export async function activateParticipantProtocol(participantProtocolId) {
 }
 
 export async function deactivateParticipantProtocol(participantProtocolId) {
-  console.log(`${API_BASE}/participant-protocol/deactivate`);
-  console.log(participantProtocolId);
   const res = await fetch(`${API_BASE}/participant-protocol/deactivate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -54,5 +52,21 @@ export async function deactivateParticipantProtocol(participantProtocolId) {
   });
 
   if (!res.ok) throw new Error("Deactivation failed");
+  return res.json();
+}
+
+export async function assignProtocolToParticipant(data) {
+  // data: { participant_id, protocol_id, project_id }
+  console.log(data);
+  const res = await fetch(`${API_BASE}/participant-protocol/assign`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Failed to assign protocol");
+  }
   return res.json();
 }

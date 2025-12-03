@@ -51,7 +51,7 @@ export default function ParticipantTable({
               <tr><td colSpan="8" className="empty-row">{t("participantDashboard.noData")}</td></tr>
             ) : (
               participants.map((p) => (
-                <tr key={p.participant_id}>
+                <tr key={p.participant_protocol_id}>
                   <td className="highlighted">{p.full_name || "—"}</td>
                   <td>{p.external_id || "—"}</td>
                   <td>{p.protocol_name}</td>

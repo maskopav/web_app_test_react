@@ -2,9 +2,8 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { createParticipant, updateParticipant, getParticipants } from "../../api/participants";
-//import { assignProtocolToParticipant } from "../../api/participantProtocols";
+import { assignProtocolToParticipant } from "../../api/participantProtocols";
 import Modal from "../ProtocolEditor/Modal";
-// CHANGED: Import the new dedicated CSS file
 import "./AddParticipantModal.css"; 
 
 export default function AddParticipantModal({ 
@@ -137,11 +136,11 @@ export default function AddParticipantModal({
     try {
       if (isAssignMode) {
         // ASSIGN MODE: Call specific assignment API
-        // await assignProtocolToParticipant({
-        //     participant_id: participantToEdit.participant_id, // Must use ID from the edited object
-        //     protocol_id: formData.protocol_id,
-        //     project_id: projectId
-        // });
+        await assignProtocolToParticipant({
+            participant_id: participantToEdit.participant_id, // Must use ID from the edited object
+            protocol_id: formData.protocol_id,
+            project_id: projectId
+        });
         console.log('Assign mode')
       } else if (isEditMode) {
           // EDIT MODE: Update details

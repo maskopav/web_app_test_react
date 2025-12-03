@@ -1,8 +1,8 @@
 // src/controllers/participantProtocolController.js
 import pool from "../db/connection.js";
-import { generateAccessToken } from "../utils/tokenGenerator.js";
-import { executeQuery } from "../db/queryHelper.js";
+import { executeQuery, executeTransaction } from "../db/queryHelper.js";
 import { logToFile } from "../utils/logger.js";
+import { assignProtocolToParticipant } from "../utils/assignmentHelper.js";
 
 // GET /api/participant-protocol/:token
 export async function resolveParticipantToken(req, res) {
@@ -184,3 +184,26 @@ export async function deactivateParticipantProtocol(req, res) {
     res.status(500).json({ error: "Internal error" });
   }
 }
+
+// POST /api/participant-protocol/assign
+export const assignProtocol = async (req, res) => {
+  const { participant_id, project_id, protocol_id } = req.body;
+
+  if (!participant_id || !project_id || !protocol_id) {
+    return res.status(400).json({ error: "Missing required fields (participant_id, project_id, protocol_id)" });
+  }
+
+  logToFile(`🔗 Assigning protocol ${protocol_id} to participant ${participant_id}`);
+
+  try {
+    const result = await executeTransaction(async (conn) => {
+      // Use the shared helper
+      return await assignProtocolToParticipant(conn, participant_id, project_id, protocol_id);
+    });
+
+    res.json({ success: true, ...result });
+  } catch (err) {
+    console.error("Assign protocol error:", err);
+    res.status(500).json({ error: err.message || "Failed to assign protocol" });
+  }
+};

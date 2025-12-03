@@ -1,7 +1,7 @@
 /* backend/src/controllers/participantController.js */
 import { executeQuery, executeTransaction } from "../db/queryHelper.js";
-import { generateAccessToken } from "../utils/tokenGenerator.js";
 import { logToFile } from "../utils/logger.js";
+import { assignProtocolToParticipant } from "../utils/assignmentHelper.js";
 
 // GET /api/participants?project_id=X
 export const getParticipants = async (req, res) => {
@@ -51,45 +51,16 @@ export const createParticipant = async (req, res) => {
       );
       const newParticipantId = pResult.insertId;
 
-      // 2. Lookup Project Protocol ID
-      // We need the link between the project and the selected protocol version
-      const [ppRows] = await conn.query(
-        `SELECT id FROM project_protocols WHERE project_id = ? AND protocol_id = ?`,
-        [project_id, protocol_id]
-      );
-
-      if (ppRows.length === 0) {
-        throw new Error(`Protocol ${protocol_id} is not assigned to project ${project_id}`);
-      }
-      const projectProtocolId = ppRows[0].id;
-
-      // 3. Assign Protocol (Create participant_protocol record)
-      // Generate unique token
-      let token = generateAccessToken();
-      let unique = false;
-
-      while (!unique) {
-      const [rows] = await conn.query(
-        `SELECT id FROM participant_protocols WHERE access_token = ?`,
-        [token]
-      );
-      if (rows.length === 0) unique = true;
-      else token = generateAccessToken();
-      }
-
-      const [result] = await conn.query(
-        `INSERT INTO participant_protocols 
-         (participant_id, project_protocol_id, access_token)
-         VALUES (?, ?, ?)`,
-        [newParticipantId, projectProtocolId, token]
-      );
+      // 2. Use the shared Helper for protocol assignment
+      const assignment = await assignProtocolToParticipant(conn, newParticipantId, project_id, protocol_id);
       
       res.json({ 
         success: true,
-        participant_protocol_id: result.insertId,
-        unique_token: token
-        });
-        logToFile(`✅ Created participant, id: ${res.participant_protocol_id}, token: ${res.unique_token} `);
+        participant_id: newParticipantId,
+        ...assignment
+      });
+      
+      logToFile(`✅ Created participant ${newParticipantId} & assigned protocol.`);
     });
   } catch (err) {
     console.error("Create participant error:", err);

@@ -363,11 +363,11 @@
   .modal-box {
     background: var(--bg);
     border-radius: var(--radius);
-    max-width: 80vw;
-    max-height: 85vh;
+    max-width: 85vw;
+    max-height: 87vh;
     display: flex;
     flex-direction: column;
-    padding: 1.5rem 2rem;
+    padding: 1rem 1.5rem;
     position: relative;
     box-shadow: var(--shadow);
     overflow-y: auto;
@@ -399,15 +399,15 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    gap: 8px;
-    margin-top: 0.6rem;
+    gap: 5px;
+    margin-top: 0.3rem;
   }
   
   /* modal title styles used by your Modal component */
   .modal-content h2,
   .modal-title {
     font-size: 1.3rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.4rem;
     font-weight: 600;
   }
   
@@ -597,7 +597,7 @@
   /* Adjust modal box for mobile */
   .modal-box {
     width: 95vw;
-    max-height: 90vh;
-    padding: 1rem;
+    max-height: 93vh;
+    padding: 0.5rem;
   }
 }

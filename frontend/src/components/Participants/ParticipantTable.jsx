@@ -2,7 +2,30 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import "./ParticipantTable.css"; 
 
-export default function ParticipantTable({ participants, loading, onEdit }) {
+const AssignIcon = () => (
+  <svg 
+    width="18" 
+    height="18" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="4" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+    title="Assign Other Protocol"
+    style={{ display: "block" }} // Removes inline spacing issues
+  >
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+);
+
+export default function ParticipantTable({ 
+  participants, 
+  loading, 
+  onEdit,
+  onAssignProtocol
+}) {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
@@ -40,9 +63,16 @@ export default function ParticipantTable({ participants, loading, onEdit }) {
                   <td>{p.contact_email || "—"}</td>
                   <td>{p.contact_phone || "—"}</td>
                   <td className="cell-notes" title={p.notes}>{p.notes}</td>
-                  <td className="actions">
+                  <td className="actions" onClick={(e) => e.stopPropagation()}>
                     <button className="btn-edit" onClick={() => onEdit(p)}>
                       {t("participantDashboard.buttons.edit")}
+                    </button>
+                    <button 
+                      className="btn-assign"
+                      onClick={() => onAssignProtocol(p)}
+                      title={t("participants.actions.assign", "Assign Other Protocol")}
+                    >
+                      <AssignIcon />
                     </button>
                   </td>
                 </tr>

@@ -62,7 +62,7 @@ export default function ParticipantTable({
                   }</td>
                   <td>{p.contact_email || "—"}</td>
                   <td>{p.contact_phone || "—"}</td>
-                  <td className="cell-notes" title={p.notes}>{p.notes}</td>
+                  <td className="cell-notes" title={p.notes}>{p.notes || "—"}</td>
                   <td className="actions" onClick={(e) => e.stopPropagation()}>
                     <button className="btn-edit" onClick={() => onEdit(p)}>
                       {t("participantDashboard.buttons.edit")}

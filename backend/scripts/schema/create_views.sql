@@ -14,6 +14,7 @@ SELECT
     p.sex,
     p.contact_email,
     p.contact_phone,
+    p.notes,
 
     -- project
     pr.id                            AS project_id,

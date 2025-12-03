@@ -101,14 +101,14 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
               ) : (
                 rows.map((r) => (
                   <tr key={r.participant_protocol_id}>
-                    <td className="highlighted">{r.full_name}</td>
-                    <td>{r.external_id || "-"}</td>
+                    <td className="highlighted">{r.full_name || "—"}</td>
+                    <td>{r.external_id || "—"}</td>
                     <td>{r.protocol_name}</td>
                     <td>{r.protocol_version}</td>
                     <td>{r.n_tasks}</td>
                     <td>{r.n_quest}</td>
-                    <td>{r.start_date?.slice(0, 10)}</td>
-                    <td>{r.end_date?.slice(0, 10) || "-"}</td>
+                    <td>{r.start_date?.slice(0, 10) || "—"}</td>
+                    <td>{r.end_date?.slice(0, 10) || "—"}</td>
                     <td>
                       {r.is_active
                         ? t("participantProtocol.status.active")

@@ -32,6 +32,9 @@ export default function ParticipantDashboardPage() {
   
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+
+  // State for Modal Modes
+  const [isAssignMode, setIsAssignMode] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState(null);
 
   // --- Data Loading ---
@@ -76,8 +79,17 @@ export default function ParticipantDashboardPage() {
 
   const handleEditClick = (participant) => {
     setSelectedParticipant(participant); // Set data for Edit mode
+    setIsAssignMode(false);
     setShowModal(true);
   };
+
+  // Handler for 'Assign Protocol' button (Assign Mode)
+  const handleOpenAssignModal = (participant) => {
+    setSelectedParticipant(participant);
+    setIsAssignMode(true);
+    setShowModal(true);
+  };
+  
 
   const handleSuccess = () => {
     // Refresh both tables (Participants & Assignments)
@@ -90,6 +102,20 @@ export default function ParticipantDashboardPage() {
     fetchParticipantProtocolView({ project_id: projectId })
       .then(setAssignments)
       .catch(console.error);
+  };
+
+  // --- Helper: Filter protocols for the modal ---
+  const getModalProtocols = () => {
+    // If in Assign Mode, remove protocols the participant already has
+    if (isAssignMode && selectedParticipant) {
+      const assignedProtocolIds = assignments
+        .filter(a => a.participant_id === selectedParticipant.participant_id)
+        .map(a => a.protocol_id);
+      
+      return protocols.filter(p => !assignedProtocolIds.includes(p.id));
+    }
+    // Otherwise show all active protocols
+    return protocols;
   };
 
   return (
@@ -128,6 +154,7 @@ export default function ParticipantDashboardPage() {
               participants={participants} 
               loading={loading}
               onEdit={handleEditClick}
+              onAssignProtocol={handleOpenAssignModal}
             />
         </section>
 
@@ -155,8 +182,9 @@ export default function ParticipantDashboardPage() {
         open={showModal}
         onClose={() => setShowModal(false)}
         projectId={projectId}
-        protocols={protocols}
+        protocols={getModalProtocols()}
         participantToEdit={selectedParticipant}
+        isAssignMode={isAssignMode}
         onSuccess={handleSuccess}
       />
     </div>

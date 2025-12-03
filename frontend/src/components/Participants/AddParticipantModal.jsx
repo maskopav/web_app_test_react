@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { createParticipant, updateParticipant, getParticipants } from "../../api/participants";
+//import { assignProtocolToParticipant } from "../../api/participantProtocols";
 import Modal from "../ProtocolEditor/Modal";
 // CHANGED: Import the new dedicated CSS file
 import "./AddParticipantModal.css"; 
@@ -12,10 +13,13 @@ export default function AddParticipantModal({
   projectId, 
   protocols, 
   onSuccess,
-  participantToEdit = null 
+  participantToEdit = null,
+  isAssignMode = false
 }) {
   const { t } = useTranslation(["admin", "common"]);
-  const isEditMode = !!participantToEdit;
+
+  // Determine standard Edit Mode (only if we have data AND we are NOT in Assign Mode)
+  const isEditMode = !!participantToEdit && !isAssignMode;
 
   const initialFormState = {
     full_name: "",
@@ -49,7 +53,9 @@ export default function AddParticipantModal({
           contact_email: participantToEdit.contact_email || "",
           contact_phone: participantToEdit.contact_phone || "",
           notes: participantToEdit.notes || "",
-          protocol_id: "dummy" 
+          // If in Assign Mode, we want the user to pick a NEW protocol, so reset this.
+          // If in Edit Mode, we ignore protocol anyway.
+          protocol_id: "" 
         });
       } else {
         setFormData(initialFormState);
@@ -59,6 +65,7 @@ export default function AddParticipantModal({
 
   // --- Validation Logic ---
   const isFormValid = useMemo(() => {
+    // Protocol is required for Create AND Assign mode (but not Edit mode)
     if (!isEditMode && !formData.protocol_id) return false;
 
     const hasFullName = formData.full_name.trim().length > 0;
@@ -81,38 +88,40 @@ export default function AddParticipantModal({
     setSubmitError("");
     if (!isFormValid) return;
 
-    // --- FRONTEND DUPLICATE CHECK ---
-    const inputExtId = formData.external_id.trim();
-    const inputName = formData.full_name.trim().toLowerCase();
-    const inputDob = formData.birth_date;
-    const inputSex = formData.sex;
+    // --- DUPLICATE CHECK (Only for new participants) ---
+    if (!isEditMode && !isAssignMode) {
+      const inputExtId = formData.external_id.trim();
+      const inputName = formData.full_name.trim().toLowerCase();
+      const inputDob = formData.birth_date;
+      const inputSex = formData.sex;
 
-    const duplicate = existingParticipants.find(p => {
-      if (isEditMode && p.participant_id === participantToEdit.participant_id) return false;
+      const duplicate = existingParticipants.find(p => {
+        if (isEditMode && p.participant_id === participantToEdit.participant_id) return false;
 
-      if (inputExtId && p.external_id && p.external_id.trim() === inputExtId) {
-        return true;
+        if (inputExtId && p.external_id && p.external_id.trim() === inputExtId) {
+          return true;
+        }
+        if (inputName && inputDob && inputSex) {
+          const pName = (p.full_name || "").toLowerCase();
+          if (pName !== inputName) return false;
+
+          const pDob = (String(p.birth_date) || "").slice(0, 10); 
+          if (pDob !== inputDob) return false;
+
+          const pSex = (p.sex || "");
+          if (pSex !== inputSex) return false;
+          
+          return true;
+        }
+        return false;
+      });
+
+      if (duplicate) {
+        setSubmitError(
+          `${t("participantDashboard.alerts.createError")}: Participant already exists (ID: ${duplicate.external_id || "N/A"})`
+        );
+        return; 
       }
-      if (inputName && inputDob && inputSex) {
-        const pName = (p.full_name || "").toLowerCase();
-        if (pName !== inputName) return false;
-
-        const pDob = (String(p.birth_date) || "").slice(0, 10); 
-        if (pDob !== inputDob) return false;
-
-        const pSex = (p.sex || "");
-        if (pSex !== inputSex) return false;
-        
-        return true;
-      }
-      return false;
-    });
-
-    if (duplicate) {
-      setSubmitError(
-        `${t("participantDashboard.alerts.createError")}: Participant already exists (ID: ${duplicate.external_id || "N/A"})`
-      );
-      return; 
     }
 
     const payload = {
@@ -126,9 +135,19 @@ export default function AddParticipantModal({
     };
 
     try {
-        if (isEditMode) {
+      if (isAssignMode) {
+        // ASSIGN MODE: Call specific assignment API
+        // await assignProtocolToParticipant({
+        //     participant_id: participantToEdit.participant_id, // Must use ID from the edited object
+        //     protocol_id: formData.protocol_id,
+        //     project_id: projectId
+        // });
+        console.log('Assign mode')
+      } else if (isEditMode) {
+          // EDIT MODE: Update details
           await updateParticipant(participantToEdit.participant_id, payload);
         } else {
+          // CREATE MODE: Create new
           await createParticipant({ ...payload, project_id: projectId });
         }
         
@@ -139,19 +158,32 @@ export default function AddParticipantModal({
       }
   };
 
+  // Title Logic
+  let modalTitle = t("participantDashboard.modal.title"); // "Add New Participant"
+  if (isEditMode) modalTitle = t("participantDashboard.modal.editTitle");
+  if (isAssignMode) modalTitle = t("participantDashboard.modal.assignTitle", "Assign Other Protocol To Existing Participant"); 
+
   return (
     <Modal 
       open={open} 
       onClose={onClose} 
-      title={isEditMode ? t("participantDashboard.modal.editTitle") : t("participantDashboard.modal.title")}
+      title={modalTitle}
       onSave={handleSubmit}
       showSaveButton={false}
     >
       <div className="participant-form">
-        {!isEditMode && (
+        {/* Instruction only for new participants */}
+        {!isEditMode && !isAssignMode && (
           <p className="participant-instruction">
             {t("participantDashboard.modal.instruction")}
           </p>
+        )}
+        {/* Instruction for ASSIGN mode */}
+        {isAssignMode && (
+          <div className="assign-instruction">
+            <strong>{t("participantDashboard.modal.assignInfoTitle")}</strong>
+            {t("participantDashboard.modal.assignInfo")}
+          </div>
         )}
 
         {/* Row 1: Name & External ID */}
@@ -159,22 +191,24 @@ export default function AddParticipantModal({
           <div className="form-col flex-2">
             <label className="form-label">{t("participantDashboard.modal.labels.fullName")}</label>
             <input 
-              className="participant-input"
+              className={`participant-input ${isAssignMode ? 'input-disabled' : ''}`}
               name="full_name" 
               value={formData.full_name} 
               onChange={handleInputChange} 
-              placeholder={t("participantDashboard.modal.placeholders.fullName")} 
+              placeholder={t("participantDashboard.modal.placeholders.fullName")}
+              disabled={isAssignMode} 
             />
           </div>
 
           <div className="form-col flex-1">
             <label className="form-label">{t("participantDashboard.modal.labels.externalId")}</label>
             <input 
-              className="participant-input"
+              className={`participant-input ${isAssignMode ? 'input-disabled' : ''}`}
               name="external_id" 
               value={formData.external_id} 
               onChange={handleInputChange} 
               placeholder={t("participantDashboard.modal.placeholders.externalId")} 
+              disabled={isAssignMode}
             />
           </div>
         </div>
@@ -184,17 +218,23 @@ export default function AddParticipantModal({
           <div className="form-col flex-1">
             <label className="form-label">{t("participantDashboard.modal.labels.birthDate")}</label>
             <input 
-              className="participant-input"
+              className={`participant-input ${isAssignMode ? 'input-disabled' : ''}`}
               type="date" 
               name="birth_date" 
               value={formData.birth_date} 
               onChange={handleInputChange} 
+              disabled={isAssignMode}
             />
           </div>
 
           <div className="form-col flex-1">
             <label className="form-label">{t("participantDashboard.modal.labels.sex")}</label>
-            <select className="participant-input" name="sex" value={formData.sex} onChange={handleInputChange}>
+            <select className={`participant-input ${isAssignMode ? 'input-disabled' : ''}`}
+              name="sex" 
+              value={formData.sex} 
+              onChange={handleInputChange}
+              disabled={isAssignMode}
+            >
               <option value="">-- Select --</option>
               <option value="female">{t("participantDashboard.modal.gender.female")}</option>
               <option value="male">{t("participantDashboard.modal.gender.male")}</option>
@@ -207,21 +247,23 @@ export default function AddParticipantModal({
           <div className="form-col flex-1">
             <label className="form-label">{t("participantDashboard.modal.labels.email")}</label>
             <input 
-              className="participant-input"
+              className={`participant-input ${isAssignMode ? 'input-disabled' : ''}`}
               type="email" 
               name="contact_email" 
               value={formData.contact_email} 
               onChange={handleInputChange} 
+              disabled={isAssignMode}
             />
           </div>
           <div className="form-col flex-1">
             <label className="form-label">{t("participantDashboard.modal.labels.phone")}</label>
             <input 
-              className="participant-input"
+              className={`participant-input ${isAssignMode ? 'input-disabled' : ''}`}
               type="tel" 
               name="contact_phone" 
               value={formData.contact_phone} 
               onChange={handleInputChange} 
+              disabled={isAssignMode}
             />
           </div>
         </div>
@@ -230,11 +272,12 @@ export default function AddParticipantModal({
         <div className="form-col">
           <label className="form-label">{t("participantDashboard.modal.labels.notes")}</label>
           <textarea 
-            className="participant-input"
+            className={`participant-input ${isAssignMode ? 'input-disabled' : ''}`}
             name="notes" 
             value={formData.notes} 
             onChange={handleInputChange} 
             rows={1} 
+            disabled={isAssignMode}
           />
         </div>
 
@@ -282,8 +325,14 @@ export default function AddParticipantModal({
               disabled={!isFormValid}
               style={{ opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? 'pointer' : 'not-allowed' }}
            >
-              {isEditMode ? t("participantDashboard.buttons.update") : t("participantDashboard.buttons.save")}
-           </button>
+              {/* Dynamic Label */}
+              {isAssignMode 
+                ? t("participantDashboard.buttons.save", "Save") 
+                : isEditMode 
+                    ? t("participantDashboard.buttons.update") 
+                    : t("participantDashboard.buttons.create")
+              }
+            </button>
         </div>
       </div>
     </Modal>

@@ -24,6 +24,8 @@
       "title": "Add New Participant",
       "editTitle": "Edit Participant",
       "instruction": "Please identify the participant. You must provide either a Full Name (with birth date and sex) OR an External ID (hospital ID).",
+      "assignInfoTitle": "Assigning to existing participant:",
+      "assignInfo": "You are assigning a new protocol to this participant. Personal details are read-only to ensure data consistency.",
       "labels": {
         "fullName": "Full Name",
         "externalId": "External ID",
@@ -48,8 +50,10 @@
     },
     "buttons": {
       "edit": "Edit",
-      "save": "Create Participant",
-      "update": "Update Participant"
+      "save": "Save",
+      "create": "Create Participant",
+      "update": "Update Participant",
+      "assign": " & Assign"
     }
   },
 

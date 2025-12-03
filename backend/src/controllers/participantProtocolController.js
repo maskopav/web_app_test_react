@@ -29,10 +29,16 @@ export async function resolveParticipantToken(req, res) {
     );
 
     if (viewRows.length === 0) {
-      return res.status(500).json({ error: "View entry missing" });
+      return res.status(500).json({ error: "Invalid token." });
     }
 
     const view = viewRows[0];
+
+    // Check if the protocol-participant assignment is active 
+    if (Number(view.is_active) === 0) {
+      return res.status(500).json({ error: "Protocol assignment for  given participant is not active!" });
+    }
+
 
     // 3. Load tasks for the protocol
     const tasks = await executeQuery(

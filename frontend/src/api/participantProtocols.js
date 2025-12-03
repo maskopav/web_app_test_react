@@ -4,7 +4,11 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 export async function fetchParticipantProtocol(token) {
   const res = await fetch(`${API_BASE}/participant-protocol/${token}`);
   console.log(res);
-  if (!res.ok) throw new Error("Failed to fetch participant protocol");
+  if (!res.ok) {
+    // Try to parse the specific error message from the backend
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || "Failed to fetch participant protocol");
+  }
   return res.json();
 }
 

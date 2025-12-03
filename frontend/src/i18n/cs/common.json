@@ -33,6 +33,18 @@
       "selectOption": "Vyberte možnost...",
       "typeAnswer": "Zde napište svou odpověď...",
       "required": "* povinné"
+    },
+    "notFound": {
+      "title": "404 – Stránka nenalezena",
+      "message": "Prosím zkontroluje URL adresu nebo kontaktujte administrátora."
+    },
+    "inactive": {
+      "title": "Protokol není aktivní",
+      "message": "Váš protokol nyní není aktivní, jeho platnost vypršela."
+    },
+    "invalidToken": {
+      "title": "Nevalidní token",
+      "message": "Token není validní. Prosím zkontroluje URL adresu nebo kontaktujte administrátora."
     }
   }
   

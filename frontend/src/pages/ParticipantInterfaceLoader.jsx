@@ -1,6 +1,7 @@
 // src/pages/ParticipantInterfaceLoader.jsx
 import { useEffect, useState, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { useMappings } from "../context/MappingContext";
 import { fetchParticipantProtocol } from "../api/participantProtocols";
@@ -9,10 +10,9 @@ import { initSession } from "../api/sessions";
 export default function ParticipantInterfaceLoader() {
   const { token } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation(["common"]);
   const { setSelectedProtocol } = useContext(ProtocolContext);
   const { mappings } = useMappings();
-
-  const [loading, setLoading] = useState(true);
 
   // Ref to track if we have already started initialization
   const didInit = useRef(false);
@@ -76,18 +76,43 @@ export default function ParticipantInterfaceLoader() {
         });
 
      } catch (e) {
-        console.error(e);
-        navigate("/404", { replace: true });
-     } finally {
-        setLoading(false);
+        // --- ERROR HANDLING LOGIC ---
+        let errorState = {};
+
+        // 1. Check for "Inactive" error specifically
+        if (e.message && e.message.includes("active")) { // "not active" or "is not active"
+            errorState = {
+                title: t("inactive.title"),
+                message: t("inactive.message"),
+                isWarning: true
+            };
+        } else if (e.message && e.message.includes("token")) { // "not active" or "is not active"
+              errorState = {
+                  title: t("invalidToken.title"),
+                  message: t("invalidToken.message"),
+                  isWarning: true
+              };
+        } else {
+            // 2. Default/Network errors
+            errorState = {
+                title: t("error.title", "Unable to Load Protocol"),
+                message: e.message || t("error.generic", "An unexpected error occurred."),
+                isWarning: false
+            };
+        }
+
+        // Navigate to the Error/404 page with the specific state
+        navigate("/error", { 
+            replace: true, 
+            state: errorState 
+        });
      }
     }
 
     load();
   }, [token, mappings, navigate, setSelectedProtocol]);
 
-  if (loading) return <p>Loading…</p>;
-  return null;
+  return <div className="app-container"><p>{t("loading", "Loading...")}</p></div>;
 }
 
 

@@ -2,9 +2,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { createParticipant, updateParticipant, getParticipants } from "../../api/participants";
-import { assignProtocolToParticipant } from "../../api/participantProtocols";
+import { assignProtocolToParticipant, activateParticipantProtocol } from "../../api/participantProtocols";
 import Modal from "../ProtocolEditor/Modal";
 import "./AddParticipantModal.css"; 
+
+const VITE_APP_BASE_PATH = import.meta.env.VITE_APP_BASE_PATH;
 
 export default function AddParticipantModal({ 
   open, 
@@ -12,6 +14,7 @@ export default function AddParticipantModal({
   projectId, 
   protocols, 
   onSuccess,
+  onShowSuccessModal,
   participantToEdit = null,
   isAssignMode = false
 }) {
@@ -34,6 +37,7 @@ export default function AddParticipantModal({
   const [formData, setFormData] = useState(initialFormState);
   const [existingParticipants, setExistingParticipants] = useState([]);
   const [submitError, setSubmitError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // --- Fetch ALL participants when modal opens ---
   useEffect(() => {
@@ -83,7 +87,7 @@ export default function AddParticipantModal({
     if (submitError) setSubmitError(""); 
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (actionType = "save") => {
     setSubmitError("");
     if (!isFormValid) return;
 
@@ -134,9 +138,10 @@ export default function AddParticipantModal({
     };
 
     try {
+      let response = null;
       if (isAssignMode) {
         // ASSIGN MODE: Call specific assignment API
-        await assignProtocolToParticipant({
+        response = await assignProtocolToParticipant({
             participant_id: participantToEdit.participant_id, // Must use ID from the edited object
             protocol_id: formData.protocol_id,
             project_id: projectId
@@ -147,7 +152,23 @@ export default function AddParticipantModal({
           await updateParticipant(participantToEdit.participant_id, payload);
         } else {
           // CREATE MODE: Create new
-          await createParticipant({ ...payload, project_id: projectId });
+          response = await createParticipant({ ...payload, project_id: projectId });
+        }
+
+        // --- HANDLE SAVE & ASSIGN ---
+        if (actionType === "saveAndAssign" && response && response.participant_protocol_id) {
+          // 1. Activate
+          await activateParticipantProtocol(response.participant_protocol_id);
+          
+          // 2. Prepare Modal Data
+          const link = `${window.location.origin}${VITE_APP_BASE_PATH}#/participant/${response.unique_token}`;
+          const name = formData.full_name || t("assignmentModal.participant");
+          const emailText = t("assignmentModal.emailText", { name, link });
+
+          // 3. Open Success Modal via Parent
+          if (onShowSuccessModal) {
+              onShowSuccessModal(link, emailText);
+          }
         }
         
         onSuccess(); 
@@ -167,7 +188,7 @@ export default function AddParticipantModal({
       open={open} 
       onClose={onClose} 
       title={modalTitle}
-      onSave={handleSubmit}
+      onSave={() => handleSubmit("save")}
       showSaveButton={false}
     >
       <div className="participant-form">
@@ -320,9 +341,9 @@ export default function AddParticipantModal({
         <div className="modal-actions">
            <button 
               className="btn-save" 
-              onClick={handleSubmit} 
-              disabled={!isFormValid}
-              style={{ opacity: isFormValid ? 1 : 0.5, cursor: isFormValid ? 'pointer' : 'not-allowed' }}
+              onClick={() => handleSubmit("save")} 
+              disabled={!isFormValid|| isSubmitting}
+              style={{ opacity: (!isFormValid || isSubmitting) ? 1 : 0.5, cursor: isFormValid ? 'pointer' : 'not-allowed' }}
            >
               {/* Dynamic Label */}
               {isAssignMode 
@@ -332,6 +353,22 @@ export default function AddParticipantModal({
                     : t("participantDashboard.buttons.create")
               }
             </button>
+            {/* Save & Assign Button (Only for Create or Assign modes) */}
+            {!isEditMode && (
+              <button 
+                className="btn-save" // You might want a different class for styling, e.g., 'btn-primary-action'
+                onClick={() => handleSubmit("saveAndAssign")}
+                disabled={!isFormValid || isSubmitting}
+                style={{opacity: (!isFormValid || isSubmitting) ? 0.5 : 1, cursor: (!isFormValid || isSubmitting) ? 'not-allowed' : 'pointer'}}
+             >
+                {isAssignMode 
+                ? t("participantDashboard.buttons.save", "Save") 
+                : isEditMode 
+                    ? t("participantDashboard.buttons.update") 
+                    : t("participantDashboard.buttons.create")
+                } {t("participantDashboard.buttons.activate")}
+             </button>
+            )}
         </div>
       </div>
     </Modal>

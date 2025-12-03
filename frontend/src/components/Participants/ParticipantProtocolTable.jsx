@@ -5,19 +5,23 @@ import {
   activateParticipantProtocol,
   deactivateParticipantProtocol,
 } from "../../api/participantProtocols";
-import AssignmentSuccessModal from "./AssignmentSuccessModal";
 import { useTranslation } from "react-i18next";
 import { useConfirm } from "../ConfirmDialog/ConfirmDialogContext";
 
 const VITE_APP_BASE_PATH = import.meta.env.VITE_APP_BASE_PATH;
 
-export default function ParticipantProtocolTable({ rows, onRefresh }) {
+export default function ParticipantProtocolTable({ rows, onRefresh, onShowSuccessModal }) {
   const { t } = useTranslation(["admin"]);
   const confirm = useConfirm();
 
-  const [showModal, setShowModal] = useState(false);
-  const [modalLink, setModalLink] = useState("");
-  const [modalText, setModalText] = useState("");
+  function generateEmail(name, link) {
+    const finalName = name || t("assignmentModal.participant");
+  
+    return t("assignmentModal.emailText", {
+      name: finalName,
+      link,
+    });
+  }
 
   async function handleActivate(id, protocolName, participantName, uniqueToken) {
     const ok = await confirm({
@@ -31,29 +35,15 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
     });
     
     if (!ok) return;
-    
-
     await activateParticipantProtocol(id);
 
     const link = `${window.location.origin}${VITE_APP_BASE_PATH}#/participant/${uniqueToken}`;
     const emailText = generateEmail(participantName, link);
 
-    setModalLink(link);
-    setModalText(emailText);
-    setShowModal(true);
-
+    // Call Parent Handler
+    if (onShowSuccessModal) onShowSuccessModal(link, emailText);
     onRefresh && onRefresh();
   }
-
-  function generateEmail(name, link) {
-    const finalName = name || t("assignmentModal.participant");
-  
-    return t("assignmentModal.emailText", {
-      name: finalName,
-      link,
-    });
-  }
-  
 
   async function handleDeactivate(id, protocolName, participantName) {
     const ok = await confirm({
@@ -128,7 +118,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
                             )
                           }
                         >
-                          {t("participantProtocol.buttons.assign")}
+                          {t("participantProtocol.buttons.activate")}
                         </button>
                       )}
 
@@ -156,9 +146,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
                                 r.full_name,
                                 link
                               );
-                              setModalLink(link);
-                              setModalText(emailText);
-                              setShowModal(true);
+                              if (onShowSuccessModal) onShowSuccessModal(link, emailText);
                             }}
                           >
                             {t("participantProtocol.buttons.showModal")}
@@ -172,14 +160,6 @@ export default function ParticipantProtocolTable({ rows, onRefresh }) {
             </tbody>
           </table>
         </div>
-
-      {showModal && (
-        <AssignmentSuccessModal
-          link={modalLink}
-          emailText={modalText}
-          onClose={() => setShowModal(false)}
-        />
-      )}
     </>
   );
 }

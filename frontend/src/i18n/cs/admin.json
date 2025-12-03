@@ -143,7 +143,7 @@
       "inactive": "Neaktivní"
     },
     "buttons": {
-      "assign": "Aktivace",
+      "activate": "Aktivace",
       "end": "Deaktivace",
       "showModal": "Zobrazit link / QR kód"
     },

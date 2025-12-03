@@ -1,3 +1,4 @@
+// src/components/Participants/AssignmentSuccessModal.jsx
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { useTranslation, Trans } from "react-i18next";

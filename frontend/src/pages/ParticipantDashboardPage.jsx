@@ -14,6 +14,7 @@ import { fetchParticipantProtocolView } from "../api/participantProtocols";
 import ParticipantTable from "../components/Participants/ParticipantTable";
 import AddParticipantModal from "../components/Participants/AddParticipantModal";
 import ParticipantProtocolTable from "../components/Participants/ParticipantProtocolTable";
+import AssignmentSuccessModal from "../components/Participants/AssignmentSuccessModal"; 
 
 // Styles
 import "./Pages.css";
@@ -36,6 +37,9 @@ export default function ParticipantDashboardPage() {
   // State for Modal Modes
   const [isAssignMode, setIsAssignMode] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState(null);
+
+  // Success Modal State
+  const [successModal, setSuccessModal] = useState({ open: false, link: "", text: "" });
 
   // --- Data Loading ---
   async function loadData() {
@@ -103,6 +107,11 @@ export default function ParticipantDashboardPage() {
     fetchParticipantProtocolView({ project_id: projectId })
       .then(setAssignments)
       .catch(console.error);
+  };
+
+  // Handler to open success modal from children
+  const handleShowSuccessModal = (link, text) => {
+    setSuccessModal({ open: true, link, text });
   };
 
   // --- Helper: Filter protocols for the modal ---
@@ -173,6 +182,7 @@ export default function ParticipantDashboardPage() {
             <ParticipantProtocolTable 
               rows={assignments} 
               onRefresh={handleAssignmentChange}
+              onShowSuccessModal={handleShowSuccessModal}
             />
         </section>
 
@@ -187,7 +197,17 @@ export default function ParticipantDashboardPage() {
         participantToEdit={selectedParticipant}
         isAssignMode={isAssignMode}
         onSuccess={handleSuccess}
+        onShowSuccessModal={handleShowSuccessModal}
       />
+
+      {/* Global Success Modal */}
+      {successModal.open && (
+        <AssignmentSuccessModal
+          link={successModal.link}
+          emailText={successModal.text}
+          onClose={() => setSuccessModal({ ...successModal, open: false })}
+        />
+      )}
     </div>
   );
 }

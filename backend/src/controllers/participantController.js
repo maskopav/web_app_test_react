@@ -131,3 +131,37 @@ export const updateParticipant = async (req, res) => {
     res.status(500).json({ error: err.message || "Failed to update participant" });
   }
 };
+
+// Search for a participant by External ID (Raw table lookup)
+export const searchParticipant = async (req, res) => {
+  const { external_id } = req.query;
+  
+  if (!external_id) {
+    return res.status(400).json({ error: "Missing external_id parameter" });
+  }
+
+  try {
+    // Query the raw participants table, not the view, to find anyone in the system
+    const rows = await executeQuery(
+      `SELECT * FROM participants WHERE external_id = ?`,
+      [external_id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "Participant not found" });
+    }
+
+    // Return the first match (external_id should be unique)
+    // Map 'id' to 'participant_id' to match the structure expected by the frontend modals
+    const p = rows[0];
+    const formatted = {
+      ...p,
+      participant_id: p.id 
+    };
+
+    res.json(formatted);
+  } catch (err) {
+    console.error("Search error:", err);
+    res.status(500).json({ error: "Search failed" });
+  }
+};

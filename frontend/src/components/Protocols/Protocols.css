@@ -68,7 +68,7 @@
   box-sizing: border-box;
 }
 
-.btn-create {
+.btn-create, .btn-search {
   width: auto;
   background: var(--success);
   padding: 0.4rem 1rem;
@@ -186,6 +186,7 @@
 .btn-view { background: var(--purple); }
 .btn-edit { background: var(--primary); }
 .btn-duplicate { background: var(--warning); }
+.btn-search { background-color: var(--warning);}
 
 .error-text {
   color: #dc2626;

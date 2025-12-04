@@ -34,3 +34,13 @@ export async function updateParticipant(id, data) {
     if (!res.ok) throw new Error(json.error || "Failed to update participant");
     return json;
   }
+
+  export async function searchParticipant(externalId) {
+    const url = `${API_BASE}/participants/search?external_id=${encodeURIComponent(externalId)}`;
+    
+    const res = await fetch(url);
+    if (res.status === 404) return null; // Not found
+    if (!res.ok) throw new Error("Search failed");
+    
+    return res.json();
+  }

@@ -238,6 +238,35 @@ button:disabled {
   width: fit-content;
 }
 
+/* Participant Dashboard */
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+/* --- Search Modal Styles --- */
+
+.search-modal-instruction {
+  margin: 0.5rem 0rem;
+  color: var(--muted); /* Uses variable from root */
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.search-input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center
+}
+
+.participant-input {
+  height: 2rem;
+}
+
+
+.text-left {
+  text-align: left;
+}
 
 
 /* Mobile-friendly adjustments */

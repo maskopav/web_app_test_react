@@ -35,6 +35,12 @@
   "participantDashboard": {
     "title": "Participants Management & Protocols Activation",
     "addParticipant": "Add New Participant",
+    "addExisting": "Add Existing Participant",
+    "search": {
+      "title": "Find Participant",
+      "instruction": "Enter External ID to import a participant from another project.",
+      "notFound": "No participant found with this ID."
+    },
     "noData": "No participants found in this project.",
     "table": {
       "title": "Participants Enrollment & Management",
@@ -80,6 +86,7 @@
     "buttons": {
       "edit": "Edit",
       "save": "Save",
+      "search": "Search",
       "create": "Create Participant",
       "update": "Update Participant",
       "activate": " & Activate"

@@ -6,7 +6,7 @@ import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitche
 import { useMappings } from "../context/MappingContext";
 
 // API
-import { getParticipants } from "../api/participants";
+import { getParticipants, searchParticipant } from "../api/participants";
 import { getProtocolsByProjectId } from "../api/protocols";
 import { fetchParticipantProtocolView } from "../api/participantProtocols";
 
@@ -15,6 +15,7 @@ import ParticipantTable from "../components/Participants/ParticipantTable";
 import AddParticipantModal from "../components/Participants/AddParticipantModal";
 import ParticipantProtocolTable from "../components/Participants/ParticipantProtocolTable";
 import AssignmentSuccessModal from "../components/Participants/AssignmentSuccessModal"; 
+import Modal from "../components/ProtocolEditor/Modal"
 
 // Styles
 import "./Pages.css";
@@ -37,6 +38,12 @@ export default function ParticipantDashboardPage() {
   // State for Modal Modes
   const [isAssignMode, setIsAssignMode] = useState(false);
   const [selectedParticipant, setSelectedParticipant] = useState(null);
+
+  // State for Search
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchError, setSearchError] = useState("");
+  const [searching, setSearching] = useState(false);
 
   // Success Modal State
   const [successModal, setSuccessModal] = useState({ open: false, link: "", text: "" });
@@ -114,6 +121,40 @@ export default function ParticipantDashboardPage() {
     setSuccessModal({ open: true, link, text });
   };
 
+  // Handler for Search Button
+  const handleSearchClick = () => {
+    setSearchQuery("");
+    setSearchError("");
+    setShowSearch(true);
+  };
+
+  // Perform Search
+  const performSearch = async () => {
+    if (!searchQuery.trim()) return;
+    setSearching(true);
+    setSearchError("");
+
+    try {
+      const foundParticipant = await searchParticipant(searchQuery.trim());
+      
+      if (foundParticipant) {
+        // 1. Close Search Modal
+        setShowSearch(false);
+        
+        // 2. Open AddModal in "Assign Mode" with the found data
+        setSelectedParticipant(foundParticipant);
+        setIsAssignMode(true);
+        setShowModal(true);
+      } else {
+        setSearchError(t("participantDashboard.search.notFound", "Participant not found."));
+      }
+    } catch (err) {
+      setSearchError(t("error.generic", "Error occurred"));
+    } finally {
+      setSearching(false);
+    }
+  };
+
   // --- Helper: Filter protocols for the modal ---
   const getModalProtocols = () => {
     // If in Assign Mode, remove protocols the participant already has
@@ -156,9 +197,16 @@ export default function ParticipantDashboardPage() {
                     {t("participantDashboard.table.subtitle")}
                 </span>
             </div>
-            <button className="btn-create small" onClick={handleAddClick}>
-              + {t("participantDashboard.addParticipant")}
-            </button>
+            {/* BUTTON GROUP */}
+            <div className="header-actions">
+              <button className="btn-create small" onClick={handleAddClick}>
+                + {t("participantDashboard.addParticipant")}
+              </button>
+
+              <button className="btn-search small" onClick={handleSearchClick}>
+                🔍 {t("participantDashboard.addExisting")}
+              </button>
+            </div>
           </div>
             <ParticipantTable 
               participants={participants} 
@@ -208,6 +256,44 @@ export default function ParticipantDashboardPage() {
           onClose={() => setSuccessModal({ ...successModal, open: false })}
         />
       )}
+
+      {/* Search Modal */}
+      <Modal
+        open={showSearch}
+        onClose={() => setShowSearch(false)}
+        title={t("participantDashboard.search.title")}
+        showSaveButton={false} // Custom buttons
+      >
+        <div className="search-modal-body">
+          <p className="search-modal-instruction">
+            {t("participantDashboard.search.instruction")}
+          </p>
+          
+          <div className="search-input-row">
+            <input 
+              type="text" 
+              className="participant-input search-field"
+              placeholder={t("participantDashboard.modal.placeholders.externalId")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && performSearch()}
+            />
+            <button 
+              className="btn-modal-search"
+              onClick={performSearch} 
+              disabled={searching || !searchQuery}
+            >
+              {searching ? "..." : t("participantDashboard.buttons.search")}
+            </button>
+          </div>
+
+          {searchError && (
+            <div className="validation-error-msg text-left">
+              {searchError}
+            </div>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 }

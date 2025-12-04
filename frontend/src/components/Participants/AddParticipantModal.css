@@ -121,6 +121,11 @@
   font-weight: 500;
 }
 
+.btn-assign {
+  background-color: var(--purple);
+  border-radius: var(--radius);
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .form-row {

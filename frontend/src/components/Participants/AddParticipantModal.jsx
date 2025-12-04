@@ -343,7 +343,7 @@ export default function AddParticipantModal({
               className="btn-save" 
               onClick={() => handleSubmit("save")} 
               disabled={!isFormValid|| isSubmitting}
-              style={{ opacity: (!isFormValid || isSubmitting) ? 1 : 0.5, cursor: isFormValid ? 'pointer' : 'not-allowed' }}
+              style={{opacity: (!isFormValid || isSubmitting) ? 0.5 : 1, cursor: (!isFormValid || isSubmitting) ? 'not-allowed' : 'pointer'}}
            >
               {/* Dynamic Label */}
               {isAssignMode 
@@ -356,7 +356,7 @@ export default function AddParticipantModal({
             {/* Save & Assign Button (Only for Create or Assign modes) */}
             {!isEditMode && (
               <button 
-                className="btn-save" // You might want a different class for styling, e.g., 'btn-primary-action'
+                className="btn-save btn-assign" // You might want a different class for styling, e.g., 'btn-primary-action'
                 onClick={() => handleSubmit("saveAndAssign")}
                 disabled={!isFormValid || isSubmitting}
                 style={{opacity: (!isFormValid || isSubmitting) ? 0.5 : 1, cursor: (!isFormValid || isSubmitting) ? 'not-allowed' : 'pointer'}}

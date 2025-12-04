@@ -151,9 +151,9 @@ export default function ParticipantDashboardPage() {
         <section className="card compact-create">
           <div className="section-header create-header-row">
             <div className="header-text-group">
-                <div className="section-title">{t("participantDashboard.title")}</div>
+                <div className="section-title">{t("participantDashboard.table.title")}</div>
                 <span className="section-subtitle">
-                    {t("participantDashboard.subtitle")}
+                    {t("participantDashboard.table.subtitle")}
                 </span>
             </div>
             <button className="btn-create small" onClick={handleAddClick}>
@@ -172,9 +172,9 @@ export default function ParticipantDashboardPage() {
         <section className="dashboard-section card">
           <div className="section-header">
             <div className="header-text-group">
-                <div className="section-title">{t("participantProtocol.title", "Protocol Assignments")}</div>
+                <div className="section-title">{t("participantProtocol.table.title")}</div>
                 <span className="section-subtitle">
-                    {t("participantProtocol.subtitle")}
+                    {t("participantProtocol.table.subtitle")}
                 </span>
             </div>
           </div>

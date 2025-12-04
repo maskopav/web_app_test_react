@@ -5,10 +5,12 @@
   },
   
   "participantDashboard": {
-    "title": "Participants Management",
+    "title": "Participants Management & Protocols Activation",
     "addParticipant": "Add New Participant",
     "noData": "No participants found in this project.",
     "table": {
+      "title": "Participants Enrollment & Management",
+      "subtitle": "Create and manage participant profiles. Initial existing protocol must be linked (starts as inactive).",
       "name": "Full Name",
       "externalId": "External ID",
       "birthDate": "Birth Date",
@@ -123,9 +125,9 @@
     }
   },
   "participantProtocol": {
-    "title": "Přiřazení protokolů účastníkům",
     "noAssignments": "Žádná přiřazení nenalezena",
     "table": {
+      "title": "Aktivace/deaktivace protokolů",
       "participant": "Účastník",
       "externalId": "Externí ID",
       "protocol": "Protokol",

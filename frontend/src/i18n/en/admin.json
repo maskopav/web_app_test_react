@@ -5,11 +5,12 @@
   },
   
   "participantDashboard": {
-    "title": "Participants Management",
-    "subtitle": "Create and manage participant profiles. Initial existing protocol must be linked (starts as inactive).",
+    "title": "Participants Management & Protocols Activation",
     "addParticipant": "Add New Participant",
     "noData": "No participants found in this project.",
     "table": {
+      "title": "Participants Enrollment & Management",
+      "subtitle": "Create and manage participant profiles. Initial existing protocol must be linked (starts as inactive).",
       "name": "Full Name",
       "externalId": "External ID",
       "birthDate": "Birth Date",
@@ -136,10 +137,10 @@
     }
   },
   "participantProtocol": {
-    "title": "Protocol Assignments",
-    "subtitle": "Manage enrollments. Activate access to generate links & QR codes.",
     "noAssignments": "No assignments found",
     "table": {
+      "title": "Protocol Deployment",
+      "subtitle": "Activate/deactivate participant access to protocol -> generate links & QR codes.",
       "participant": "Full Name",
       "externalId": "External ID",
       "protocol": "Protocol",

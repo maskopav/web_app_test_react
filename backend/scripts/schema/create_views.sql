@@ -91,3 +91,98 @@ LEFT JOIN (
     JOIN tasks t ON pt.task_id = t.id 
     GROUP BY pt.protocol_id
 ) agg ON agg.protocol_id = p.id;
+
+
+
+-- Aggregates high-level statistics for projects based on protocol assignments.
+CREATE OR REPLACE VIEW v_project_summary_stats AS
+SELECT 
+    p.id AS project_id,
+    p.name AS project_name,
+    p.description,
+    p.start_date,
+    p.is_active AS project_is_active,
+
+    -- 1. PROTOCOL DEFINITIONS (From v_project_protocols)
+    -- Counts how many DISTINCT protocols are currently marked as 'is_current = 1'
+    -- This comes from the definition table, so it counts them even if no one is assigned yet.
+    COALESCE(proto_stats.count_current_defined, 0) AS count_current_protocols_defined,
+
+    -- 2. PARTICIPANT VOLUME (From v_participant_protocols)
+    -- Total distinct human beings in the project
+    COALESCE(part_stats.total_participants, 0) AS total_participants,
+    
+    -- Total assignments (links between humans and protocols)
+    COALESCE(part_stats.total_assignments, 0) AS total_assignments,
+
+    -- 3. PARTICIPANT STATUS (From v_participant_protocols)
+    -- PENDING: Assigned but not started (Inactive, no end date)
+    COALESCE(part_stats.count_pending, 0) AS count_pending_assignments,
+
+    -- ACTIVE: Currently provisioned (Active flag is 1)
+    COALESCE(part_stats.count_active, 0) AS count_active_assignments,
+
+    -- FINISHED: Done (Inactive, has end date)
+    COALESCE(part_stats.count_finished, 0) AS count_finished_assignments,
+
+    -- 4. VERSION HEALTH / MAINTENANCE
+    -- HEALTHY: Active users running the LATEST protocol version
+    COALESCE(part_stats.count_version_current, 0) AS count_users_on_current_version,
+    
+    -- LEGACY WARNING: Active users running an OUTDATED protocol version
+    COALESCE(part_stats.count_version_legacy, 0) AS count_users_on_legacy_version
+
+FROM 
+    projects p
+-- JOIN 1: Get Protocol Counts (The Definitions)
+LEFT JOIN (
+    SELECT 
+        project_id,
+        -- Counts distinct protocol IDs where is_current = 1
+        COUNT(DISTINCT IF(is_current = 1, id, NULL)) AS count_current_defined
+    FROM 
+        v_project_protocols
+    GROUP BY 
+        project_id
+) proto_stats ON p.id = proto_stats.project_id
+-- JOIN 2: Get Participant Stats (The Usage)
+LEFT JOIN (
+    SELECT 
+        project_id,
+        
+        -- Volume
+        COUNT(DISTINCT participant_id) AS total_participants,
+        COUNT(participant_protocol_id) AS total_assignments,
+        
+        -- Status Logic
+        SUM(CASE 
+            WHEN (is_active = 0 OR is_active IS NULL) AND end_date IS NULL THEN 1 
+            ELSE 0 
+        END) AS count_pending,
+        
+        SUM(CASE 
+            WHEN is_active = 1 THEN 1 
+            ELSE 0 
+        END) AS count_active,
+        
+        SUM(CASE 
+            WHEN (is_active = 0 OR is_active IS NULL) AND end_date IS NOT NULL THEN 1 
+            ELSE 0 
+        END) AS count_finished,
+        
+        -- Version Logic
+        SUM(CASE 
+            WHEN is_active = 1 AND is_current_protocol = 1 THEN 1 
+            ELSE 0 
+        END) AS count_version_current,
+        
+        SUM(CASE 
+            WHEN is_active = 1 AND (is_current_protocol = 0 OR is_current_protocol IS NULL) THEN 1 
+            ELSE 0 
+        END) AS count_version_legacy
+
+    FROM 
+        v_participant_protocols
+    GROUP BY 
+        project_id
+) part_stats ON p.id = part_stats.project_id;

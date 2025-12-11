@@ -51,8 +51,15 @@ export const useVoiceRecorder = (options = {}) => {
         try {
         // IMPORTANT: must be called from a user gesture
         const streamData = await navigator.mediaDevices.getUserMedia({
-            audio: true,
             video: false,
+            audio: {
+                // explicit constraints to disable processing
+                autoGainControl: false,
+                echoCancellation: false,
+                noiseSuppression: false,
+                // optional: ensures we get the rawest audio possible
+                channelCount: 1 
+            },
             });
             setPermission(true);
             setStream(streamData);

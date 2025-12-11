@@ -2,19 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { signupParticipant, loginParticipant } from "../api/auth";
+import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
 import "./Pages.css"; 
-// You can create ParticipantAuthPage.css for specific styles if needed
 
 export default function ParticipantAuthPage() {
-  const { token: projectToken } = useParams(); // Public token from URL
+  const { token: projectToken } = useParams();
   const navigate = useNavigate();
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["common"]); // Use 'common' namespace
 
-  const [mode, setMode] = useState("signup"); // 'signup' | 'login'
+  const [mode, setMode] = useState("signup");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Form State
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,9 +22,9 @@ export default function ParticipantAuthPage() {
     sex: "female"
   });
 
-  // Check if token exists
+  // Ensure token exists
   useEffect(() => {
-    console.log("Current Project Token from URL:", projectToken);
+    if (!projectToken) setError(t("auth.invalidLink", "Invalid Link"));
   }, [projectToken]);
 
   const handleChange = (e) => {
@@ -37,22 +36,11 @@ export default function ParticipantAuthPage() {
     setError("");
     setLoading(true);
 
-    // DEBUG: Ensure token is passed
-    if (!projectToken) {
-        setError("Missing project link. Please open the link again.");
-        setLoading(false);
-        return;
-    }
-
     try {
       let response;
       if (mode === "signup") {
-        response = await signupParticipant({
-          projectToken,
-          ...formData
-        });
+        response = await signupParticipant({ projectToken, ...formData });
       } else {
-        console.log("Attempting login with:", { projectToken, email: formData.email });
         response = await loginParticipant({
           projectToken,
           email: formData.email,
@@ -60,7 +48,6 @@ export default function ParticipantAuthPage() {
         });
       }
 
-      // Success! Redirect to the personal protocol link
       if (response.token) {
         navigate(`/participant/${response.token}`, { replace: true });
       }
@@ -72,99 +59,106 @@ export default function ParticipantAuthPage() {
   };
 
   return (
-    <div className="app-container">
-      <div className="card" style={{ maxWidth: "500px", width: "100%", padding: "2rem" }}>
-        
-        {/* Header Tabs */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.5rem", gap:"1rem" }}>
-          <button 
-            className={mode === "signup" ? "btn-primary" : "btn-secondary"}
-            onClick={() => setMode("signup")}
-            style={{ flex: 1, background: mode === "signup" ? "var(--primary)" : "#ddd" }}
-          >
-            Sign Up
-          </button>
-          <button 
-            className={mode === "login" ? "btn-primary" : "btn-secondary"}
-            onClick={() => setMode("login")}
-            style={{ flex: 1, background: mode === "login" ? "var(--primary)" : "#ddd" }}
-          >
-            Login
-          </button>
-        </div>
+    <div className="dashboard-page"> {/* Use dashboard-page for full height/background */}
+      
+      {/* Top Bar for Language Switcher */}
+      <div className="top-bar" style={{ justifyContent: 'flex-end' }}>
+        <LanguageSwitcher />
+      </div>
 
-        <h2 className="text-center">
-          {mode === "signup" ? "New Participant" : "Welcome Back"}
-        </h2>
-        <p className="text-center text-muted">
-          {mode === "signup" 
-            ? "Enter your details to start the protocol." 
-            : "Enter your credentials to resume."}
-        </p>
-
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      {/* Centered Content */}
+      <div className="app-container" style={{ minHeight: '80vh', alignItems: 'flex-start', paddingTop: '5vh' }}>
+        <div className="card" style={{ maxWidth: "500px", width: "95%", padding: "2rem" }}>
           
-          {/* Fields common to both */}
-          <div>
-            <label className="form-label">Email</label>
-            <input 
-              required type="email" name="email" className="participant-input"
-              value={formData.email} onChange={handleChange} 
-            />
+          {/* Tabs */}
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.5rem", gap:"1rem" }}>
+            <button 
+              className={mode === "signup" ? "btn-primary" : "btn-secondary"}
+              onClick={() => setMode("signup")}
+              style={{ flex: 1, opacity: mode === "signup" ? 1 : 0.6 }}
+            >
+              {t("auth.tabSignup")}
+            </button>
+            <button 
+              className={mode === "login" ? "btn-primary" : "btn-secondary"}
+              onClick={() => setMode("login")}
+              style={{ flex: 1, opacity: mode === "login" ? 1 : 0.6 }}
+            >
+              {t("auth.tabLogin")}
+            </button>
           </div>
 
-          {/* SIGNUP SPECIFIC FIELDS */}
-          {mode === "signup" && (
-            <>
-              <div>
-                <label className="form-label">Full Name</label>
-                <input 
-                  required type="text" name="full_name" className="participant-input"
-                  value={formData.full_name} onChange={handleChange} 
-                />
-              </div>
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <div style={{ flex: 1 }}>
-                  <label className="form-label">Birth Date</label>
-                  <input 
-                    required type="date" name="birth_date" className="participant-input"
-                    value={formData.birth_date} onChange={handleChange} 
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label className="form-label">Sex</label>
-                  <select 
-                    name="sex" className="participant-input"
-                    value={formData.sex} onChange={handleChange}
-                  >
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
-                  </select>
-                </div>
-              </div>
-              <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.5rem" }}>
-                * We will send login credentials to your email.
-              </p>
-            </>
-          )}
+          <h2 className="text-center">
+            {mode === "signup" ? t("auth.signupTitle") : t("auth.loginTitle")}
+          </h2>
+          <p className="text-center text-muted" style={{ marginBottom: "1.5rem" }}>
+            {mode === "signup" ? t("auth.signupDesc") : t("auth.loginDesc")}
+          </p>
 
-          {/* LOGIN SPECIFIC FIELDS */}
-          {mode === "login" && (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            
+            {/* Email */}
             <div>
-              <label className="form-label">Password</label>
+              <label className="form-label">{t("auth.email")}</label>
               <input 
-                required type="password" name="password" className="participant-input"
-                value={formData.password} onChange={handleChange} 
+                required type="email" name="email" className="participant-input"
+                value={formData.email} onChange={handleChange} 
               />
             </div>
-          )}
 
-          {error && <div className="validation-error-msg text-center">{error}</div>}
+            {/* SIGNUP FIELDS */}
+            {mode === "signup" && (
+              <>
+                <div>
+                  <label className="form-label">{t("auth.fullName")}</label>
+                  <input 
+                    required type="text" name="full_name" className="participant-input"
+                    value={formData.full_name} onChange={handleChange} 
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <div style={{ flex: 1 }}>
+                    <label className="form-label">{t("auth.birthDate")}</label>
+                    <input 
+                      required type="date" name="birth_date" className="participant-input"
+                      value={formData.birth_date} onChange={handleChange} 
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label className="form-label">{t("auth.sex")}</label>
+                    <select 
+                      name="sex" className="participant-input"
+                      value={formData.sex} onChange={handleChange}
+                    >
+                      <option value="female">{t("auth.female")}</option>
+                      <option value="male">{t("auth.male")}</option>
+                    </select>
+                  </div>
+                </div>
+                <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.5rem" }}>
+                  * {t("auth.note")}
+                </p>
+              </>
+            )}
 
-          <button type="submit" disabled={loading} className="btn-save" style={{ marginTop: "1rem" }}>
-            {loading ? "Processing..." : (mode === "signup" ? "Start Protocol" : "Log In")}
-          </button>
-        </form>
+            {/* LOGIN FIELDS */}
+            {mode === "login" && (
+              <div>
+                <label className="form-label">{t("auth.password")}</label>
+                <input 
+                  required type="password" name="password" className="participant-input"
+                  value={formData.password} onChange={handleChange} 
+                />
+              </div>
+            )}
+
+            {error && <div className="validation-error-msg text-center">{error}</div>}
+
+            <button type="submit" disabled={loading} className="btn-save" style={{ marginTop: "1rem" }}>
+              {loading ? t("auth.processing") : (mode === "signup" ? t("auth.btnSignup") : t("auth.btnLogin"))}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

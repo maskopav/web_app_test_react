@@ -1,3 +1,4 @@
+// src/controllers/authController.js
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { executeQuery, executeTransaction } from "../db/queryHelper.js";
@@ -71,7 +72,7 @@ export const participantSignup = async (req, res) => {
         const assignment = await assignProtocolToParticipant(conn, participant.id, project_id, protocol_id);
         uniqueToken = assignment.unique_token;
         // Activate immediately
-        await conn.query(`UPDATE participant_protocols SET is_active=1 WHERE id=?`, [assignment.participant_protocol_id]);
+        await conn.query(`UPDATE participant_protocols SET is_active=1, start_date = NOW() WHERE id=?`, [assignment.participant_protocol_id]);
       }
 
       // 5. Send Email (Only if we generated a password, or always send the link)

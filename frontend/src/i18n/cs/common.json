@@ -45,6 +45,25 @@
     "invalidToken": {
       "title": "Nevalidní token",
       "message": "Token není validní. Prosím zkontroluje URL adresu nebo kontaktujte administrátora."
+    },
+    "auth": {
+      "signupTitle": "Nový účastník",
+      "loginTitle": "Vítejte zpět",
+      "signupDesc": "Zadejte své údaje pro zahájení protokolu.",
+      "loginDesc": "Zadejte své přihlašovací údaje pro pokračování.",
+      "email": "Email",
+      "password": "Heslo",
+      "fullName": "Celé jméno",
+      "birthDate": "Datum narození",
+      "sex": "Pohlaví",
+      "male": "Muž",
+      "female": "Žena",
+      "note": "Přihlašovací údaje vám zašleme na email.",
+      "btnSignup": "Spustit protokol",
+      "btnLogin": "Přihlásit se",
+      "tabSignup": "Registrace",
+      "tabLogin": "Přihlášení",
+      "processing": "Zpracovávám..."
     }
   }
   

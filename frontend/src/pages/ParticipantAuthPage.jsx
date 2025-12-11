@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { signupParticipant, loginParticipant } from "../api/auth";
+import { signupParticipant, loginParticipant, forgotPassword } from "../api/auth";
 import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
 import "./Pages.css"; 
 
@@ -10,9 +10,10 @@ export default function ParticipantAuthPage() {
   const navigate = useNavigate();
   const { t } = useTranslation(["common"]); // Use 'common' namespace
 
-  const [mode, setMode] = useState("signup");
+  const [mode, setMode] = useState("signup"); // "signup" | "login" | "forgot"
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -37,19 +38,23 @@ export default function ParticipantAuthPage() {
     setLoading(true);
 
     try {
-      let response;
-      if (mode === "signup") {
-        response = await signupParticipant({ projectToken, ...formData });
+      if (mode === "forgot") {
+        await forgotPassword(formData.email);
+        setSuccessMsg(t("auth.resetEmailSent", "Reset link sent to your email."));
       } else {
-        response = await loginParticipant({
-          projectToken,
-          email: formData.email,
-          password: formData.password
-        });
-      }
-
-      if (response.token) {
-        navigate(`/participant/${response.token}`, { replace: true });
+        let response;
+        if (mode === "signup") {
+          response = await signupParticipant({ projectToken, ...formData });
+        } else {
+          response = await loginParticipant({
+            projectToken,
+            email: formData.email,
+            password: formData.password
+          });
+        }
+        if (response.token) {
+          navigate(`/participant/${response.token}`, { replace: true });
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -59,14 +64,11 @@ export default function ParticipantAuthPage() {
   };
 
   return (
-    <div className="dashboard-page"> {/* Use dashboard-page for full height/background */}
-      
-      {/* Top Bar for Language Switcher */}
+    <div className="dashboard-page">
       <div className="top-bar" style={{ justifyContent: 'flex-end' }}>
         <LanguageSwitcher />
       </div>
 
-      {/* Centered Content */}
       <div className="app-container" style={{ minHeight: '80vh', alignItems: 'flex-start', paddingTop: '5vh' }}>
         <div className="card" style={{ maxWidth: "500px", width: "95%", padding: "2rem" }}>
           
@@ -89,15 +91,12 @@ export default function ParticipantAuthPage() {
           </div>
 
           <h2 className="text-center">
-            {mode === "signup" ? t("auth.signupTitle") : t("auth.loginTitle")}
+            {mode === "signup" ? t("auth.signupTitle") : mode === "login" ? t("auth.loginTitle") : "Reset Password"}
           </h2>
-          <p className="text-center text-muted" style={{ marginBottom: "1.5rem" }}>
-            {mode === "signup" ? t("auth.signupDesc") : t("auth.loginDesc")}
-          </p>
-
+          
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             
-            {/* Email */}
+            {/* Email Field (Used in all modes) */}
             <div>
               <label className="form-label">{t("auth.email")}</label>
               <input 
@@ -106,57 +105,64 @@ export default function ParticipantAuthPage() {
               />
             </div>
 
-            {/* SIGNUP FIELDS */}
+            {/* Signup Fields */}
             {mode === "signup" && (
               <>
                 <div>
                   <label className="form-label">{t("auth.fullName")}</label>
-                  <input 
-                    required type="text" name="full_name" className="participant-input"
-                    value={formData.full_name} onChange={handleChange} 
-                  />
+                  <input required type="text" name="full_name" className="participant-input" value={formData.full_name} onChange={handleChange} />
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
                   <div style={{ flex: 1 }}>
                     <label className="form-label">{t("auth.birthDate")}</label>
-                    <input 
-                      required type="date" name="birth_date" className="participant-input"
-                      value={formData.birth_date} onChange={handleChange} 
-                    />
+                    <input required type="date" name="birth_date" className="participant-input" value={formData.birth_date} onChange={handleChange} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <label className="form-label">{t("auth.sex")}</label>
-                    <select 
-                      name="sex" className="participant-input"
-                      value={formData.sex} onChange={handleChange}
-                    >
+                    <select name="sex" className="participant-input" value={formData.sex} onChange={handleChange}>
                       <option value="female">{t("auth.female")}</option>
                       <option value="male">{t("auth.male")}</option>
                     </select>
                   </div>
                 </div>
-                <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.5rem" }}>
-                  * {t("auth.note")}
-                </p>
               </>
             )}
 
-            {/* LOGIN FIELDS */}
+            {/* Login Fields */}
             {mode === "login" && (
               <div>
                 <label className="form-label">{t("auth.password")}</label>
-                <input 
-                  required type="password" name="password" className="participant-input"
-                  value={formData.password} onChange={handleChange} 
-                />
+                <input required type="password" name="password" className="participant-input" value={formData.password} onChange={handleChange} />
+                <div style={{textAlign: "right", marginTop: "5px"}}>
+                  <span 
+                    style={{color: "var(--primary)", cursor: "pointer", fontSize: "0.9rem"}}
+                    onClick={() => setMode("forgot")}
+                  >
+                    Forgot Password?
+                  </span>
+                </div>
               </div>
             )}
 
+            {/* Forgot Password Mode Instructions */}
+            {mode === "forgot" && (
+               <p style={{ fontSize: "0.9rem", color: "#666" }}>
+                 Enter your email address and we will send you a link to reset your password.
+               </p>
+            )}
+
             {error && <div className="validation-error-msg text-center">{error}</div>}
+            {successMsg && <div className="text-center" style={{color: "green"}}>{successMsg}</div>}
 
             <button type="submit" disabled={loading} className="btn-save" style={{ marginTop: "1rem" }}>
-              {loading ? t("auth.processing") : (mode === "signup" ? t("auth.btnSignup") : t("auth.btnLogin"))}
+              {loading ? t("auth.processing") : (mode === "signup" ? t("auth.btnSignup") : mode === "login" ? t("auth.btnLogin") : "Send Reset Link")}
             </button>
+
+            {mode === "forgot" && (
+               <button type="button" className="btn-secondary" onClick={() => setMode("login")}>
+                 Back to Login
+               </button>
+            )}
           </form>
         </div>
       </div>

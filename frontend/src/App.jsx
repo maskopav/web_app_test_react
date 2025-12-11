@@ -10,6 +10,7 @@ import ParticipantInterfacePage from "./pages/ParticipantInterfacePage";
 import ParticipantInterfaceLoader from "./pages/ParticipantInterfaceLoader";
 import ParticipantDashboardPage from "./pages/ParticipantDashboardPage";
 import ParticipantAuthPage from "./pages/ParticipantAuthPage"; 
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -28,6 +29,7 @@ export default function App() {
 
       {/* Public Protocol Link (Login/Signup) */}
       <Route path="/protocol/:token" element={<ParticipantAuthPage />} />
+      <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
       {/* Public routes  
       <Route path="/login" element={<Login />} />

@@ -1,3 +1,4 @@
+// src/utils/emailService.js
 import nodemailer from "nodemailer";
 import QRCode from "qrcode"; 
 import { logToFile } from "./logger.js";
@@ -71,6 +72,36 @@ const transporter = nodemailer.createTransport({
     } catch (error) {
       console.error("❌ Email Error:", error);
       logToFile(`❌ EMAIL FAILED to ${email}: ${error.message}`);
+      return false;
+    }
+  }
+
+  export async function sendPasswordResetEmail(email, resetLink) {
+    try {
+      const emailBody = `
+        <div style="font-family: Arial, sans-serif; padding: 20px;">
+          <h2 style="color: #3764df;">Password Reset Request</h2>
+          <p>You requested to reset your password.</p>
+          <p>Click the link below to set a new password. This link is valid for 1 hour.</p>
+          
+          <a href="${resetLink}" style="background: #3764df; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block; margin: 20px 0;">
+            Reset Password
+          </a>
+          
+          <p style="font-size: 0.9em; color: #666;">If you did not request this, please ignore this email.</p>
+        </div>
+      `;
+  
+      await transporter.sendMail({
+        from: `"TaskProtocoller" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: "Password Reset Request",
+        html: emailBody,
+      });
+  
+      return true;
+    } catch (error) {
+      console.error("❌ Reset Email Error:", error);
       return false;
     }
   }

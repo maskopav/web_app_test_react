@@ -15,7 +15,7 @@ export default function ParticipantInterfaceLoader() {
   const { mappings } = useMappings();
 
   // Ref to track if we have already started initialization
-  const didInit = useRef(false);
+  const lastLoadedToken = useRef(null);
 
   useEffect(() => {
     // Ensure mappings (languages and tasks) are loaded before running logic.
@@ -24,11 +24,14 @@ export default function ParticipantInterfaceLoader() {
       return;
     }
 
-    // Prevent double-execution (React Strict Mode fix)
-    if (didInit.current) {
+    // Check if we have already loaded THIS specific token
+    // If the token matches the last one we processed, stop.
+    if (lastLoadedToken.current === token) {
       return;
     }
-    didInit.current = true; // Mark as running
+
+    // Mark this token as processed immediately
+    lastLoadedToken.current = token;
 
     async function load() {
       try {

@@ -6,6 +6,7 @@ import participantProtocolsRouter from "./src/routes/participantProtocols.js";
 import participantsRouter from "./src/routes/participants.js";
 import sessionsRouter from "./src/routes/sessions.js";
 import recordingsRouter from "./src/routes/recordings.js";
+import authRouter from "./src/routes/auth.js";
 
 import cors from "cors";
 
@@ -31,6 +32,7 @@ app.use("/participant-protocol", participantProtocolsRouter);
 app.use("/participants", participantsRouter);
 app.use("/sessions", sessionsRouter);
 app.use("/recordings", recordingsRouter);
+app.use("/auth", authRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

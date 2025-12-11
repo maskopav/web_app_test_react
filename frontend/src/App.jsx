@@ -4,12 +4,12 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";
 import ProjectDashboardPage from "./pages/ProjectDashboardPage";
 import ProtocolDashboardPage from "./pages/ProtocolDashboardPage";
 import ProtocolEditorPage from "./pages/ProtocolEditorPage";
-// import ParticipantManagerPage from "./pages/ParticipantManagerPage";
 // import DataExplorerPage from "./pages/DataExplorerPage";
 // import MasterDashboardPage from "./pages/MasterDashboardPage";
 import ParticipantInterfacePage from "./pages/ParticipantInterfacePage";
 import ParticipantInterfaceLoader from "./pages/ParticipantInterfaceLoader";
 import ParticipantDashboardPage from "./pages/ParticipantDashboardPage";
+import ParticipantAuthPage from "./pages/ParticipantAuthPage"; 
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
@@ -26,6 +26,8 @@ export default function App() {
       <Route path="/participant/interface" element={<ParticipantInterfacePage />} />
       <Route path="/participant/:token" element={<ParticipantInterfaceLoader />} />
 
+      {/* Public Protocol Link (Login/Signup) */}
+      <Route path="/protocol/:token" element={<ParticipantAuthPage />} />
 
       {/* Public routes  
       <Route path="/login" element={<Login />} />

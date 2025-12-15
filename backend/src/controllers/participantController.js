@@ -34,6 +34,7 @@ export const createParticipant = async (req, res) => {
     birth_date, 
     sex, 
     contact_email, 
+    contact_phone,
     notes, 
     project_id, 
     protocol_id // The selected protocol to assign immediately
@@ -45,9 +46,10 @@ export const createParticipant = async (req, res) => {
     await executeTransaction(async (conn) => {
       // 1. Insert Participant
       const [pResult] = await conn.query(
-        `INSERT INTO participants (full_name, external_id, birth_date, sex, contact_email, notes)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [full_name, external_id || null, birth_date, sex, contact_email, notes]
+        // Added 'contact_phone' and 'creation_source' columns
+        `INSERT INTO participants (full_name, external_id, birth_date, sex, contact_email, contact_phone, notes, creation_source)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [full_name, external_id || null, birth_date, sex, contact_email, contact_phone || null, notes, 'admin']
       );
       const newParticipantId = pResult.insertId;
 

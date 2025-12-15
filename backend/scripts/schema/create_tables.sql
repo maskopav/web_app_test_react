@@ -108,7 +108,10 @@ CREATE TABLE `participants` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp,
   `login_email` varchar(255) UNIQUE DEFAULT NULL,
-  `login_password_hash` varchar(255) DEFAULT NULL
+  `login_password_hash` varchar(255) DEFAULT NULL,
+  `reset_password_token` VARCHAR(255) DEFAULT NULL,
+  `reset_password_expires` TIMESTAMP DEFAULT NULL,
+  `creation_source` varchar(50) NOT NULL DEFAULT 'admin' COMMENT 'signup or admin'
 );
 
 CREATE TABLE `participant_protocols` (

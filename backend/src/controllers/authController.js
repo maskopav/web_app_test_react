@@ -18,7 +18,7 @@ async function findParticipantByEmail(email) {
 
 // POST /api/auth/signup
 export const participantSignup = async (req, res) => {
-  const { projectToken, full_name, birth_date, sex, email } = req.body;
+  const { projectToken, full_name, birth_date, sex, email, contact_phone } = req.body;
   logToFile(`📝 Signup Request: ${email}`);
 
   try {
@@ -44,9 +44,9 @@ export const participantSignup = async (req, res) => {
       const hash = await bcrypt.hash(rawPassword, SALT_ROUNDS);
 
       const [resIns] = await conn.query(
-        `INSERT INTO participants (full_name, birth_date, sex, contact_email, login_email, login_password_hash)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [full_name, birth_date, sex, email, email, hash]
+        `INSERT INTO participants (full_name, birth_date, sex, contact_email, contact_phone, login_email, login_password_hash, creation_source)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [full_name, birth_date, sex, email, contact_phone, email, hash, 'signup']
       );
       
       const participantId = resIns.insertId;

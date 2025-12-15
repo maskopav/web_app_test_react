@@ -58,12 +58,15 @@
       "sex": "Pohlaví",
       "male": "Muž",
       "female": "Žena",
+      "phone": "Telefonní číslo (volitelné)",
       "note": "Přihlašovací údaje vám zašleme na email.",
       "btnSignup": "Spustit protokol",
       "btnLogin": "Přihlásit se",
       "tabSignup": "Registrace",
       "tabLogin": "Přihlášení",
-      "processing": "Zpracovávám..."
+      "processing": "Zpracovávám...",
+      "welcomeTitle": "TaskProtocoller",
+      "welcomeSubtitle": "Pro účast se prosím zaregistrujte nebo přihlaste. Pokud jste se již registrovali, použijte e-mail a heslo, které vám bylo zasláno, případně vygenerovaný link či QR kód. Pokud se registrujete nově, zašleme vám vaše přihlašovací údaje a jedinečný odkaz/QR kód pro budoucí přihlášení, které nevyžaduje zadání hesla."
     }
   }
   

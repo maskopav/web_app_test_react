@@ -143,7 +143,7 @@ export default function ParticipantAuthForm() {
                   </div>
                   <div>
                     <label className="form-label">{t("auth.phone")}</label>
-                    <input required type="text" name="phone" className="participant-input" value={formData.phone} onChange={handleChange} />
+                    <input type="text" name="phone" className="participant-input" value={formData.phone} onChange={handleChange} />
                   </div>
                 </>
               )}

@@ -43,10 +43,26 @@ export const participantSignup = async (req, res) => {
       const rawPassword = crypto.randomBytes(4).toString("hex");
       const hash = await bcrypt.hash(rawPassword, SALT_ROUNDS);
 
+      // Create unique externalId
+      let externalId;
+      let isUnique = false;
+      
+      while (!isUnique) {
+        externalId = `S-${crypto.randomBytes(3).toString("hex").toUpperCase()}`;
+        
+        // Check if this specific ID already exists
+        const [existingId] = await conn.query(
+          `SELECT id FROM participants WHERE external_id = ?`, 
+          [externalId]
+        );
+        
+        if (existingId.length === 0) isUnique = true;
+      }
+
       const [resIns] = await conn.query(
-        `INSERT INTO participants (full_name, birth_date, sex, contact_email, contact_phone, login_email, login_password_hash, creation_source)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [full_name, birth_date, sex, email, contact_phone, email, hash, 'signup']
+        `INSERT INTO participants (external_id, full_name, birth_date, sex, contact_email, contact_phone, login_email, login_password_hash, creation_source)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [externalId, full_name, birth_date, sex, email, contact_phone, email, hash, 'signup']
       );
       
       const participantId = resIns.insertId;

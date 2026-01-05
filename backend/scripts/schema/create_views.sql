@@ -73,6 +73,7 @@ SELECT
     p.updated_by,
     -- Join Data
     pp.project_id,
+    pp.access_token,
     pr.name AS project_name,
     pr.end_date AS project_end_date,
     -- Aggregated Counts (Default to 0 if NULL)

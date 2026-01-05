@@ -109,7 +109,8 @@
       "create": "Create Protocol",
       "show": "Show",
       "edit": "Edit",
-      "duplicate": "Duplicate"
+      "duplicate": "Duplicate",
+      "share": "General Enrollment"
     },
     "table": {
       "name": "Name",
@@ -121,6 +122,17 @@
       "projectName": "Project Name",
       "createdAt": "Created at",
       "actions": "Actions"
+    },
+    "enrollmentModal": {
+      "title": "Protocol Enrollment Access",
+      "description": "Share this link with participants. They can use it to <strong>sign up</strong> or <strong>log in</strong>.<br/>Once authenticated, they will be automatically enrolled in this protocol version.",
+      "linkInstruction": "Access Link:",
+      "copyLink": "Copy Link",
+      "qrTitle": "Scan QR code for Mobile Access:",
+      "downloadQR": "Download QR code",
+      "copyQR": "Copy QR code",
+      "qrCopied": "QR Code image copied to clipboard!",
+      "copied": "Copied!"
     }
   },
   "protocolEditor": {

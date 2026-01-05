@@ -187,6 +187,7 @@
 .btn-edit { background: var(--primary); }
 .btn-duplicate { background: var(--warning); }
 .btn-search { background-color: var(--warning);}
+.btn-share { background: var(--success); }
 
 .error-text {
   color: #dc2626;

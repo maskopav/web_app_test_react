@@ -11,7 +11,8 @@
       "save": "Save",
       "done": "Done",
       "skip": "Skip",
-      "back": "Back"
+      "back": "Back",
+      "ok": "Ok"
       
     },
     "status": {
@@ -67,6 +68,10 @@
       "tabLogin": "Login",
       "processing": "Processing...",
       "welcomeTitle": "Welcome to the TaskProtocoller", 
-    "welcomeSubtitle": "Please sign up or log in to participate. If you registered, you can use the email and password sent to you or unique link/QR code. If you are signing up, we will send your credentials and the non-login link/QR code after registration."    }
+    "welcomeSubtitle": "Please sign up or log in to participate. If you registered, you can use the email and password sent to you or unique link/QR code. If you are signing up, we will send your credentials and the non-login link/QR code after registration."    
+   },
+   "confirmModal": {
+    "info":"Information"
+   }
   }
   

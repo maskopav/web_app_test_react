@@ -58,7 +58,10 @@ export const participantSignup = async (req, res) => {
       await conn.query(`UPDATE participant_protocols SET is_active=1, start_date = NOW() WHERE id=?`, [assignment.participant_protocol_id]);
 
       // Send Email
-      const link = `${req.headers.origin}/#/participant/${assignment.unique_token}`;
+      // Use Referer to get the full path before the hash (e.g., /test/dist/)
+      // Fallback to origin if Referer is missing
+      const baseUrl = req.headers.referer || req.headers.origin;
+      const link = `${baseUrl}#/participant/${assignment.unique_token}`;
       await sendCredentialsEmail(email, full_name, rawPassword, link);
 
       return assignment.unique_token;
@@ -68,6 +71,7 @@ export const participantSignup = async (req, res) => {
 
   } catch (err) {
     console.error("Signup error:", err);
+    logToFile(`❌ EMAIL FAILED to ${email}: ${err.message}`);
     res.status(500).json({ error: "Signup failed." });
   }
 };
@@ -145,7 +149,10 @@ export const forgotPassword = async (req, res) => {
     );
 
     // Send Email
-    const resetLink = `${req.headers.origin}/#/reset-password/${token}`;
+    // Use Referer to get the full path before the hash (e.g., /test/dist/)
+    // Fallback to origin if Referer is missing
+    const baseUrl = req.headers.referer || req.headers.origin;
+    const resetLink = `${baseUrl}/#/reset-password/${token}`;
     await sendPasswordResetEmail(email, resetLink);
 
     res.json({ success: true });

@@ -86,7 +86,7 @@
 .forgot-password-link {
   color: var(--primary);
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 .btn-green {
@@ -104,3 +104,31 @@
   color: var(--muted);
   margin: 0;
 }
+
+/* Grey placeholders */
+.participant-input::placeholder {
+    color: #adb5bd;
+    opacity: 1;
+    font-size: 0.9rem;
+  }
+  
+  /* Validation styling */
+  .input-error {
+    border-color: var(--danger) !important;
+  }
+  
+  .field-error-text {
+    color: var(--danger);
+    font-size: 0.75rem;
+    margin-top: 0.15rem;
+    display: block;
+  }
+  
+  .validation-error-msg {
+    background-color: #fff5f5;
+    border: 1px solid var(--danger);
+    padding: 0.5rem;
+    border-radius: var(--sharp-radius);
+    color: var(--danger);
+    font-size: 0.85rem;
+  }

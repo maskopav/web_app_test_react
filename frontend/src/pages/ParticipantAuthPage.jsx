@@ -37,14 +37,14 @@ export default function ParticipantAuthPage() {
         onSignup={(data) => signupParticipant({ projectToken, ...data }).then(handleSuccess)}
         onForgot={forgotPassword}
         signupFields={[
-          { name: "full_name", label: t("auth.fullName"), type: "text", required: true },
+          { name: "full_name", label: t("auth.fullName"), type: "text", required: true, placeholder: "e.g. John Doe" },
           { name: "birth_date", label: t("auth.birthDate"), type: "date", required: true, gridSpan: true },
-          { name: "sex", label: t("auth.sex"), type: "select", gridSpan: true, 
-            options: [{value: "female", label: t("auth.female")}, {value: "male", label: t("auth.male")}, {value: "-", label: "-"}] 
+          { name: "sex", label: t("auth.sex"), type: "select", gridSpan: true, required: true, 
+            options: [{value: "not_selected", label: "-- Choose --"}, {value: "female", label: t("auth.female")}, {value: "male", label: t("auth.male")}] 
           },
-          { name: "phone", label: t("auth.phone"), type: "text", required: false }
+          { name: "phone", label: t("auth.phone"), type: "text", required: false, placeholder: "e.g. +420 123 456 789" }
         ]}
-        initialData={{ sex: "-" }}
+        initialData={{ sex: "not_selected" }}
       />
     </div>
   );

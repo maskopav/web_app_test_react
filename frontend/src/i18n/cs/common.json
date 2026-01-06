@@ -66,7 +66,8 @@
       "tabLogin": "Přihlášení",
       "processing": "Zpracovávám...",
       "welcomeTitle": "TaskProtocoller",
-      "welcomeSubtitle": "Pro účast se prosím zaregistrujte nebo přihlaste. Pokud jste se již registrovali, použijte e-mail a heslo, které vám bylo zasláno, případně vygenerovaný link či QR kód. Pokud se registrujete nově, zašleme vám vaše přihlašovací údaje a jedinečný odkaz/QR kód pro budoucí přihlášení, které nevyžaduje zadání hesla."
+      "welcomeSubtitle": "Prosím zaregistrujte se nebo přihlašte pro vyplnění testu. <br/><strong>Registrovaní uživatelé:</strong> použijte Váš unikátní link nebo přihlašovací údaje poslané emailem. <br/><strong>Noví uživatelé:</strong> vaše přístupové údaje Vám budou poslány emailem po registraci.",
+      "forgotPasswordLink": "Zapomenuté heslo?" 
     }
   }
   

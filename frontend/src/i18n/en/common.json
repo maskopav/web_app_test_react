@@ -68,7 +68,8 @@
       "tabLogin": "Login",
       "processing": "Processing...",
       "welcomeTitle": "Welcome to the TaskProtocoller", 
-    "welcomeSubtitle": "Please sign up or log in to participate. If you registered, you can use the email and password sent to you or unique link/QR code. If you are signing up, we will send your credentials and the non-login link/QR code after registration."    
+      "welcomeSubtitle": "Please sign up or log in to participate. <br/><strong>Registered users:</strong> use your sent unique link or credentials. <br/><strong>New users:</strong> your access details will be emailed after registration.",
+      "forgotPasswordLink": "Forgot password?"    
    },
    "confirmModal": {
     "info":"Information"

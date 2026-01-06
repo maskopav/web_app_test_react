@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../api/auth";
-import "./ParticipantAuth.css";
+import "../AuthForm/AuthForm.css";
 import { useTranslation } from "react-i18next";
 
 export default function ResetPasswordModal() {

@@ -245,6 +245,13 @@ button:disabled {
   align-items: center;
 }
 
+.title-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* Keeps everything centered together */
+  width: 100%;
+}
 
 /* Mobile-friendly adjustments */
 @media (max-width: 600px) {

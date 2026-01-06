@@ -5,6 +5,20 @@ import { useTranslation, Trans } from "react-i18next"
 import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
 import AuthForm from "../components/AuthForm/AuthForm";
 import { signupParticipant, loginParticipant, forgotPassword } from "../api/auth";
+import "./Pages.css"
+
+const TaskIcon = () => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    fill="#3764df" 
+    width="1.1em"  // Scales with text size
+    height="1.1em" // Scales with text size
+    style={{ marginRight: '0.5rem', flexShrink: 0 }} // Small gap to the right
+  >
+    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+  </svg>
+);
 
 export default function ParticipantAuthPage() {
   const { token: projectToken } = useParams();
@@ -23,7 +37,12 @@ export default function ParticipantAuthPage() {
         <LanguageSwitcher />
       </div>
       <AuthForm
-        title={t("auth.welcomeTitle")}
+        title={
+          <div className="title-bar">
+          <TaskIcon />
+          {t("auth.welcomeTitle")}
+          </div>
+        }
         subtitle=
         <Trans
           i18nKey="auth.welcomeSubtitle"

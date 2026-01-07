@@ -1,26 +1,22 @@
 // src/context/AppProvider.jsx
 import React from "react";
-//import { UserProvider } from "./UserContext";
+import { UserProvider } from "./UserContext"; 
 import { MappingProvider } from "./MappingContext";
 import { ProtocolProvider } from "./ProtocolContext";
-//import { RecorderProvider } from "./RecorderContext";
-//import { UIStateProvider } from "./UIStateContext";
 import { ConfirmDialogProvider } from "../components/ConfirmDialog/ConfirmDialogContext";
 
 export const AppProvider = ({ children }) => {
-  const mappingTables = ["projects", "task_types", "languages", "tasks"]; // mapping tables called globally once
+  const mappingTables = ["projects", "task_types", "languages", "tasks"];
 
   return (
+    <UserProvider> 
       <MappingProvider tables={mappingTables}>
         <ProtocolProvider>
-          {/*<RecorderProvider> */}
-            {/*<UIStateProvider> */}
-            <ConfirmDialogProvider>
-              {children}
-            </ConfirmDialogProvider>
-            {/*</UIStateProvider> */}
-          {/*</RecorderProvider> */}
+          <ConfirmDialogProvider>
+            {children}
+          </ConfirmDialogProvider>
         </ProtocolProvider>
       </MappingProvider>
+    </UserProvider>
   );
 };

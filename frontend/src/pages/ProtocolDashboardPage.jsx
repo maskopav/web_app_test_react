@@ -2,10 +2,10 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
-import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { useMappings } from "../context/MappingContext";
 import Protocols from "../components/Protocols/Protocols";
+import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
 import "./Pages.css"
 
 export default function ProtocolDashboardPage() {
@@ -47,16 +47,7 @@ export default function ProtocolDashboardPage() {
 
   return (
     <div className="dashboard-page">
-      <div className="top-bar"> 
-        <button
-          className="btn-back"
-          onClick={handleBackToDashboard}
-        >
-          ← {t("buttons.back", { ns: "common" })}
-        </button>
-        <LanguageSwitcher />
-      </div>
-
+      <DashboardTopBar onBack={handleBackToDashboard} />
       <Protocols onSelectProtocol={handleSelectProtocol} />
     </div>
   );

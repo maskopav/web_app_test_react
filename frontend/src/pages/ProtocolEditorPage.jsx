@@ -7,6 +7,7 @@ import ProtocolEditor from "../components/ProtocolEditor";
 import { ProtocolContext } from "../context/ProtocolContext";
 import { useMappings } from "../context/MappingContext";
 import { useConfirm } from "../components/ConfirmDialog/ConfirmDialogContext";
+import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar"; //
 import "./Pages.css"
 
 function attachIds(protocol, projectId, protocolId) {
@@ -62,7 +63,7 @@ export default function ProtocolEditorPage() {
   }
 
   // Back navigation handler
-  async function handleBackToDashboard() {
+  async function handleBack() {
     const isConfirmed = await confirm({
       title: "Any unsaved changes will be lost!",
       message: "Are you sure you want to go back? Any unsaved changes will be lost.",
@@ -80,15 +81,9 @@ export default function ProtocolEditorPage() {
 
   return (
     <div className="protocol-editor-page">
-      <div className="top-bar"> 
-        <button
-          className="btn-back"
-          onClick={handleBackToDashboard}
-        >
-          ← {t("buttons.back", { ns: "common" })}
-        </button>
-        <LanguageSwitcher />
-      </div>
+      <DashboardTopBar 
+        onBack={handleBack} 
+      />
 
       <ProtocolEditor
         initialTasks={configuredTasks}

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { LanguageSwitcher } from "../components/LanguageSwitcher/LanguageSwitcher";
 import { useMappings } from "../context/MappingContext";
 
 // API
@@ -16,6 +15,7 @@ import AddParticipantModal from "../components/Participants/AddParticipantModal"
 import ParticipantProtocolTable from "../components/Participants/ParticipantProtocolTable";
 import AssignmentSuccessModal from "../components/Participants/AssignmentSuccessModal"; 
 import Modal from "../components/ProtocolEditor/Modal"
+import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar"; 
 
 // Styles
 import "./Pages.css";
@@ -171,13 +171,8 @@ export default function ParticipantDashboardPage() {
 
   return (
     <div className="dashboard-page">
-      {/* Top Bar */}
-      <div className="top-bar">
-        <button className="btn-back" onClick={() => navigate(`/projects/${projectId}`)}>
-          ← {t("buttons.back", { ns: "common" })}
-        </button>
-        <LanguageSwitcher />
-      </div>
+      {/* Top Navigation Bar */}
+      <DashboardTopBar onBack={() => navigate(`/projects/${projectId}`)} />
 
       {/* Page Title with Project Name */}
       <h2 className="page-title">

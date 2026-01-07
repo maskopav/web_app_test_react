@@ -4,29 +4,31 @@ import { useTranslation } from "react-i18next";
 import "./AdminDashboard.css";
 
 export default function MasterTools() {
-  const { t } = useTranslation(["admin", "common"]);
+  const { t } = useTranslation(["admin"]);
 
   // Note: Navigation logic can be added to the onClick handlers later
   return (
     <section className="dashboard-section master-tools">
-      <h2 className="section-heading">Master Administrative Tools</h2>
+      <h2 className="section-heading">
+        {t("adminDashboard.masterTools.heading")}
+      </h2>
       
       <div className="actions-grid">
         {/* Admin User Management Card */}
-        <button className="action-card btn-users" onClick={() => console.log("Navigate to Users")}>
+        <button className="action-card btn-participants" onClick={() => console.log("Navigate to Users")}>
           <div className="icon">👤</div>
           <div className="text">
-            <h3>Admin User Management</h3>
-            <p>Manage administrator accounts, assign project permissions, and reset credentials.</p>
+            <h3>{t("adminDashboard.masterTools.users")}</h3>
+            <p>{t("adminDashboard.masterTools.usersDesc")}</p>
           </div>
         </button>
 
         {/* Global Projects Card */}
-        <button className="action-card btn-projects" onClick={() => console.log("Navigate to Projects")}>
+        <button className="action-card btn-protocols" onClick={() => console.log("Navigate to Projects")}>
           <div className="icon">📂</div>
           <div className="text">
-            <h3>Global Project Overview</h3>
-            <p>View and manage all system projects, archive old studies, or create new protocol templates.</p>
+            <h3>{t("adminDashboard.masterTools.projects")}</h3>
+            <p>{t("adminDashboard.masterTools.projectsDesc")}</p>
           </div>
         </button>
       </div>

@@ -1,4 +1,17 @@
 {
+  "adminDashboard": {
+    "title": "Admin Management",
+    "description": "Select a project to manage protocols and participants, or use administrative tools below, if you have masters rights.",
+    "projectsTitle": "Your Assigned Projects",
+    "enterProject": "Enter Dashboard →",
+    "masterTools": {
+      "heading": "Master Administrative Tools",
+      "users": "Admin User Management",
+      "usersDesc": "Manage administrator accounts, assign project permissions, and reset credentials.",
+      "projects": "Global Project Overview",
+      "projectsDesc": "View and manage all system projects, activate or deactivate projects."
+    }
+  },
   "projectDashboard": {
     "title": "Project Dashboard",
     "subtitle": "Loaded project:",

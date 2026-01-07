@@ -8,7 +8,7 @@ export default function ProjectGrid({ projects, onProjectClick }) {
   
   return (
     <section className="dashboard-section">
-      <h2 className="section-heading">{t("projectDashboard.projectsTitle", "Your Projects")}</h2>
+      <h2 className="section-heading">{t("adminDashboard.projectsTitle")}</h2>
       <div className="project-grid">
         {projects.map(project => (
           <div 
@@ -24,7 +24,7 @@ export default function ProjectGrid({ projects, onProjectClick }) {
               <p>{project.country} • {project.frequency}</p>
             </div>
             <div className="project-card-footer">
-              <span className="card-link">Enter Dashboard →</span>
+              <span className="card-link">{t("adminDashboard.enterProject")}</span>
             </div>
           </div>
         ))}

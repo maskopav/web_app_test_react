@@ -61,9 +61,9 @@ export default function AdminDashboardPage() {
       <DashboardTopBar user={user} onLogout={handleLogout} />
 
       <div className="page-header">
-        <h1 className="page-title">Management Console</h1>
+        <h1 className="page-title">Admin Dashboard</h1>
         <p className="project-description">
-          Select a project to manage or use administrative tools below.
+          Select a project to manage protocols and participants, or use administrative tools below.
         </p>
       </div>
 

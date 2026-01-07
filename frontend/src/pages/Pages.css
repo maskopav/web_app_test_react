@@ -41,17 +41,6 @@ body {
   padding: 0;
 }
 
-.top-bar {
-  display: flex;
-  justify-content: space-between;  /* automatically expands the gap */
-  align-items: center;             /* vertically center items */
-  padding: 1px 15px 1px 15px;
-  border-bottom: 1px solid #ddd;
-  background-color: #fafafa;
-  flex-wrap: wrap;                 /* allows wrapping on narrow screens */
-  gap: 0;                          /* we let space-between handle spacing */
-  margin-top: 0;
-}
 
 .page-title {
   margin: 0.2rem;

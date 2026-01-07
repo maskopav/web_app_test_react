@@ -10,6 +10,7 @@ import { getProjectStats } from "../api/projects";
 import ProjectStats from "../components/ProjectDashboard/ProjectStats";
 import ProjectActions from "../components/ProjectDashboard/ProjectActions";
 import StatusBadge from "../components/ProjectDashboard/StatusBadge";
+import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar"; 
 
 // Styles
 import "./Pages.css"; // Global layout styles
@@ -23,6 +24,16 @@ export default function ProjectDashboardPage() {
 
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Get User Data 
+  const [user] = useState(() => {
+    const stored = localStorage.getItem("adminUser");
+    if (stored) return JSON.parse(stored);
+    if (import.meta.env.DEV) {
+      return { id: 1, full_name: "Master User", role_id: 1, email: "master_user@example.com" };
+    }
+    return null;
+  });
 
   // Ref to prevent double-fetch in Strict Mode
   const didLoad = useRef(false);
@@ -56,6 +67,11 @@ export default function ProjectDashboardPage() {
   const goProtocols = () => navigate(`/projects/${projectId}/protocols`);
   const goParticipants = () => navigate(`/projects/${projectId}/participants`);
   const goData = () => navigate(`/projects/${projectId}/data`);
+  const handleBack = () => navigate("/admin"); // Returns to Admin Dashboard
+  const handleLogout = () => {
+    localStorage.removeItem("adminUser");
+    navigate("/login");
+  };
 
   if (loading) {
     return (
@@ -68,12 +84,11 @@ export default function ProjectDashboardPage() {
   return (
     <div className="dashboard-page">
       {/* Top Navigation Bar */}
-      <div className="top-bar">
-        <button className="btn-back" onClick={() => navigate("/")}>
-          ← {t("buttons.back", { ns: "common" })}
-        </button>
-        <LanguageSwitcher />
-      </div>
+      <DashboardTopBar 
+        user={user} 
+        onLogout={handleLogout} 
+        onBack={handleBack} 
+      />
 
       {/* Page Header */}
       <div className="page-header">

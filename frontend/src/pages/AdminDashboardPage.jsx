@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getMappings } from "../api/mappings";
 
 // Shared & Local Components
-import DashboardTopBar from "../components/AdminDashboard/DashboardTopBar";
+import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
 import ProjectGrid from "../components/AdminDashboard/ProjectGrid";
 import MasterTools from "../components/AdminDashboard/MasterTools";
 

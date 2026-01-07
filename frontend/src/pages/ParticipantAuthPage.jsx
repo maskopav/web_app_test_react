@@ -53,7 +53,7 @@ export default function ParticipantAuthPage() {
           }}
         />
         onLogin={(data) => loginParticipant({ projectToken, ...data }).then(handleSuccess)}
-        onSignup={(data) => signupParticipant({ projectToken, ...data }).then(handleSuccess)}
+        onSignup={(data) => signupParticipant({ projectToken, ...data })}
         onForgot={forgotPassword}
         signupFields={[
           { name: "full_name", label: t("auth.fullName"), type: "text", required: true, placeholder: "e.g. John Doe" },

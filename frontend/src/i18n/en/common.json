@@ -62,7 +62,7 @@
       "female": "Female",
       "phone": "Phone number (optional)",
       "note": "We will send login credentials to your email.",
-      "btnSignup": "Start Protocol",
+      "btnSignup": "Sign Up",
       "btnLogin": "Login and start protocol",
       "tabSignup": "Sign Up",
       "tabLogin": "Login",
@@ -79,7 +79,13 @@
       "invalidPhone": "Invalid phone format",
       "invalidGender": "Please select your gender",
       "underAge": "You must be at least 18 years old to participate.",
-      "overAge": "You are too old, check the year of the birth."
+      "overAge": "You are too old, check the year of the birth.",
+      "signupSuccessTitle": "Registration Successful!",
+      "signupSuccessDetail": "Your credentials and unique access link have been sent to your email.",
+      "spamNote": "Please check your spam folder if you don't see it shortly.",
+      "smartphoneNote": "For the best experience, please scan the QR code using your smartphone.",
+      "show": "Show",
+      "hide": "Hide"
    },
    "confirmModal": {
     "info":"Information"

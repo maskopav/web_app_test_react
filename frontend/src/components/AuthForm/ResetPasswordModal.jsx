@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { resetPassword } from "../../api/auth";
-import "../AuthForm/AuthForm.css";
+import "./AuthForm.css";
 import { useTranslation } from "react-i18next";
 
 export default function ResetPasswordModal() {
@@ -11,6 +11,7 @@ export default function ResetPasswordModal() {
   const { t } = useTranslation(["common"]);
 
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [confirm, setConfirm] = useState("");
   const [status, setStatus] = useState({ loading: false, error: "", success: false });
 
@@ -45,17 +46,24 @@ export default function ResetPasswordModal() {
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div>
                 <label className="form-label">{t("auth.newPassword", "New Password")}</label>
-                <input 
-                  required type="password" className="participant-input"
-                  value={password} onChange={(e) => setPassword(e.target.value)} 
-                />
+                <div className="password-wrapper">
+                  <input 
+                    required type={showPassword ? "text" : "password"} className="participant-input"
+                    value={password} onChange={(e) => setPassword(e.target.value)} 
+                  />
+                  <button type="button" className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
+                    {showPassword ? t("auth.hide") : t("auth.show")}
+                  </button>
+                </div>
               </div>
               <div>
                 <label className="form-label">{t("auth.confirmPassword", "Confirm Password")}</label>
-                <input 
-                  required type="password" className="participant-input"
-                  value={confirm} onChange={(e) => setConfirm(e.target.value)} 
-                />
+                <div className="password-wrapper">
+                  <input 
+                    required type={showPassword ? "text" : "password"} className="participant-input"
+                    value={confirm} onChange={(e) => setConfirm(e.target.value)} 
+                  />
+                </div>
               </div>
 
               {status.error && <div className="validation-error-msg text-center">{status.error}</div>}

@@ -15,11 +15,13 @@ export default function AuthForm({
 }) {
   const { t } = useTranslation(["common"]);
   const [mode, setMode] = useState(initialMode);
+  const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const [successMsg, setSuccessMsg] = useState("");
   const [formData, setFormData] = useState(initialData);
+  const [showPassword, setShowPassword] = useState(false);
 
   const validateField = (name, value, isRequired = false) => {
     let errorMsg = "";
@@ -129,6 +131,7 @@ export default function AuthForm({
         setSuccessMsg(t("auth.resetEmailSent"));
       } else if (mode === "signup") {
         await onSignup(formData);
+        setIsRegistered(true);
       } else {
         await onLogin(formData);
       }
@@ -138,6 +141,27 @@ export default function AuthForm({
       setLoading(false);
     }
   };
+
+  // Success View for Registration
+  if (isRegistered) {
+    return (
+      <div className="auth-page-content compact">
+        <div className="auth-container-card text-center">
+          <h2 className="auth-main-title">{t("auth.signupSuccessTitle")}</h2>
+          <div className="auth-success-info">
+            <p>{t("auth.signupSuccessDetail")}</p>
+            <p className="auth-tip"><strong>{t("auth.spamNote")}</strong></p>
+            <div className="auth-instruction-box">
+              {t("auth.smartphoneNote")}
+            </div>
+          </div>
+          <button className="btn-primary" onClick={() => { setIsRegistered(false); setMode("login"); }}>
+            {t("auth.btnBackToLogin")}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
       <div className="app-container">
@@ -153,14 +177,14 @@ export default function AuthForm({
               <div className="auth-form-tabs">
                 <button 
                   type="button"
-                  className={mode === "signup" ? "btn-primary" : "btn-secondary"}
+                  className={`tab-btn ${mode === "signup" ? "active" : "faded"}`}
                   onClick={() => { setMode("signup"); setError(""); setFieldErrors({}); setSuccessMsg(""); }}
                 >
                   {t("auth.tabSignup")}
                 </button>
                 <button 
                   type="button"
-                  className={mode === "login" ? "btn-primary" : "btn-secondary"}
+                  className={`tab-btn ${mode === "login" ? "active" : "faded"}`}
                   onClick={() => { setMode("login"); setError(""); setFieldErrors({}); setSuccessMsg(""); }}
                 >
                   {t("auth.tabLogin")}
@@ -221,8 +245,24 @@ export default function AuthForm({
               {mode === "login" && (
                 <div className="form-field">
                   <label className="form-label">{t("auth.password")}</label>
-                  <input required type="password" name="password" className="participant-input" value={formData.password || ""} onChange={handleChange} />
-                  {onForgot && (
+                  <div className="password-wrapper">
+                  <input 
+                    required 
+                    type={showPassword ? "text" : "password"} // Toggle type
+                    name="password" 
+                    className="participant-input" 
+                    value={formData.password || ""} 
+                    onChange={handleChange} 
+                  />
+                  <button 
+                    type="button" 
+                    className="password-toggle" 
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? t("auth.hide") : t("auth.show")}
+                  </button>
+                </div>
+                {onForgot && (
                     <div style={{textAlign: "right", marginTop: "0.25rem"}}>
                       <span className="forgot-password-link" onClick={() => setMode("forgot")}>
                         {t("auth.forgotPasswordLink")}

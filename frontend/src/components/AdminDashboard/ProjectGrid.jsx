@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import StatusBadge from "../ProjectDashboard/StatusBadge";
 import "./AdminDashboard.css";
 
 export default function ProjectGrid({ projects, onProjectClick }) {
@@ -17,6 +18,7 @@ export default function ProjectGrid({ projects, onProjectClick }) {
           >
             <div className="project-card-header">
               <h3>{project.name}</h3>
+              <StatusBadge active={project.is_active === 1} />
             </div>
             <div className="project-card-body">
               <p>{project.country} • {project.frequency}</p>

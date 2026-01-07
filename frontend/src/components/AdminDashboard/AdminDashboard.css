@@ -37,6 +37,14 @@
   font-size: 1.3rem;
 }
 
+.project-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+  margin-bottom: 0px;
+}
+
 .project-card-body p {
   color: var(--muted);
   font-size: 0.95rem;

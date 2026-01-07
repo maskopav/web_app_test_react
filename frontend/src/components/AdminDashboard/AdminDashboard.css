@@ -1,0 +1,119 @@
+.dashboard-section {
+    margin-bottom: 2.5rem;
+  }
+  
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  
+  .project-card {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  }
+  
+  .project-card h3 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.25rem;
+  }
+  
+  .project-card-body {
+    flex-grow: 1;
+    margin: 0.75rem 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  
+  .card-link {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary);
+  }
+  
+  .admin-management-box {
+    display: flex;
+    gap: 1.5rem;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+  }
+  
+  .tool-card {
+    flex: 1;
+    background: white;
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .tool-card h4 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  
+  .tool-card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0 0 0.5rem 0;
+  }
+  
+  @media (max-width: 768px) {
+    .admin-management-box {
+      flex-direction: column;
+    }
+  }
+
+
+/* Top Bar */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.user-role-badge {
+  font-size: 0.75rem;
+  background: #e9ecef;
+  color: #495057;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.top-bar-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}

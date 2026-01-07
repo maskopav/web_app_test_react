@@ -43,3 +43,14 @@ export async function forgotPassword(email) {
     if (!res.ok) throw new Error(json.error || "Reset failed");
     return json;
   }
+
+  export async function loginAdmin(data) {
+    const res = await fetch(`${API_BASE}/auth/admin/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Login failed");
+    return json; // returns { success: true, user: { ... } }
+  }

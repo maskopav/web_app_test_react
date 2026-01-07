@@ -5,13 +5,12 @@ import ProjectDashboardPage from "./pages/ProjectDashboardPage";
 import ProtocolDashboardPage from "./pages/ProtocolDashboardPage";
 import ProtocolEditorPage from "./pages/ProtocolEditorPage";
 // import DataExplorerPage from "./pages/DataExplorerPage";
-// import MasterDashboardPage from "./pages/MasterDashboardPage";
 import ParticipantInterfacePage from "./pages/ParticipantInterfacePage";
 import ParticipantInterfaceLoader from "./pages/ParticipantInterfaceLoader";
 import ParticipantDashboardPage from "./pages/ParticipantDashboardPage";
 import ParticipantAuthPage from "./pages/ParticipantAuthPage"; 
 import ResetPasswordModal from "./components/AuthForm/ResetPasswordModal";
-import LoginPage from "./pages/LoginPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
@@ -30,6 +29,11 @@ export default function App() {
       {/* Public Protocol Link (Login/Signup) */}
       <Route path="/protocol/:token" element={<ParticipantAuthPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordModal />} />
+
+      {/* Admin login */}
+      <Route path="/login" element={<AdminLoginPage />} />
+      {/* Generic Admin Dashboard (Role-aware) */}
+      <Route path="/admin" element={<AdminDashboardPage />} />
 
       {/* Public routes  
       <Route path="/login" element={<Login />} />

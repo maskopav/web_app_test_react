@@ -206,3 +206,44 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ error: "Reset failed" });
   }
 };
+
+// POST /api/auth/admin/login
+export const adminLogin = async (req, res) => {
+  const { email, password } = req.body;
+  logToFile(`👤 Admin Login Request: ${email}`);
+
+  try {
+    // 1. Find user in the 'users' table
+    const rows = await executeQuery(
+      `SELECT id, email, password_hash, full_name, role_id FROM users WHERE email = ?`,
+      [email]
+    );
+
+    if (rows.length === 0) {
+      return res.status(401).json({ error: "Invalid admin credentials" });
+    }
+
+    const user = rows[0];
+
+    // 2. Verify Password
+    const match = await bcrypt.compare(password, user.password_hash);
+    if (!match) {
+      return res.status(401).json({ error: "Invalid admin credentials" });
+    }
+
+    // 3. Return user data
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        full_name: user.full_name,
+        role_id: user.role_id, // 1 = Master, 2 = Project Admin
+      }
+    });
+
+  } catch (err) {
+    console.error("Admin login error:", err);
+    res.status(500).json({ error: "Login failed" });
+  }
+};

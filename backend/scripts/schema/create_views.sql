@@ -187,3 +187,31 @@ LEFT JOIN (
     GROUP BY 
         project_id
 ) part_stats ON p.id = part_stats.project_id;
+
+
+-- Add active status to users if not present
+ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
+
+-- View for the main User Table
+CREATE OR REPLACE VIEW view_users_management AS
+SELECT 
+    u.id as user_id, 
+    u.email as user_email, 
+    u.full_name, 
+    r.name as role, 
+    u.is_active
+FROM users u
+JOIN roles r ON u.role_id = r.id;
+
+-- View for the User-Project Assignments Table
+CREATE OR REPLACE VIEW view_user_project_assignments AS
+SELECT 
+    up.id as assignment_id,
+    up.user_id,
+    u.full_name as user_name,
+    p.id as project_id,
+    p.name as project_name,
+    up.assigned_at
+FROM user_projects up
+JOIN users u ON up.user_id = u.id
+JOIN projects p ON up.project_id = p.id;

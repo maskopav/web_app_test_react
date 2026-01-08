@@ -54,3 +54,24 @@ export async function forgotPassword(email) {
     if (!res.ok) throw new Error(json.error || "Login failed");
     return json; // returns { success: true, user: { ... } }
   }
+
+  export async function fetchAllAdmins() {
+    const res = await fetch(`${API_BASE}/auth/users`);
+    if (!res.ok) throw new Error("Failed to fetch admins");
+    return res.json();
+  }
+  
+  export async function fetchAdminAssignments() {
+    const res = await fetch(`${API_BASE}/auth/user-projects`);
+    if (!res.ok) throw new Error("Failed to fetch assignments");
+    return res.json();
+  }
+  
+  export async function toggleAdminActive(user_id, is_active) {
+    const res = await fetch(`${API_BASE}/auth/users/toggle-status`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id, is_active })
+    });
+    return res.json();
+  }

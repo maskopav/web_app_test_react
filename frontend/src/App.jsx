@@ -1,6 +1,7 @@
 // src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
+import AdminManagementPage from "./pages/AdminManagementPage";
 import ProjectDashboardPage from "./pages/ProjectDashboardPage";
 import ProtocolDashboardPage from "./pages/ProtocolDashboardPage";
 import ProtocolEditorPage from "./pages/ProtocolEditorPage";
@@ -34,6 +35,7 @@ export default function App() {
       <Route path="/login" element={<AdminLoginPage />} />
       {/* Generic Admin Dashboard (Role-aware) */}
       <Route path="/admin" element={<AdminDashboardPage />} />
+      <Route path="/admin/management" element={<AdminManagementPage />} />
 
       {/* Public routes  
       <Route path="/login" element={<Login />} />

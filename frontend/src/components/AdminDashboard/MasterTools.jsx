@@ -1,12 +1,13 @@
 // src/components/AdminDashboard/MasterTools.jsx
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import "./AdminDashboard.css";
 
 export default function MasterTools() {
+  const navigate = useNavigate();
   const { t } = useTranslation(["admin"]);
 
-  // Note: Navigation logic can be added to the onClick handlers later
   return (
     <section className="dashboard-section master-tools">
       <h2 className="section-heading">
@@ -15,7 +16,7 @@ export default function MasterTools() {
       
       <div className="actions-grid">
         {/* Admin User Management Card */}
-        <button className="action-card btn-participants" onClick={() => console.log("Navigate to Users")}>
+        <button className="action-card btn-participants" onClick={() => navigate("/admin/management")}>
           <div className="icon">👤</div>
           <div className="text">
             <h3>{t("adminDashboard.masterTools.users")}</h3>

@@ -67,7 +67,7 @@ export async function forgotPassword(email) {
     }
     return res.json();
   }
-
+ 
   export async function fetchAllAdmins() {
     const res = await fetch(`${API_BASE}/auth/users`);
     if (!res.ok) throw new Error("Failed to fetch admins");

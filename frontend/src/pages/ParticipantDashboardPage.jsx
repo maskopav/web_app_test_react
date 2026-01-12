@@ -172,7 +172,7 @@ export default function ParticipantDashboardPage() {
   return (
     <div className="dashboard-page">
       {/* Top Navigation Bar */}
-      <DashboardTopBar onBack={() => navigate(`/projects/${projectId}`)} />
+      <DashboardTopBar onBack={() => navigate(`/admin/projects/${projectId}`)} />
 
       {/* Page Title with Project Name */}
       <h2 className="page-title">

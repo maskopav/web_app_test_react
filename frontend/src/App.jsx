@@ -12,47 +12,33 @@ import ParticipantDashboardPage from "./pages/ParticipantDashboardPage";
 import ParticipantAuthPage from "./pages/ParticipantAuthPage"; 
 import ResetPasswordModal from "./components/AuthForm/ResetPasswordModal";
 import AdminLoginPage from "./pages/AdminLoginPage";
+import OnboardingPage from "./pages/OnboardingPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 export default function App() {
   return (
     <Routes>
-      {/* Temporary testing routes */}
-      <Route path="/" element={<Navigate to="/projects/1" replace />} />
-      <Route path="/projects/:projectId" element={<ProjectDashboardPage />} />
-      <Route path="/projects/:projectId/participants" element={<ParticipantDashboardPage />} />
-      <Route path="/projects/:projectId/protocols" element={<ProtocolDashboardPage />} />
-      <Route path="/projects/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
-      <Route path="/participant/test" element={<ParticipantInterfacePage />} />
-      <Route path="/participant/interface" element={<ParticipantInterfacePage />} />
-      <Route path="/participant/:token" element={<ParticipantInterfaceLoader />} />
-
-      {/* Public Protocol Link (Login/Signup) */}
-      <Route path="/protocol/:token" element={<ParticipantAuthPage />} />
-      <Route path="/reset-password/:token" element={<ResetPasswordModal />} />
+      {/* Default Route*/}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
       {/* Admin login */}
       <Route path="/login" element={<AdminLoginPage />} />
-      {/* Generic Admin Dashboard (Role-aware) */}
+      <Route path="/setup-account" element={<OnboardingPage />} />
+
+      {/* Admin routes*/} 
       <Route path="/admin" element={<AdminDashboardPage />} />
       <Route path="/admin/management" element={<AdminManagementPage />} />
+      <Route path="/admin/projects/:projectId" element={<ProjectDashboardPage />} />
+      <Route path="/admin/projects/:projectId/participants" element={<ParticipantDashboardPage />} />
+      <Route path="/admin/projects/:projectId/protocols" element={<ProtocolDashboardPage />} />
+      <Route path="/admin/projects/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
+      <Route path="/participant/test" element={<ParticipantInterfacePage />} />
+      <Route path="/participant/interface" element={<ParticipantInterfacePage />} />
 
-      {/* Public routes  
-      <Route path="/login" element={<Login />} />
-      <Route path="/participant/:token" element={<ParticipantInterfacePage />} />
-
-      {/* Admin routes
-      <Route path="/admin" element={<AdminDashboardPage />} />
-      <Route path="/admin/project/:projectId" element={<ProjectDashboardPage />} />
-      <Route path="/admin/project/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
-      <Route path="/data" element={<DataExplorerPage />} />
-      <Route path="/participants" element={<ParticipantManagerPage />} />
-
-      {/* Master routes 
-      <Route path="/master" element={<MasterDashboardPage />} />
-
-      */}
-
+      {/* Public Protocol Link for participants */}
+      <Route path="/protocol/:token" element={<ParticipantAuthPage />} />
+      <Route path="/reset-password/:token" element={<ResetPasswordModal />} />
+      <Route path="/participant/:token" element={<ParticipantInterfaceLoader />} />
 
       {/* Fallback */}
       <Route path="*" element={<NotFoundPage/>} />

@@ -69,7 +69,7 @@ export default function AdminDashboardPage() {
 
       <ProjectGrid 
         projects={projects} 
-        onProjectClick={(id) => navigate(`/projects/${id}`)} 
+        onProjectClick={(id) => navigate(`/admin/projects/${id}`)} 
       />
 
       {user.role_id === 1 && <MasterTools />}

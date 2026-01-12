@@ -177,12 +177,12 @@ export default function ParticipantInterfacePage() {
 
   function handleBack() {
     if (location.state?.returnTo === "dashboard") {
-      navigate(`/projects/${protocolData.projectId}/protocols`);
+      navigate(`/admin/projects/${protocolData.projectId}/protocols`);
       return;
     }
   
     // default → return to editor
-    navigate(`/projects/${protocolData.projectId}/protocols/${protocolData.id}`, {
+    navigate(`/admin/projects/${protocolData.projectId}/protocols/${protocolData.id}`, {
       state: { protocol: protocolData, testingMode, editingMode },
     });
   }

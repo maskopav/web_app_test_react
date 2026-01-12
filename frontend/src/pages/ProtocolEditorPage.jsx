@@ -75,7 +75,7 @@ export default function ProtocolEditorPage() {
       // Clean environment
       setSelectedProtocol(null);
       // Redirect to dashboard
-      navigate(`/projects/${projectId}/protocols`);
+      navigate(`/admin/projects/${projectId}/protocols`);
     }
   };
 

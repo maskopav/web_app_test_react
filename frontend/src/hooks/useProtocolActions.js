@@ -45,7 +45,7 @@ export function useProtocolActions() {
       setSelectedProtocol(mappedProtocol);
 
       // navigate with edit flag
-      navigate(`/projects/${projectId}/protocols/${protocolId}`, {
+      navigate(`/admin/projects/${projectId}/protocols/${protocolId}`, {
         state: {
           protocol: mappedProtocol,
           testingMode: true, // stays true to preview tasks
@@ -72,7 +72,7 @@ export function useProtocolActions() {
         mappedProtocol.version = 1;
 
         // navigate with edit flag
-        navigate(`/projects/${projectId}/protocols/${protocolId}`, {
+        navigate(`/admin/projects/${projectId}/protocols/${protocolId}`, {
           state: {
             protocol: mappedProtocol,
             testingMode: true, // stays true to preview tasks

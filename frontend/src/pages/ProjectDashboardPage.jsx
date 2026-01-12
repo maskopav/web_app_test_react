@@ -53,9 +53,9 @@ export default function ProjectDashboardPage() {
   const isActive = project?.is_active === 1;
 
   // Navigation Handlers
-  const goProtocols = () => navigate(`/projects/${projectId}/protocols`);
-  const goParticipants = () => navigate(`/projects/${projectId}/participants`);
-  const goData = () => navigate(`/projects/${projectId}/data`);
+  const goProtocols = () => navigate(`/admin/projects/${projectId}/protocols`);
+  const goParticipants = () => navigate(`/admin/projects/${projectId}/participants`);
+  const goData = () => navigate(`/admin/projects/${projectId}/data`);
   const handleBack = () => navigate("/admin");
 
   if (loading) {

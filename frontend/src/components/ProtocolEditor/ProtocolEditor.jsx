@@ -217,7 +217,7 @@ export function ProtocolEditor({
       );
       onSave(result);
       setSelectedProtocol(null);
-      navigate(`/projects/${projectId}/protocols`);
+      navigate(`/admin/projects/${projectId}/protocols`);
     } catch (err) {
       alert("Failed to save protocol. Check console.");
     }

@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import "./AdminManagement.css";
 
-export default function UserTable({ users, onToggleStatus, onResetPassword, onEdit }) {
+export default function UserTable({ users, onToggleStatus, onEdit }) {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
@@ -38,7 +38,6 @@ export default function UserTable({ users, onToggleStatus, onResetPassword, onEd
                 </td>
                 <td className="actions">
                   <button className="btn-icon" title="Edit" onClick={() => onEdit(u)}>✏️</button>
-                  <button className="btn-icon" title="Reset Password" onClick={() => onResetPassword(u)}>🔑</button>
                   <button 
                     className="btn-icon" 
                     onClick={() => onToggleStatus(u.user_id, u.is_active)}

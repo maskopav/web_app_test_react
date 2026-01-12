@@ -257,6 +257,66 @@ export const adminLogin = async (req, res) => {
   }
 };
 
+// POST /api/auth/admin/forgot-password
+export const adminForgotPassword = async (req, res) => {
+  const { email, lang } = req.body;
+  try {
+    const rows = await executeQuery(`SELECT id FROM users WHERE email = ?`, [email]);
+    if (rows.length === 0) {
+      // Prevent email scraping by returning success
+      return res.json({ success: true, message: "If account exists, email sent." });
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const expireTime = new Date(Date.now() + 3600000); // 1 hour
+
+    await executeQuery(
+      `UPDATE users SET reset_password_token = ?, reset_password_expires = ? WHERE id = ?`,
+      [token, expireTime, rows[0].id]
+    );
+
+    let baseUrl = req.headers.referer || req.headers.origin;
+    if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
+    
+    // Admins redirect to the root admin login after reset
+    const resetLink = `${baseUrl}/#/admin/reset-password/${token}`;
+    
+    // Reuse existing email service helper (pass null for protocolToken)
+    await sendPasswordResetEmail(email, resetLink, null, lang);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Admin forgot password error:", err);
+    res.status(500).json({ error: "Request failed" });
+  }
+};
+
+// POST /api/auth/admin/reset-password
+export const adminResetPassword = async (req, res) => {
+  const { token, password } = req.body;
+  try {
+    const rows = await executeQuery(
+      `SELECT id FROM users WHERE reset_password_token = ? AND reset_password_expires > NOW()`,
+      [token]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).json({ error: "Invalid or expired token" });
+    }
+
+    const hash = await bcrypt.hash(password, 12);
+    await executeQuery(
+      `UPDATE users SET password_hash = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?`,
+      [hash, rows[0].id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Admin reset password error:", err);
+    res.status(500).json({ error: "Reset failed" });
+  }
+};
+
 export const setupAdminProfile = async (req, res) => {
   const { userId, fullName, password } = req.body;
 

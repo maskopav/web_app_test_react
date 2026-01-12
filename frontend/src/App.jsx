@@ -27,6 +27,7 @@ export default function App() {
       <Route path="/reset-password/:token" element={<ResetPasswordModal />} />
       <Route path="/participant/:token" element={<ParticipantInterfaceLoader />} />
       <Route path="/participant/interface" element={<ParticipantInterfacePage />} />
+      <Route path="/admin/reset-password/:token" element={<ResetPasswordModal isAdmin={true} />} />
 
       {/* Public Admin login */}
       <Route path="/login" element={<AdminLoginPage />} />

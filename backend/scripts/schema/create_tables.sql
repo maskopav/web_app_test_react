@@ -7,7 +7,9 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   `is_active` boolean NOT NULL DEFAULT true,
-  `must_change_password` boolean NOT NULL DEFAULT true
+  `must_change_password` boolean NOT NULL DEFAULT true,
+  `reset_password_token` varchar(255) DEFAULT NULL,
+  `reset_password_expires` DATETIME DEFAULT NULL;
 );
 
 CREATE TABLE `roles` (

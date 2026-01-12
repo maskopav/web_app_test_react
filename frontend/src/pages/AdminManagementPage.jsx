@@ -66,7 +66,6 @@ export default function AdminManagementPage() {
           users={users} 
           onToggleStatus={handleToggleStatus}
           onEdit={(u) => console.log("Edit", u)}
-          onResetPassword={(u) => console.log("Reset", u)}
         />
 
         <UserProjectTable 

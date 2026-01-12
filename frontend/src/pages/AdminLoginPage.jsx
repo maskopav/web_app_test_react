@@ -3,36 +3,32 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation, Trans } from "react-i18next";
 import AuthForm from "../components/AuthForm/AuthForm";
-import { loginAdmin } from "../api/auth";
+import { loginAdmin, adminForgotPasswordApi } from "../api/auth"; // FIXED: Added missing import
 import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
-import { useUser } from "../context/UserContext"; //
-import "./AdminLoginPage.css"; // Dedicated styles for this page
+import { useUser } from "../context/UserContext";
+import "./AdminLoginPage.css";
 
 export default function AdminLoginPage() {
   const { t } = useTranslation(["admin", "common"]);
   const navigate = useNavigate();
-  const { login, logout } = useUser(); //
-  
-  const [errorMessage, setErrorMessage] = useState("");
+  const { login, logout } = useUser();
+  const [status, setStatus] = useState({ type: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Ensure a clean state whenever this page is visited
+    // Ensure clean state on mount
     logout(); 
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAdminLogin = async (formData) => {
-    setErrorMessage("");
+    setStatus({ type: "", message: "" });
     setIsSubmitting(true);
 
     try {
       const res = await loginAdmin(formData);
       
       if (res.success && res.user) {
-        // Use context login to update state and storage simultaneously
         login(res.user); 
-        
-        // Logical redirection based on onboarding status
         if (res.user.must_change_password) {
           navigate("/setup-account");
         } else {
@@ -41,16 +37,25 @@ export default function AdminLoginPage() {
       }
     } catch (err) {
       console.error("Login submission error:", err);
+      // Map error to correct translation key
+      const msg = err.message.includes("credentials") 
+        ? t("adminLogin.errorGeneric") 
+        : t("adminLogin.errorConnection");
       
-      // Check if the error is specifically about credentials
-      if (err.message.includes("credentials")) {
-        setErrorMessage(t("adminLogin.errorGeneric"));
-      } else {
-        // If it's a network timeout or 500 error, show connection error
-        setErrorMessage(t("adminLogin.errorConnection"));
-      }
+      setStatus({ type: "error", message: msg });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleForgotSubmit = async (email) => {
+    setStatus({ type: "", message: "" });
+    try {
+      await adminForgotPasswordApi(email);
+      // Use "success" type so the box turns green
+      setStatus({ type: "success", message: t("adminLogin.resetEmailSent") }); 
+    } catch (err) {
+      setStatus({ type: "error", message: t("adminLogin.errorConnection") });
     }
   };
 
@@ -70,13 +75,14 @@ export default function AdminLoginPage() {
           }
           onLogin={handleAdminLogin}
           isLoading={isSubmitting}
+          onForgot={handleForgotSubmit} 
         />
 
-        {/* CSS-based error state feedback */}
-        {errorMessage && (
-          <div className="auth-error-box fade-in">
-            <span className="error-icon">⚠️</span>
-            <span className="error-text">{errorMessage}</span>
+        {/* Dynamic Status Feedback (Success or Error) */}
+        {status.message && (
+          <div className={`auth-status-box ${status.type === "success" ? "status-success" : "status-error"} fade-in`}>
+            <span className="status-icon">{status.type === "success" ? "✅" : "⚠️"}</span>
+            <span className="status-text">{status.message}</span>
           </div>
         )}
       </div>

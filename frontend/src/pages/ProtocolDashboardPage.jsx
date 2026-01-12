@@ -28,7 +28,7 @@ export default function ProtocolDashboardPage() {
     const testingMode = true; // always in test mode for admin
     const editingMode = false; // because user opens it for creating
     setSelectedProtocol(protocol);
-    navigate(`/projects/${projectId}/protocols/${protocol.id}`, {
+    navigate(`/admin/projects/${projectId}/protocols/${protocol.id}`, {
       state: { 
         protocol,
         testingMode,
@@ -42,7 +42,7 @@ export default function ProtocolDashboardPage() {
     // Clean environment
     setSelectedProtocol(null);
     // Redirect to dashboard
-    navigate(`/projects/${projectId}`);
+    navigate(`/admin/projects/${projectId}`);
   };
 
   return (

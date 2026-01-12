@@ -1,12 +1,13 @@
 // frontend/src/pages/AdminLoginPage.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import AuthForm from "../components/AuthForm/AuthForm";
 import { loginAdmin } from "../api/auth";
+import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
 
 export default function AdminLoginPage() {
-  const { t } = useTranslation(["common"]);
+  const { t } = useTranslation(["admin"]);
   const navigate = useNavigate();
 
   const handleAdminLogin = async (data) => {
@@ -22,11 +23,17 @@ export default function AdminLoginPage() {
 
   return (
     <div className="dashboard-page">
+      <DashboardTopBar />
       <AuthForm
-        title="TaskProtocoller Admin"
-        subtitle="Manage your research projects and participants."
+        title={t("adminLogin.title")}
+        subtitle=<Trans
+        i18nKey="adminLogin.subtitle"
+        ns="admin"
+        components={{ 
+          strong: <strong />
+        }}
+      />
         onLogin={handleAdminLogin}
-        // Omitting onSignup automatically hides the registration tabs
       />
     </div>
   );

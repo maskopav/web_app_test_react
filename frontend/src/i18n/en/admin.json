@@ -1,4 +1,8 @@
 {
+  "adminLogin": {
+    "title": "TaskProtocoller",
+    "subtitle": "<strong>Admin module:</strong> Manage your research projects and participants."
+  },
   "adminDashboard": {
     "title": "Admin Management",
     "description": "Select a project to manage protocols and participants, or use administrative tools below, if you have masters rights.",

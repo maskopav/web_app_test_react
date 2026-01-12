@@ -1,5 +1,6 @@
 // src/App.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from "./components/RouteProtection/ProtectedRoute";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AdminManagementPage from "./pages/AdminManagementPage";
 import ProjectDashboardPage from "./pages/ProjectDashboardPage";
@@ -21,24 +22,51 @@ export default function App() {
       {/* Default Route*/}
       <Route path="/" element={<Navigate to="/login" replace />} />
 
-      {/* Admin login */}
-      <Route path="/login" element={<AdminLoginPage />} />
-      <Route path="/setup-account" element={<OnboardingPage />} />
-
-      {/* Admin routes*/} 
-      <Route path="/admin" element={<AdminDashboardPage />} />
-      <Route path="/admin/management" element={<AdminManagementPage />} />
-      <Route path="/admin/projects/:projectId" element={<ProjectDashboardPage />} />
-      <Route path="/admin/projects/:projectId/participants" element={<ParticipantDashboardPage />} />
-      <Route path="/admin/projects/:projectId/protocols" element={<ProtocolDashboardPage />} />
-      <Route path="/admin/projects/:projectId/protocols/:protocolId" element={<ProtocolEditorPage />} />
-      <Route path="/participant/test" element={<ParticipantInterfacePage />} />
-      <Route path="/participant/interface" element={<ParticipantInterfacePage />} />
-
       {/* Public Protocol Link for participants */}
       <Route path="/protocol/:token" element={<ParticipantAuthPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordModal />} />
       <Route path="/participant/:token" element={<ParticipantInterfaceLoader />} />
+
+      {/* Public Admin login */}
+      <Route path="/login" element={<AdminLoginPage />} />
+
+      {/* Admin routes - require login */} 
+      <Route path="/setup-account" element={
+        <ProtectedRoute><OnboardingPage /></ProtectedRoute>
+      } />
+      
+      <Route path="/admin" element={
+        <ProtectedRoute><AdminDashboardPage /></ProtectedRoute>
+      } />
+      
+      <Route path="/admin/management" element={
+        <ProtectedRoute><AdminManagementPage /></ProtectedRoute>
+      } />
+      
+      <Route path="/admin/projects/:projectId" element={
+        <ProtectedRoute><ProjectDashboardPage /></ProtectedRoute>
+      } />
+      
+      <Route path="/admin/projects/:projectId/participants" element={
+        <ProtectedRoute><ParticipantDashboardPage /></ProtectedRoute>
+      } />
+      
+      <Route path="/admin/projects/:projectId/protocols" element={
+        <ProtectedRoute><ProtocolDashboardPage /></ProtectedRoute>
+      } />
+      
+      <Route path="/admin/projects/:projectId/protocols/:protocolId" element={
+        <ProtectedRoute><ProtocolEditorPage /></ProtectedRoute>
+      } />
+
+      {/* Interface routes (for testing, so we protect them) */}
+      <Route path="/participant/test" element={
+        <ProtectedRoute><ParticipantInterfacePage /></ProtectedRoute>
+      } />
+      
+      <Route path="/participant/interface" element={
+        <ProtectedRoute><ParticipantInterfacePage /></ProtectedRoute>
+      } />
 
       {/* Fallback */}
       <Route path="*" element={<NotFoundPage/>} />

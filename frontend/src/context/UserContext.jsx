@@ -11,9 +11,9 @@ export const UserProvider = ({ children }) => {
     if (stored) return JSON.parse(stored);
     
     // Development Placeholder
-    if (import.meta.env.DEV) {
-      return { id: 1, full_name: "Master User", role_id: 1, email: "master_user@example.com" };
-    }
+    // if (import.meta.env.DEV) {
+    //   return { id: 1, full_name: "Master User", role_id: 1, email: "master_user@example.com" };
+    // }
     return null;
   };
 

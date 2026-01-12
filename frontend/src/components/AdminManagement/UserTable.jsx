@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import "./AdminManagement.css";
 
-export default function UserTable({ users, onToggleStatus, onEdit }) {
+export default function UserTable({ users, onToggleStatus, onEdit, onAssignProject }) {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
@@ -38,6 +38,13 @@ export default function UserTable({ users, onToggleStatus, onEdit }) {
                 </td>
                 <td className="actions">
                   <button className="btn-icon" title="Edit" onClick={() => onEdit(u)}>✏️</button>
+                  <button 
+                    className="btn-icon" 
+                    title="Assign Project" 
+                    onClick={() => onAssignProject(u)}
+                  >
+                    📂
+                  </button>
                   <button 
                     className="btn-icon" 
                     onClick={() => onToggleStatus(u.user_id, u.is_active)}

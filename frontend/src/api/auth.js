@@ -115,3 +115,20 @@ export async function adminResetPasswordApi(token, password) {
     });
     return res.json();
   }
+
+  export async function fetchProjectsList() {
+    const res = await fetch(`${API_BASE}/auth/projects-list`);
+    if (!res.ok) throw new Error("Failed to fetch projects");
+    return res.json();
+  }
+  
+  export async function assignProjectToUser(user_id, project_id) {
+    const res = await fetch(`${API_BASE}/auth/assign-project`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user_id, project_id })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Assignment failed");
+    return json;
+  }

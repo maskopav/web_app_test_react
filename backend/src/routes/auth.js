@@ -7,9 +7,11 @@ import { participantSignup,
     adminForgotPassword,
     adminResetPassword,
     setupAdminProfile,
-    getAllUsers, 
+    getAllUsers,
     getUserProjectAssignments, 
-    toggleUserStatus
+    toggleUserStatus,
+    getAllProjects,
+    assignUserToProject
  } from "../controllers/authController.js";
 
 const router = express.Router();
@@ -25,5 +27,7 @@ router.post("/setup-profile", setupAdminProfile);
 router.get("/users", getAllUsers);
 router.get("/user-projects", getUserProjectAssignments);
 router.post("/users/toggle-status", toggleUserStatus);
+router.get("/projects-list", getAllProjects); 
+router.post("/assign-project", assignUserToProject); 
 
 export default router;

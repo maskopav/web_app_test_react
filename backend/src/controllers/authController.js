@@ -370,3 +370,30 @@ export const toggleUserStatus = async (req, res) => {
     res.status(500).json({ error: "Failed to update status" });
   }
 };
+
+// Fetch all projects for selection
+export const getAllProjects = async (req, res) => {
+  try {
+    const rows = await executeQuery("SELECT id, name, description FROM projects WHERE is_active = 1", []);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch projects" });
+  }
+};
+
+// Assign a user to a project
+export const assignUserToProject = async (req, res) => {
+  const { user_id, project_id } = req.body;
+  try {
+    await executeQuery(
+      "INSERT INTO user_projects (user_id, project_id) VALUES (?, ?)",
+      [user_id, project_id]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({ error: "User is already assigned to this project." });
+    }
+    res.status(500).json({ error: "Failed to assign project" });
+  }
+};

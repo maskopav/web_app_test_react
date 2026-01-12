@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
 import UserTable from "../components/AdminManagement/UserTable";
 import UserProjectTable from "../components/AdminManagement/UserProjectTable";
-import { fetchAllAdmins, fetchAdminAssignments, toggleAdminActive } from "../api/auth";
+import AssignProjectModal from "../components/AdminManagement/AssignProjectModal";
+import { fetchAllAdmins, fetchAdminAssignments, toggleAdminActive, assignProjectToUser } from "../api/auth";
 
 import "./Pages.css";
 
@@ -14,6 +15,7 @@ export default function AdminManagementPage() {
   const [users, setUsers] = useState([]);
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedUserForProject, setSelectedUserForProject] = useState(null);
 
   const loadData = async () => {
     try {
@@ -48,6 +50,16 @@ export default function AdminManagementPage() {
     }
   };
 
+  const handleAssignProject = async (user_id, project_id) => {
+    try {
+      await assignProjectToUser(user_id, project_id);
+      setSelectedUserForProject(null);
+      await loadData(); // Refresh assignments table
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   if (loading) return <div className="app-container"><p>{t("loading", { ns: "common" })}...</p></div>;
 
   return (
@@ -66,6 +78,7 @@ export default function AdminManagementPage() {
           users={users} 
           onToggleStatus={handleToggleStatus}
           onEdit={(u) => console.log("Edit", u)}
+          onAssignProject={(u) => setSelectedUserForProject(u)}
         />
 
         <UserProjectTable 
@@ -73,6 +86,13 @@ export default function AdminManagementPage() {
           onRemove={handleRemoveAssignment}
         />
       </div>
+      {selectedUserForProject && (
+        <AssignProjectModal 
+          user={selectedUserForProject}
+          onClose={() => setSelectedUserForProject(null)}
+          onAssign={handleAssignProject}
+        />
+      )}
     </div>
   );
 }

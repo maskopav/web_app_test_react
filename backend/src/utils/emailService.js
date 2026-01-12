@@ -1,107 +1,116 @@
 // src/utils/emailService.js
 import nodemailer from "nodemailer";
-import QRCode from "qrcode"; 
+import QRCode from "qrcode";
+import path from "path";
+import i18next from "i18next";
+import Backend from "i18next-fs-backend";
+import { fileURLToPath } from "url";
 import { logToFile } from "./logger.js";
 
-// Create the transporter
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const localesPath = path.join(__dirname, "../../../frontend/src/i18n/{{lng}}/{{ns}}.json");
+
+// 1. Initialize i18next to use your FRONTEND translation files
+// This points to: frontend/src/i18n/{{lng}}/common.json (or admin.json)
+await i18next.use(Backend).init({
+  initImmediate: false,
+  fallbackLng: "en",
+  preload: ["en", "cs", "de"],
+  ns: ["common"],
+  backend: {
+    loadPath: localesPath,
+  },
+});
+
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: process.env.SMTP_PORT || 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-    // Trusts self-signed certs (e.g., from Antivirus)
-    tls: {
-      rejectUnauthorized: false
-    }
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: process.env.SMTP_PORT || 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+  tls: { rejectUnauthorized: false }
+});
+
+/**
+ * CORE ENGINE: Unified Send Function
+ */
+async function sendEmail({ to, subject, html, attachments = [], lang = "en" }) {
+  try {
+    const info = await transporter.sendMail({
+      from: `"TaskProtocoller" <${process.env.SMTP_USER}>`,
+      to,
+      subject,
+      html,
+      attachments,
+    });
+    logToFile(`✅ EMAIL SENT to ${to} (ID: ${info.messageId})`);
+    return true;
+  } catch (error) {
+    logToFile(`❌ EMAIL FAILED to ${to}: ${error.message}`);
+    return false;
+  }
+}
+
+/**
+ * HELPER: Participant Credentials (with QR)
+ */
+export async function sendParticipantCredentials(email, data, lang = "en") {
+  const t = i18next.getFixedT(lang, "common");
+  const qrCodeBuffer = await QRCode.toBuffer(data.personalLink);
+
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; border: 1px solid #eee; padding: 20px;">
+      <h2 style="color: #3764df;">${t("email.welcome", { name: data.name })}</h2>
+      <p>${t("email.assignedProtocol")}</p>
+      <div style="text-align: center; background: #f9f9f9; padding: 20px; margin: 20px 0;">
+        <a href="${data.personalLink}" style="background:#3764df; color:white; padding:12px 25px; text-decoration:none; border-radius:5px;">
+           ${t("email.openProtocol")}
+        </a>
+        <br/><br/>
+        <img src="cid:qrcode" width="150" />
+      </div>
+      <p>${t("email.manualLogin")}:</p>
+      <ul>
+        <li><strong>Email:</strong> ${email}</li>
+        <li><strong>${t("email.password")}:</strong> ${data.password}</li>
+      </ul>
+    </div>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: t("email.subjectCredentials"),
+    html,
+    attachments: [{ filename: "qrcode.png", content: qrCodeBuffer, cid: "qrcode" }],
+    lang
   });
+}
 
-  export async function sendCredentialsEmail(email, name, password, personalLink) {
-    try {
-      // 1. CHANGE: Generate QR Code as a Buffer instead of a Data URL string
-      const qrCodeBuffer = await QRCode.toBuffer(personalLink);
+/**
+ * HELPER: Admin Password Reset
+ */
+export async function sendPasswordResetEmail(email, resetLink, protocolToken, lang = "en") {
+  const t = i18next.getFixedT(lang, "common");
   
-      // 2. Construct HTML with CID reference
-      const emailBody = `
-        <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 10px;">
-          <h2 style="color: #3764df;">Welcome, ${name}!</h2>
-          <p>Thank you for signing up. You have been assigned a new protocol.</p>
-          
-          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; text-align: center; margin: 20px 0;">
-            <p style="margin: 0 0 10px; font-weight: bold;">Access Link:</p>
-            <a href="${personalLink}" style="background: #3764df; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block;">
-              Open Protocol
-            </a>
-            
-            <div style="margin-top: 20px;">
-              <p style="margin-bottom: 5px; font-size: 0.9em; color: #666;">Scan to open on mobile:</p>
-              
-              <img src="cid:qrcode-image" alt="QR Code" style="width: 150px; height: 150px;" />
-              
-            </div>
-          </div>
-  
-          <p>If you need to log in manually later:</p>
-          <ul style="background: #eee; padding: 15px 30px; border-radius: 5px;">
-            <li><strong>Email:</strong> ${email}</li>
-            <li><strong>Password:</strong> ${password}</li>
-          </ul>
-        </div>
-      `;
-  
-      const info = await transporter.sendMail({
-        from: `"TaskProtocoller" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Your Access Link & Credentials",
-        html: emailBody,
-        
-        // 4. ADD: Attachments configuration
-        attachments: [
-          {
-            filename: 'qrcode.png',
-            content: qrCodeBuffer,
-            cid: 'qrcode-image' // MUST match the img src above (without 'cid:')
-          }
-        ]
-      });
-  
-      logToFile(`✅ EMAIL SENT to ${email} (MsgID: ${info.messageId})`);
-      return true;
-    } catch (error) {
-      console.error("❌ Email Error:", error);
-      logToFile(`❌ EMAIL FAILED to ${email}: ${error.message}`);
-      return false;
-    }
-  }
+  // If a protocol token exists, append it to the reset link
+  const finalResetLink = `${resetLink}?returnToken=${protocolToken}`;
 
-  export async function sendPasswordResetEmail(email, resetLink) {
-    try {
-      const emailBody = `
-        <div style="font-family: Arial, sans-serif; padding: 20px;">
-          <h2 style="color: #3764df;">Password Reset Request</h2>
-          <p>You requested to reset your password.</p>
-          <p>Click the link below to set a new password. This link is valid for 1 hour.</p>
-          
-          <a href="${resetLink}" style="background: #3764df; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block; margin: 20px 0;">
-            Reset Password
-          </a>
-          
-          <p style="font-size: 0.9em; color: #666;">If you did not request this, please ignore this email.</p>
-        </div>
-      `;
-  
-      await transporter.sendMail({
-        from: `"TaskProtocoller" <${process.env.SMTP_USER}>`,
-        to: email,
-        subject: "Password Reset Request",
-        html: emailBody,
-      });
-  
-      return true;
-    } catch (error) {
-      console.error("❌ Reset Email Error:", error);
-      return false;
-    }
-  }
+  const html = `
+    <div style="font-family: sans-serif; padding: 20px;">
+      <h2 style="color: #3764df;">${t("auth.resetPasswordTitle")}</h2>
+      <p>${t("email.resetRequested")}</p>
+      <a href="${finalResetLink}" style="background:#3764df; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; display:inline-block;">
+        ${t("email.btnSetNewPassword")}
+      </a>
+    </div>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: t("email.subjectReset"),
+    html,
+    lang
+  });
+}

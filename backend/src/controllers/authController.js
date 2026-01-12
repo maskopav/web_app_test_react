@@ -1,10 +1,9 @@
 // backend/src/controllers/authController.js
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-/*import { sendEmail } from "../utils/emailService.js";*/
 import { executeQuery, executeTransaction } from "../db/queryHelper.js";
 import { assignProtocolToParticipant } from "../utils/assignmentHelper.js";
-import { sendCredentialsEmail, sendPasswordResetEmail } from "../utils/emailService.js"; // Added import
+import { sendParticipantCredentials, sendPasswordResetEmail } from "../utils/emailService.js"; 
 import { logToFile } from "../utils/logger.js";
 
 const SALT_ROUNDS = 10;
@@ -79,7 +78,7 @@ export const participantSignup = async (req, res) => {
       // Fallback to origin if Referer is missing
       const baseUrl = req.headers.referer || req.headers.origin;
       const link = `${baseUrl}#/participant/${assignment.unique_token}`;
-      await sendCredentialsEmail(email, full_name, rawPassword, link);
+      await sendParticipantCredentials(email, full_name, rawPassword, link);
 
       return assignment.unique_token;
     }).then((token) => {
@@ -147,7 +146,7 @@ export const participantLogin = async (req, res) => {
 
 // POST /api/auth/forgot-password
 export const forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  const { email, protocolToken, lang } = req.body;
   try {
     const participant = await findParticipantByEmail(email);
     if (!participant) {
@@ -168,9 +167,12 @@ export const forgotPassword = async (req, res) => {
     // Send Email
     // Use Referer to get the full path before the hash (e.g., /test/dist/)
     // Fallback to origin if Referer is missing
-    const baseUrl = req.headers.referer || req.headers.origin;
+    let baseUrl = req.headers.referer || req.headers.origin;
+    if (baseUrl.endsWith('/')) {
+      baseUrl = baseUrl.slice(0, -1); // Remove trailing slash
+    }
     const resetLink = `${baseUrl}/#/reset-password/${token}`;
-    await sendPasswordResetEmail(email, resetLink);
+    await sendPasswordResetEmail(email, resetLink, protocolToken, lang);
 
     res.json({ success: true });
   } catch (err) {
@@ -308,45 +310,3 @@ export const toggleUserStatus = async (req, res) => {
     res.status(500).json({ error: "Failed to update status" });
   }
 };
-
-
-
-// Helper to generate a random temporary password
-/*
-const generateTempPassword = () => crypto.randomBytes(6).toString('hex'); // e.g., "a1b2c3d4e5f6"
-
-export const resetAdminPassword = async (req, res) => {
-  const { user_id } = req.body;
-  
-  try {
-    // 1. Find the admin
-    const users = await executeQuery("SELECT email, full_name FROM users WHERE id = ?", [user_id]);
-    if (users.length === 0) return res.status(404).json({ error: "User not found" });
-    
-    const admin = users[0];
-    const tempPassword = generateTempPassword();
-    const hash = await bcrypt.hash(tempPassword, 12);
-
-    // 2. Update Database
-    await executeQuery("UPDATE users SET password_hash = ?, updated_at = NOW() WHERE id = ?", [hash, user_id]);
-
-    // 3. Send Email
-    const emailText = `
-      Hello ${admin.full_name},
-      
-      Your administrator credentials for TaskProtocoller have been reset by a Master administrator.
-      
-      Your temporary password is: ${tempPassword}
-      
-      Please log in at the admin portal and change your password in settings.
-    `;
-
-    await sendEmail(admin.email, "Your Admin Credentials", emailText);
-
-    res.json({ success: true, message: "New password generated and sent to admin email." });
-  } catch (err) {
-    console.error("Admin reset error:", err);
-    res.status(500).json({ error: "Failed to reset password" });
-  }
-};
-*/

@@ -26,6 +26,7 @@ export default function App() {
       <Route path="/protocol/:token" element={<ParticipantAuthPage />} />
       <Route path="/reset-password/:token" element={<ResetPasswordModal />} />
       <Route path="/participant/:token" element={<ParticipantInterfaceLoader />} />
+      <Route path="/participant/interface" element={<ParticipantInterfacePage />} />
 
       {/* Public Admin login */}
       <Route path="/login" element={<AdminLoginPage />} />
@@ -61,10 +62,6 @@ export default function App() {
 
       {/* Interface routes (for testing, so we protect them) */}
       <Route path="/participant/test" element={
-        <ProtectedRoute><ParticipantInterfacePage /></ProtectedRoute>
-      } />
-      
-      <Route path="/participant/interface" element={
         <ProtectedRoute><ParticipantInterfacePage /></ProtectedRoute>
       } />
 

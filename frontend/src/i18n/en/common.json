@@ -71,8 +71,16 @@
       "welcomeTitle": "Welcome to the TaskProtocoller", 
       "welcomeSubtitle": "Please sign up or log in to participate. <br/><strong>Registered users:</strong> use your sent unique link or credentials. <br/><strong>New users:</strong> your access details will be emailed after registration.",
       "forgotPasswordLink": "Forgot password?",
+      "resetEmailSent": "Reset link was sent to your email.",
       "forgotPasswordInstruction": "Reset link will be sent to your email.",
       "btnSendResetLink": "Sent reset link",
+      "resetPasswordTitle": "Reset Password",
+      "passwordUpdateSuccess": "Password updated successfully!",
+      "redirectingToLogin": "Redirecting to login...",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "btnSetNewPassword": "Set New Password",
+      "passwordMismatch": "Passwords do not match",
       "btnBackToLogin": "Back to Login",
       "required": "This field is required",
       "invalidEmail": "Invalid email format",
@@ -90,6 +98,17 @@
    },
    "confirmModal": {
     "info":"Information"
-   }
+   },
+   "email": {
+      "welcome": "Welcome, {{name}}!",
+      "assignedProtocol": "You have been assigned a new research protocol.",
+      "manualLogin": "If you need to log in manually later",
+      "password": "Password",
+      "subjectCredentials": "Your Access Link & Credentials",
+      "openProtocol": "Open Protocol",
+      "subjectReset": "Password Reset Request",
+      "resetRequested": "You requested to reset your password. Click the button below to proceed.",
+      "btnSetNewPassword": "Set new password"
+    }
   }
   

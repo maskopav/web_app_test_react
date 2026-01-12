@@ -1,3 +1,4 @@
+import i18n from "../i18n";
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 export async function signupParticipant(data) {
@@ -22,11 +23,16 @@ export async function loginParticipant(data) {
   return json; // returns { token: "..." }
 }
 
-export async function forgotPassword(email) {
+export async function forgotPassword(userEmail) {
+  const protocolToken = window.location.hash.split("/")[2];
     const res = await fetch(`${API_BASE}/auth/forgot-password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ 
+        email: userEmail,
+        protocolToken: protocolToken, 
+        lang: i18n.language
+      }),
     });
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || "Request failed");

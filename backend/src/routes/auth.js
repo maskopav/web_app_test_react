@@ -4,6 +4,7 @@ import { participantSignup,
     forgotPassword, 
     resetPassword,
     adminLogin,
+    setupAdminProfile,
     getAllUsers, 
     getUserProjectAssignments, 
     toggleUserStatus
@@ -16,6 +17,7 @@ router.post("/login", participantLogin);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.post("/admin/login", adminLogin);
+router.post("/setup-profile", setupAdminProfile);
 router.get("/users", getAllUsers);
 router.get("/user-projects", getUserProjectAssignments);
 router.post("/users/toggle-status", toggleUserStatus);

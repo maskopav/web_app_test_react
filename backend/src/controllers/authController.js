@@ -1,6 +1,7 @@
 // backend/src/controllers/authController.js
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+/*import { sendEmail } from "../utils/emailService.js";*/
 import { executeQuery, executeTransaction } from "../db/queryHelper.js";
 import { assignProtocolToParticipant } from "../utils/assignmentHelper.js";
 import { sendCredentialsEmail, sendPasswordResetEmail } from "../utils/emailService.js"; // Added import
@@ -213,9 +214,9 @@ export const adminLogin = async (req, res) => {
   logToFile(`👤 Admin Login Request: ${email}`);
 
   try {
-    // 1. Find user in the 'users' table
+    // 1. Find user - Include is_active in the SELECT statement
     const rows = await executeQuery(
-      `SELECT id, email, password_hash, full_name, role_id FROM users WHERE email = ?`,
+      `SELECT id, email, password_hash, full_name, role_id, is_active, must_change_password FROM users WHERE email = ?`,
       [email]
     );
 
@@ -225,26 +226,55 @@ export const adminLogin = async (req, res) => {
 
     const user = rows[0];
 
-    // 2. Verify Password
+    // 2. CHECK IF ACTIVE (NEW)
+    if (user.is_active === 0) {
+      return res.status(403).json({ error: "Your account is deactivated. Please contact the Master admin." });
+    }
+
+    // 3. Verify Password
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) {
       return res.status(401).json({ error: "Invalid admin credentials" });
     }
 
-    // 3. Return user data
+    // 4. Return user data
     res.json({
       success: true,
       user: {
         id: user.id,
         email: user.email,
         full_name: user.full_name,
-        role_id: user.role_id, // 1 = Master, 2 = Project Admin
+        role_id: user.role_id,
+        must_change_password: user.must_change_password
       }
     });
 
   } catch (err) {
     console.error("Admin login error:", err);
     res.status(500).json({ error: "Login failed" });
+  }
+};
+
+export const setupAdminProfile = async (req, res) => {
+  const { userId, fullName, password } = req.body;
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 12);
+    
+    await executeQuery(
+      `UPDATE users 
+       SET full_name = ?, 
+           password_hash = ?, 
+           must_change_password = 0, 
+           updated_at = NOW() 
+       WHERE id = ?`,
+      [fullName, hashedPassword, userId]
+    );
+
+    res.json({ success: true, message: "Profile setup complete" });
+  } catch (err) {
+    console.error("Setup profile error:", err);
+    res.status(500).json({ error: "Failed to update profile" });
   }
 };
 
@@ -278,3 +308,45 @@ export const toggleUserStatus = async (req, res) => {
     res.status(500).json({ error: "Failed to update status" });
   }
 };
+
+
+
+// Helper to generate a random temporary password
+/*
+const generateTempPassword = () => crypto.randomBytes(6).toString('hex'); // e.g., "a1b2c3d4e5f6"
+
+export const resetAdminPassword = async (req, res) => {
+  const { user_id } = req.body;
+  
+  try {
+    // 1. Find the admin
+    const users = await executeQuery("SELECT email, full_name FROM users WHERE id = ?", [user_id]);
+    if (users.length === 0) return res.status(404).json({ error: "User not found" });
+    
+    const admin = users[0];
+    const tempPassword = generateTempPassword();
+    const hash = await bcrypt.hash(tempPassword, 12);
+
+    // 2. Update Database
+    await executeQuery("UPDATE users SET password_hash = ?, updated_at = NOW() WHERE id = ?", [hash, user_id]);
+
+    // 3. Send Email
+    const emailText = `
+      Hello ${admin.full_name},
+      
+      Your administrator credentials for TaskProtocoller have been reset by a Master administrator.
+      
+      Your temporary password is: ${tempPassword}
+      
+      Please log in at the admin portal and change your password in settings.
+    `;
+
+    await sendEmail(admin.email, "Your Admin Credentials", emailText);
+
+    res.json({ success: true, message: "New password generated and sent to admin email." });
+  } catch (err) {
+    console.error("Admin reset error:", err);
+    res.status(500).json({ error: "Failed to reset password" });
+  }
+};
+*/

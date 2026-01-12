@@ -55,6 +55,19 @@ export async function forgotPassword(email) {
     return json; // returns { success: true, user: { ... } }
   }
 
+  export async function setupProfileApi(payload) {
+    const res = await fetch(`${API_BASE}/auth/setup-profile`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || "Failed to update profile");
+    }
+    return res.json();
+  }
+
   export async function fetchAllAdmins() {
     const res = await fetch(`${API_BASE}/auth/users`);
     if (!res.ok) throw new Error("Failed to fetch admins");

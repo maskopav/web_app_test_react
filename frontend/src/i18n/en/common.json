@@ -64,7 +64,7 @@
       "phone": "Phone number (optional)",
       "note": "We will send login credentials to your email.",
       "btnSignup": "Sign Up",
-      "btnLogin": "Login and start protocol",
+      "btnLogin": "Login",
       "tabSignup": "Sign Up",
       "tabLogin": "Login",
       "processing": "Processing...",

@@ -188,10 +188,6 @@ LEFT JOIN (
         project_id
 ) part_stats ON p.id = part_stats.project_id;
 
-
--- Add active status to users if not present
-ALTER TABLE users ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT true;
-
 -- View for the main User Table
 CREATE OR REPLACE VIEW view_users_management AS
 SELECT 

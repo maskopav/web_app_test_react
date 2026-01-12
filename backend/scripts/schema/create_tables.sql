@@ -5,7 +5,9 @@ CREATE TABLE `users` (
   `full_name` varchar(255),
   `role_id` integer NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `is_active` boolean NOT NULL DEFAULT true,
+  `must_change_password` boolean NOT NULL DEFAULT true
 );
 
 CREATE TABLE `roles` (

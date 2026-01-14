@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { fetchProjectsList } from "../../api/auth";
+import { fetchProjectsList } from "../../api/projects";
 import "./AdminManagement.css";
 
 export default function AssignProjectModal({ user, onClose, onAssign }) {

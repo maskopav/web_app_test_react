@@ -2,7 +2,7 @@
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 export async function fetchParticipantProtocol(token) {
-  const res = await fetch(`${API_BASE}/participant-protocol/${token}`);
+  const res = await fetch(`${API_BASE}/participant-protocols/${token}`);
   console.log(res);
   if (!res.ok) {
     // Try to parse the specific error message from the backend
@@ -14,17 +14,17 @@ export async function fetchParticipantProtocol(token) {
 
 export async function fetchParticipantProtocolView(filters = {}) {
   const query = new URLSearchParams(filters).toString();
-  const url = `${API_BASE}/participant-protocol${query ? `?${query}` : ""}`;
+  const url = `${API_BASE}/participant-protocols${query ? `?${query}` : ""}`;
 
   const res = await fetch(url);
   if (!res.ok) {
-    throw new Error("Failed to load participant-protocol view");
+    throw new Error("Failed to load participant-protocols view");
   }
   return res.json();
 }
 
 export async function fetchParticipantProtocolById(id) {
-  const url = `${API_BASE}/participant-protocol/${id}`;
+  const url = `${API_BASE}/participant-protocols/${id}`;
 
   const res = await fetch(url);
   if (!res.ok) {
@@ -34,7 +34,7 @@ export async function fetchParticipantProtocolById(id) {
 }
 
 export async function activateParticipantProtocol(participantProtocolId) {
-  const res = await fetch(`${API_BASE}/participant-protocol/activate`, {
+  const res = await fetch(`${API_BASE}/participant-protocols/activate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ participant_protocol_id: participantProtocolId })
@@ -45,7 +45,7 @@ export async function activateParticipantProtocol(participantProtocolId) {
 }
 
 export async function deactivateParticipantProtocol(participantProtocolId) {
-  const res = await fetch(`${API_BASE}/participant-protocol/deactivate`, {
+  const res = await fetch(`${API_BASE}/participant-protocols/deactivate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ participant_protocol_id: participantProtocolId })
@@ -58,7 +58,7 @@ export async function deactivateParticipantProtocol(participantProtocolId) {
 export async function assignProtocolToParticipant(data) {
   // data: { participant_id, protocol_id, project_id }
   console.log(data);
-  const res = await fetch(`${API_BASE}/participant-protocol/assign`, {
+  const res = await fetch(`${API_BASE}/participant-protocols/assign`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)

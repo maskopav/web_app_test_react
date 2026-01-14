@@ -5,7 +5,8 @@ import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
 import UserTable from "../components/AdminManagement/UserTable";
 import UserProjectTable from "../components/AdminManagement/UserProjectTable";
 import AssignProjectModal from "../components/AdminManagement/AssignProjectModal";
-import { fetchAllAdmins, fetchAdminAssignments, toggleAdminActive, assignProjectToUser } from "../api/auth";
+import { fetchAllAdmins, toggleAdminActive} from "../api/users";
+import { fetchAdminAssignments, assignProjectToUser } from "../api/userProjects";
 
 import "./Pages.css";
 

@@ -1,4 +1,5 @@
 // src/api/projects.js
+const API_BASE = import.meta.env.VITE_API_BASE;
 import { getMappings } from "./mappings";
 
 // Fetch stats for a specific project from the view
@@ -16,3 +17,9 @@ export async function getProjectStats(projectId) {
     throw err;
   }
 }
+
+export async function fetchProjectsList() {
+    const res = await fetch(`${API_BASE}/projects/projects-list`);
+    if (!res.ok) throw new Error("Failed to fetch projects");
+    return res.json();
+  }

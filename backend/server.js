@@ -7,6 +7,9 @@ import participantsRouter from "./src/routes/participants.js";
 import sessionsRouter from "./src/routes/sessions.js";
 import recordingsRouter from "./src/routes/recordings.js";
 import authRouter from "./src/routes/auth.js";
+import usersRouter from "./src/routes/users.js";
+import projectsRouter from "./src/routes/projects.js";
+import userProjectsRouter from "./src/routes/userProjects.js";
 
 import cors from "cors";
 
@@ -28,11 +31,14 @@ app.get('/envtest', (req, res) => {
 
 app.use("/mappings", mappingsRouter);
 app.use("/protocols", protocolsRouter); 
-app.use("/participant-protocol", participantProtocolsRouter);
+app.use("/participant-protocols", participantProtocolsRouter);
 app.use("/participants", participantsRouter);
 app.use("/sessions", sessionsRouter);
 app.use("/recordings", recordingsRouter);
 app.use("/auth", authRouter);
+app.use("/users", usersRouter)
+app.use("/projects", projectsRouter)
+app.use("/user-projects", userProjectsRouter)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

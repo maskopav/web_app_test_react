@@ -14,16 +14,25 @@ export default function EditProjectModal({ open, onClose, project, onSuccess }) 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (project) {
-      setFormData({
-        name: project.name || "",
-        description: project.description || "",
-        frequency: project.frequency || "",
-        country: project.country || "",
-        contact_person: project.contact_person || ""
-      });
+    if (open && project) {
+        setFormData({
+            name: project.name || "",
+            description: project.description || "",
+            frequency: project.frequency || "",
+            country: project.country || "",
+            contact_person: project.contact_person || ""
+        });
     }
-  }, [project]);
+    // Using project?.id instead of project prevents the reset-while-typing loop
+  }, [open, project?.id]);
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+        ...prev,
+        [field]: value
+    }));
+    if (error) setError(""); 
+  };
 
   const handleSubmit = async () => {
     if (!formData.name) return setError(t("projectDashboard.errors.nameRequired"));
@@ -56,7 +65,7 @@ export default function EditProjectModal({ open, onClose, project, onSuccess }) 
           <input 
             className="participant-input"
             value={formData.name}
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
+            onChange={(e) => handleInputChange("name", e.target.value)}
           />
         </div>
         <div className="form-col">
@@ -64,7 +73,7 @@ export default function EditProjectModal({ open, onClose, project, onSuccess }) 
           <textarea 
             className="participant-input description-textarea"
             value={formData.description}
-            onChange={(e) => setFormData({...formData, description: e.target.value})}
+            onChange={(e) => handleInputChange("description", e.target.value)}
           />
         </div>
         <div className="form-grid-2">
@@ -73,7 +82,7 @@ export default function EditProjectModal({ open, onClose, project, onSuccess }) 
               <input 
                 className="participant-input"
                 value={formData.country}
-                onChange={(e) => setFormData({...formData, country: e.target.value})}
+                onChange={(e) => handleInputChange("country", e.target.value)}
               />
            </div>
            <div className="form-col">
@@ -81,7 +90,7 @@ export default function EditProjectModal({ open, onClose, project, onSuccess }) 
               <input 
                 className="participant-input"
                 value={formData.frequency}
-                onChange={(e) => setFormData({...formData, frequency: e.target.value})}
+                onChange={(e) => handleInputChange("frequency", e.target.value)}
               />
            </div>
         </div>
@@ -90,7 +99,7 @@ export default function EditProjectModal({ open, onClose, project, onSuccess }) 
           <input 
             className="participant-input"
             value={formData.contact_person}
-            onChange={(e) => setFormData({...formData, contact_person: e.target.value})}
+            onChange={(e) => handleInputChange("contact_person", e.target.value)}
           />
         </div>
         {error && <div className="validation-error-msg">{error}</div>}

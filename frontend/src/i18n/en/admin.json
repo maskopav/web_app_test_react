@@ -75,9 +75,17 @@
     "title": "Project Dashboard",
     "subtitle": "Loaded project:",
     "noDescription": "No description available for this project.",
+    "editProject": "Edit project metadata",
     "status": {
       "active": "Active Project",
       "inactive": "Inactive / Archived"
+    },
+    "fields": {
+      "name": "Project Name",
+      "description": "Description",
+      "country": "Country",
+      "frequency": "Frequency",
+      "contact": "Contact Person"
     },
     "stats": {
       "volumeTitle": "Overall Statistics",

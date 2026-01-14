@@ -2,34 +2,73 @@
 
 /* Header */
 .page-header {
-  padding: 0.1rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem 0 1.5rem 0; /* Removed background, shadow, and borders */
   margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border); /* Subtle separator instead of card */
 }
 
-.header-content {
+.header-top-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* --- Status Badge --- */
+.status-badge {
+  padding: 0.3rem 0.8rem;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+.status-badge.active { background-color: #dcfce7; color: #166534; }
+.status-badge.inactive { background-color: #d1d7e2; color: #374151; }
+
+.project-title-group {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.project-description {
-  color: var(--muted);
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
-  max-width: 800px;
+/* Compact Metadata Section */
+.project-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 4rem;
+  row-gap: 0.75rem;
+  justify-content: flex-start;
 }
 
-/* --- Status Badge --- */
-.status-badge {
-    padding: 0.3rem 0.8rem;
-    border-radius: 99px;
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-  }
-  .status-badge.active { background-color: #dcfce7; color: #166534; }
-  .status-badge.inactive { background-color: #d1d7e2; color: #374151; }
+.metadata-item {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px; /* Limits description width to keep layout tight */
+}
+
+.metadata-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+
+.metadata-value {
+  font-size: 0.95rem;
+  color: var(--text);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.btn-edit-project {
+  width: fit-content;
+  padding: 4px 16px;
+  margin: 0;
+}
   
   /* --- Dashboard Grid Layout --- */
   .dashboard-grid {
@@ -116,8 +155,6 @@
   .flow-label.bold { font-weight: 700; color: var(--success); }
   
   .flow-arrow { color: white; font-size: 3rem; }
-
-
   
   /* --- Health Card --- */
   .health-row {
@@ -203,6 +240,19 @@
   .btn-participants .icon { background: #e0e7ff; color: #4338ca; }
   .btn-protocols .icon { background: #dcfce7; color: #15803d; }
   .btn-data .icon { background: #f3f4f6; color: #6b7280; }
+
+  /* Modal Form Specifics */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.description-textarea {
+  min-height: 80px;
+  padding-top: 10px;
+  resize: vertical;
+}
   
   /* Responsive */
   @media (max-width: 600px) {

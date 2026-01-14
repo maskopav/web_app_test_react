@@ -24,3 +24,14 @@ export async function fetchProjectsList(userId, role) {
   if (!res.ok) throw new Error("Failed to fetch projects");
   return res.json();
 }
+
+export async function updateProjectApi(payload) {
+  const res = await fetch(`${API_BASE}/projects/update`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+  const json = await res.json();
+  if (!res.ok) throw new Error(json.error || "Failed to update project");
+  return json;
+}

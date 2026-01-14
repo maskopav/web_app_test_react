@@ -29,3 +29,26 @@
         res.status(500).json({ error: "Failed to fetch projects" });
     }
   };
+
+  export const updateProject = async (req, res) => {
+    const { id, name, description, frequency, country, contact_person, updated_by } = req.body;
+    
+    try {
+        await executeQuery(
+            `UPDATE projects 
+             SET name = ?, 
+                 description = ?, 
+                 frequency = ?, 
+                 country = ?, 
+                 contact_person = ?, 
+                 updated_at = CURRENT_TIMESTAMP, 
+                 updated_by = ? 
+             WHERE id = ?`,
+            [name, description, frequency, country, contact_person, updated_by, id]
+        );
+        res.json({ success: true, message: "Project updated successfully" });
+    } catch (err) {
+        console.error("Update project error:", err);
+        res.status(500).json({ error: "Failed to update project" });
+    }
+};

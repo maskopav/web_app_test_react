@@ -2,14 +2,16 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import "./AdminManagement.css";
 
-export default function UserTable({ users, onToggleStatus, onEdit, onAssignProject }) {
+export default function UserTable({ users, onToggleStatus, onEdit, onAssignProject, onAddClick }) {
   const { t } = useTranslation(["admin", "common"]);
 
   return (
     <section className="section card">
       <div className="section-header-row">
         <h3 className="section-title">System Administrators</h3>
-        <button className="btn-primary btn-sm">+ {t("auth.tabSignup", { ns: "common" })}</button>
+        <button className="btn-primary btn-sm" onClick={onAddClick}>
+          + {t("auth.tabSignup", { ns: "common" })}
+        </button>
       </div>
 
       <div className="table-scroll-area">

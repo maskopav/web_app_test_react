@@ -5,9 +5,10 @@ import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
 import UserTable from "../components/AdminManagement/UserTable";
 import UserProjectTable from "../components/AdminManagement/UserProjectTable";
 import AssignProjectModal from "../components/AdminManagement/AssignProjectModal";
+import AddAdminModal from "../components/AdminManagement/AddAdminModal";
+import { fetchProjectsList } from "../api/projects";
 import { fetchAllAdmins, toggleAdminActive} from "../api/users";
 import { fetchAdminAssignments, assignProjectToUser } from "../api/userProjects";
-
 import "./Pages.css";
 
 export default function AdminManagementPage() {
@@ -17,15 +18,19 @@ export default function AdminManagementPage() {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedUserForProject, setSelectedUserForProject] = useState(null);
+  const [allProjects, setAllProjects] = useState([]);
+  const [isAddAdminOpen, setIsAddAdminOpen] = useState(false);
 
   const loadData = async () => {
     try {
-      const [uData, aData] = await Promise.all([
+      const [uData, aData, pData] = await Promise.all([
         fetchAllAdmins(),
         fetchAdminAssignments(),
+        fetchProjectsList()
       ]);
       setUsers(uData);
       setAssignments(aData);
+      setAllProjects(pData);
     } catch (err) {
       console.error("Management data error:", err);
     } finally {
@@ -80,6 +85,15 @@ export default function AdminManagementPage() {
           onToggleStatus={handleToggleStatus}
           onEdit={(u) => console.log("Edit", u)}
           onAssignProject={(u) => setSelectedUserForProject(u)}
+          onAddClick={() => setIsAddAdminOpen(true)}
+        />
+
+        {/* Add the modal component at the bottom */}
+        <AddAdminModal 
+          open={isAddAdminOpen}
+          onClose={() => setIsAddAdminOpen(false)}
+          projects={allProjects}
+          onSuccess={loadData}
         />
 
         <UserProjectTable 

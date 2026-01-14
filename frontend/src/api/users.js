@@ -15,3 +15,14 @@ export async function fetchAllAdmins() {
     });
     return res.json();
   }
+
+  export async function createAdminApi(payload) {
+    const res = await fetch(`${API_BASE}/users/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Failed to create admin");
+    return json;
+  }

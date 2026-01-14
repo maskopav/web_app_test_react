@@ -1,24 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import "./ParticipantTable.css"; 
-
-const AssignIcon = () => (
-  <svg 
-    width="18" 
-    height="18" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="4" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-    title="Assign Other Protocol"
-    style={{ display: "block" }} // Removes inline spacing issues
-  >
-    <line x1="12" y1="5" x2="12" y2="19" />
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-);
+import AssignIcon from "../Icons/AssignIcon";
 
 export default function ParticipantTable({ 
   participants, 

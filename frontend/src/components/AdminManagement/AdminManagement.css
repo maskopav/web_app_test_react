@@ -16,16 +16,6 @@
     margin-bottom: 0.25rem;
 }
 
-/* Title styling with the specific left-border color accents */
-.section-header-row h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: var(--text);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    padding-left: 0.75rem;
-}
-
 /* User Table accent (Blue) */
 .users-title {
     border-left: 4px solid var(--primary);
@@ -57,7 +47,8 @@
 .actions-cell {
     display: flex;
     gap: 0.4rem;
-    justify-content: flex-end;
+    justify-content: center; 
+    align-items: center;
 }
 
 .btn-icon {
@@ -68,6 +59,42 @@
     cursor: pointer;
     color: white;
 }
+
+.btn-mgmt-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.1rem;
+}
+
+.btn-mgmt-icon:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+}
+
+/* Purple Assign Button */
+.btn-assign-purple {
+    background-color: var(--purple);
+    color: white;
+}
+
+/* Status Toggle Buttons */
+.btn-activate {
+    background-color: var(--success);
+    color: white;
+}
+
+.btn-deactivate {
+    background-color: var(--danger);
+    color: white;
+}
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

@@ -1,5 +1,7 @@
+// frontend/src/components/AdminManagement/UserTable.jsx
 import React from "react";
 import { useTranslation } from "react-i18next";
+import AssignIcon from "../Icons/AssignIcon"; // Reusing the shared icon
 import "./AdminManagement.css";
 
 export default function UserTable({ users, onToggleStatus, onEdit, onAssignProject, onAddClick }) {
@@ -8,9 +10,9 @@ export default function UserTable({ users, onToggleStatus, onEdit, onAssignProje
   return (
     <section className="section card">
       <div className="section-header-row">
-        <h3 className="section-title">System Administrators</h3>
-        <button className="btn-primary btn-sm" onClick={onAddClick}>
-          + {t("auth.tabSignup", { ns: "common" })}
+        <h3 className="section-title users-title">{t("management.title")}</h3>
+        <button className="btn-primary btn-sm btn-add" onClick={onAddClick}>
+          + {t("management.addUser")}
         </button>
       </div>
 
@@ -18,12 +20,12 @@ export default function UserTable({ users, onToggleStatus, onEdit, onAssignProje
         <table className="table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>User (Email)</th>
-              <th>Full Name</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Actions</th>
+              <th>{t("management.table.id")}</th>
+              <th>{t("management.table.user")}</th>
+              <th>{t("management.table.fullName")}</th>
+              <th>{t("management.table.role")}</th>
+              <th>{t("management.table.status")}</th>
+              <th style={{ textAlign: "center" }}>{t("management.table.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -31,29 +33,42 @@ export default function UserTable({ users, onToggleStatus, onEdit, onAssignProje
               <tr key={u.user_id}>
                 <td>{u.user_id}</td>
                 <td><strong>{u.user_email}</strong></td>
-                <td>{u.full_name}</td>
+                <td>{u.full_name || "—"}</td>
                 <td><span className="user-role-badge">{u.role}</span></td>
                 <td>
                   <span className={`status-badge ${u.is_active ? "active" : "inactive"}`}>
-                    {u.is_active ? "Active" : "Inactive"}
+                    {u.is_active ? t("management.status.active") : t("management.status.inactive")}
                   </span>
                 </td>
-                <td className="actions">
-                  <button className="btn-icon" title="Edit" onClick={() => onEdit(u)}>✏️</button>
-                  <button 
-                    className="btn-icon" 
-                    title="Assign Project" 
-                    onClick={() => onAssignProject(u)}
-                  >
-                    📂
-                  </button>
-                  <button 
-                    className="btn-icon" 
-                    onClick={() => onToggleStatus(u.user_id, u.is_active)}
-                    title={u.is_active ? "Deactivate" : "Activate"}
-                  >
-                    {u.is_active ? "🚫" : "✅"}
-                  </button>
+                <td>
+                  <div className="actions-cell">
+                    {/* Edit Button */}
+                    <button 
+                      className="btn-mgmt-icon btn-edit" 
+                      title={t("management.buttons.edit")} 
+                      onClick={() => onEdit(u)}
+                    >
+                      ✒️
+                    </button>
+
+                    {/* Purple Assign Button */}
+                    <button 
+                      className="btn-mgmt-icon btn-assign-purple" 
+                      title={t("management.buttons.assign")} 
+                      onClick={() => onAssignProject(u)}
+                    >
+                      <AssignIcon title={t("management.buttons.assign")} />
+                    </button>
+
+                    {/* Dynamic Status Toggle Button */}
+                    <button 
+                      className={`btn-mgmt-icon ${u.is_active ? "btn-deactivate" : "btn-activate"}`}
+                      onClick={() => onToggleStatus(u.user_id, u.is_active)}
+                      title={u.is_active ? t("management.buttons.deactivate") : t("management.buttons.activate")}
+                    >
+                      {u.is_active ? "🚫" : "✅"}
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

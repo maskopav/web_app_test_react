@@ -197,7 +197,9 @@ SELECT
     r.name as role, 
     u.is_active
 FROM users u
-JOIN roles r ON u.role_id = r.id;
+JOIN roles r ON u.role_id = r.id
+WHERE r.name != 'master'
+ORDER BY u.id;
 
 -- View for the User-Project Assignments Table
 CREATE OR REPLACE VIEW view_user_project_assignments AS
@@ -205,9 +207,13 @@ SELECT
     up.id as assignment_id,
     up.user_id,
     u.full_name as user_name,
+    u.email as user_email, -- Added email
     p.id as project_id,
     p.name as project_name,
     up.assigned_at
 FROM user_projects up
 JOIN users u ON up.user_id = u.id
-JOIN projects p ON up.project_id = p.id;
+JOIN projects p ON up.project_id = p.id
+JOIN roles r ON u.role_id = r.id
+WHERE r.name != 'master'
+ORDER BY up.user_id, p.name;

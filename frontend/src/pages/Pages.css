@@ -28,7 +28,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 98%;            /* Full width */
-  height: 98vh;          /* Full viewport height */
+  height: 90vh auto;          /* Full viewport height */
   background-color: var(--bg);
   padding: 0% 1%;
 }
@@ -47,6 +47,12 @@ body {
   /* Minimal padding requested */
 }
 
+.page-header {
+  margin: 0.1rem;
+  padding-left: 0.1rem;
+  /* Minimal padding requested */
+}
+
 .card {
   background: var(--grey);
   border-radius: var(--radius);
@@ -54,7 +60,6 @@ body {
   padding: 0.8rem 1rem; /* Compact padding */
   margin-bottom: 0.6rem;
 }
-
 
 .top-controls-participant {
   display: flex;
@@ -116,10 +121,9 @@ h1 {
 
 p {
   font-size: 1.3rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.7rem;
   color: var(--muted);
 }
-
 
 /* Buttons */
 button {

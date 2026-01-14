@@ -1,5 +1,7 @@
+// frontend/src/components/AdminManagement/AssignProjectModal.jsx
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Modal from "../ProtocolEditor/Modal";
 import { fetchProjectsList } from "../../api/projects";
 import "./AdminManagement.css";
 
@@ -15,34 +17,36 @@ export default function AssignProjectModal({ user, onClose, onAssign }) {
   }, []);
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content card">
-        <div className="modal-header">
-          <h3>Assign Project to {user.full_name}</h3>
-          <button className="btn-close" onClick={onClose}>&times;</button>
-        </div>
-        
-        <div className="modal-body">
-          {loading ? <p>Loading projects...</p> : (
-            <div className="project-selection-list">
-              {projects.map(p => (
-                <div key={p.id} className="project-selection-item">
+    <Modal 
+      open={true} 
+      onClose={onClose} 
+      title={`${t("management.buttons.assign")}: ${user.full_name}`}
+      showSaveButton={false}
+    >
+      <div className="modal-body-list">
+        {loading ? (
+          <p>{t("loading", { ns: "common" })}...</p>
+        ) : (
+          <div className="project-selection-list">
+            {projects.map(p => (
+              <div key={p.id} className="project-selection-item card" style={{ marginBottom: '10px', padding: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <strong>{p.name}</strong>
-                    <p className="text-muted small">{p.description}</p>
+                    <strong style={{ display: 'block' }}>{p.name}</strong>
+                    <span className="text-muted small">{p.description || t("projectDashboard.noDescription")}</span>
                   </div>
                   <button 
                     className="btn-primary btn-sm" 
                     onClick={() => onAssign(user.user_id, p.id)}
                   >
-                    + Assign
+                    + {t("management.buttons.assignShort", "Assign")}
                   </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+    </Modal>
   );
 }

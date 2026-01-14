@@ -1,3 +1,4 @@
+// frontend/src/pages/AdminManagementPage.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -43,14 +44,14 @@ export default function AdminManagementPage() {
   const handleToggleStatus = async (user_id, current_status) => {
     try {
       await toggleAdminActive(user_id, current_status === 1 ? 0 : 1);
-      await loadData(); // Refresh both tables
+      await loadData(); 
     } catch (err) {
-      alert("Failed to update user status.");
+      alert(t("management.alerts.statusError")); // Translated alert
     }
   };
 
   const handleRemoveAssignment = async (id) => {
-    if (window.confirm("Remove this project assignment?")) {
+    if (window.confirm(t("management.confirm.removeAssignment"))) { // Translated confirmation
       // API call logic for removal would go here
       console.log("Removing assignment:", id);
     }
@@ -60,7 +61,7 @@ export default function AdminManagementPage() {
     try {
       await assignProjectToUser(user_id, project_id);
       setSelectedUserForProject(null);
-      await loadData(); // Refresh assignments table
+      await loadData(); 
     } catch (err) {
       alert(err.message);
     }
@@ -73,13 +74,13 @@ export default function AdminManagementPage() {
       <DashboardTopBar onBack={() => navigate("/admin")} />
 
       <div className="page-header">
-        <h1 className="page-title">Admin User Management</h1>
+        <h1 className="page-title">{t("adminDashboard.masterTools.users")}</h1> {/* From admin.json */}
         <p className="project-description">
-          Monitor system access and delegate project management permissions.
+          {t("adminDashboard.masterTools.usersDesc")} {/* From admin.json */}
         </p>
       </div>
 
-      <div className="management-sections"> {/* This class handles the 2.5rem gap */}
+      <div className="management-sections">
         <UserTable 
           users={users} 
           onToggleStatus={handleToggleStatus}
@@ -88,7 +89,6 @@ export default function AdminManagementPage() {
           onAddClick={() => setIsAddAdminOpen(true)}
         />
 
-        {/* Add the modal component at the bottom */}
         <AddAdminModal 
           open={isAddAdminOpen}
           onClose={() => setIsAddAdminOpen(false)}
@@ -101,6 +101,7 @@ export default function AdminManagementPage() {
           onRemove={handleRemoveAssignment}
         />
       </div>
+      
       {selectedUserForProject && (
         <AssignProjectModal 
           user={selectedUserForProject}

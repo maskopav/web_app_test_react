@@ -1,5 +1,11 @@
 
 /* --- Compact Create Section --- */
+.protocol-page {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
 .create-header {
   display: flex;
   justify-content: space-between;

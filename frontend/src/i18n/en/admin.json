@@ -30,6 +30,44 @@
       "projectsDesc": "View and manage all system projects, activate or deactivate projects."
     }
   },
+  "management": {
+    "title": "System Administrators",
+    "addUser": "Add administrator",
+    "table": {
+      "id": "ID",
+      "user": "User (Email)",
+      "fullName": "Full Name",
+      "role": "Role",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "projectAssignments": {
+      "title": "Project Assignments",
+      "noData": "No projects assigned to administrators yet.",
+      "table": {
+        "project": "Assigned Project",
+        "date": "Date Assigned"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "buttons": {
+      "assign": "Assign Project",
+      "activate": "Activate User",
+      "deactivate": "Deactivate User",
+      "edit": "Edit Admin",
+      "remove": "Remove Assignment",
+      "assignShort": "Assign"
+    },
+    "confirm": {
+      "removeAssignment": "Are you sure you want to remove this project assignment?"
+    },
+    "alerts": {
+      "statusError": "Failed to update user status."
+    }
+  },
   "projectDashboard": {
     "title": "Project Dashboard",
     "subtitle": "Loaded project:",

@@ -37,10 +37,17 @@ export default function AdminLoginPage() {
       }
     } catch (err) {
       console.error("Login submission error:", err);
-      // Map error to correct translation key
-      const msg = err.message.includes("credentials") 
-        ? t("adminLogin.errorGeneric") 
-        : t("adminLogin.errorConnection");
+      
+      // Map backend error messages to translation keys
+      let msg = t("adminLogin.errorGeneric"); // Default error
+
+      if (err.message.includes("deactivated")) {
+        msg = t("adminLogin.errorDeactivated"); // Specific message for inactive users
+      } else if (err.message.includes("credentials")) {
+        msg = t("adminLogin.errorGeneric");
+      } else {
+        msg = t("adminLogin.errorConnection");
+      }
       
       setStatus({ type: "error", message: msg });
     } finally {

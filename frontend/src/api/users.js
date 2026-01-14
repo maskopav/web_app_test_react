@@ -26,3 +26,14 @@ export async function fetchAllAdmins() {
     if (!res.ok) throw new Error(json.error || "Failed to create admin");
     return json;
   }
+
+  export async function updateUserApi(payload) {
+    const res = await fetch(`${API_BASE}/users/update`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Failed to update user");
+    return json;
+}

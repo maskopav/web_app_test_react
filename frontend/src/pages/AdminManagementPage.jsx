@@ -7,6 +7,7 @@ import UserTable from "../components/AdminManagement/UserTable";
 import UserProjectTable from "../components/AdminManagement/UserProjectTable";
 import AssignProjectModal from "../components/AdminManagement/AssignProjectModal";
 import AddAdminModal from "../components/AdminManagement/AddAdminModal";
+import EditAdminModal from "../components/AdminManagement/EditAdminModal";
 import { fetchProjectsList } from "../api/projects";
 import { fetchAllAdmins, toggleAdminActive} from "../api/users";
 import { fetchAdminAssignments, assignProjectToUser } from "../api/userProjects";
@@ -21,6 +22,7 @@ export default function AdminManagementPage() {
   const [selectedUserForProject, setSelectedUserForProject] = useState(null);
   const [allProjects, setAllProjects] = useState([]);
   const [isAddAdminOpen, setIsAddAdminOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
 
   const loadData = async () => {
     try {
@@ -84,7 +86,7 @@ export default function AdminManagementPage() {
         <UserTable 
           users={users} 
           onToggleStatus={handleToggleStatus}
-          onEdit={(u) => console.log("Edit", u)}
+          onEdit={(u) => setUserToEdit(u)}
           onAssignProject={(u) => setSelectedUserForProject(u)}
           onAddClick={() => setIsAddAdminOpen(true)}
         />
@@ -93,6 +95,13 @@ export default function AdminManagementPage() {
           open={isAddAdminOpen}
           onClose={() => setIsAddAdminOpen(false)}
           projects={allProjects}
+          onSuccess={loadData}
+        />
+
+        <EditAdminModal 
+          open={!!userToEdit}
+          user={userToEdit}
+          onClose={() => setUserToEdit(null)}
           onSuccess={loadData}
         />
 

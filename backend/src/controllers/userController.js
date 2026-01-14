@@ -67,3 +67,19 @@ export const createAdmin = async (req, res) => {
         res.status(500).json({ error: "Failed to create admin" });
     }
 };
+
+export const updateUser = async (req, res) => {
+    const { user_id, email, full_name } = req.body;
+    try {
+        await executeQuery(
+            "UPDATE users SET email = ?, full_name = ? WHERE id = ?",
+            [email, full_name, user_id]
+        );
+        res.json({ success: true, message: "User updated successfully" });
+    } catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ error: "Email already in use by another account" });
+        }
+        res.status(500).json({ error: "Failed to update user" });
+    }
+};

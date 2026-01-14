@@ -103,6 +103,9 @@ SELECT
     p.description,
     p.start_date,
     p.is_active AS project_is_active,
+    p.country,
+    p.frequency,
+    p.contact_person,
 
     -- 1. PROTOCOL DEFINITIONS (From v_project_protocols)
     -- Counts how many DISTINCT protocols are currently marked as 'is_current = 1'
@@ -189,7 +192,7 @@ LEFT JOIN (
 ) part_stats ON p.id = part_stats.project_id;
 
 -- View for the main User Table
-CREATE OR REPLACE VIEW view_users_management AS
+CREATE OR REPLACE VIEW v_users_management AS
 SELECT 
     u.id as user_id, 
     u.email as user_email, 
@@ -202,7 +205,7 @@ WHERE r.name != 'master'
 ORDER BY u.id;
 
 -- View for the User-Project Assignments Table
-CREATE OR REPLACE VIEW view_user_project_assignments AS
+CREATE OR REPLACE VIEW v_user_project_assignments AS
 SELECT 
     up.id as assignment_id,
     up.user_id,

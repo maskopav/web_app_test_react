@@ -18,8 +18,9 @@ export async function getProjectStats(projectId) {
   }
 }
 
-export async function fetchProjectsList() {
-    const res = await fetch(`${API_BASE}/projects/projects-list`);
-    if (!res.ok) throw new Error("Failed to fetch projects");
-    return res.json();
-  }
+export async function fetchProjectsList(userId, role) {
+  // Pass user context as query parameters
+  const res = await fetch(`${API_BASE}/projects/projects-list?userId=${userId}&role=${role}`);
+  if (!res.ok) throw new Error("Failed to fetch projects");
+  return res.json();
+}

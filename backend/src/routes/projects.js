@@ -1,10 +1,10 @@
 import express from "express";
 import { 
-    getAllProjects
+    getProjectList
  } from "../controllers/projectController.js";
 
 const router = express.Router();
 
-router.get("/projects-list", getAllProjects); 
+router.get("/projects-list", getProjectList); 
 
 export default router;

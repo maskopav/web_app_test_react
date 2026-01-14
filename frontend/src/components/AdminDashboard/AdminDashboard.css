@@ -20,8 +20,9 @@
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 80px;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 70px;
   width: fit-content;
 }
 
@@ -42,13 +43,23 @@
   flex-direction: column;
   gap: 3px;
   align-items: center;
-  margin-bottom: 0px;
+  width: 100%;
 }
 
 .project-card-body p {
-  color: var(--muted);
+  margin: 0;
   font-size: 0.95rem;
-  margin: 0.1rem 0;
+  color: var(--primary);
+  font-weight: 600;
+  text-align: center;
+}
+
+.project-descr {
+  color: var(--muted) !important;
+  font-weight: 400 !important;
+
+  line-height: 1.4;
+  display: block;
 }
 
 .card-link {

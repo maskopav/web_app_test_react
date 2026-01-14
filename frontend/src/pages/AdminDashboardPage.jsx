@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getMappings } from "../api/mappings";
+import { useUser } from "../context/UserContext";
+import { fetchProjectsList } from "../api/projects";
 
 // Shared & Local Components
 import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
@@ -13,20 +15,7 @@ import "./Pages.css";
 export default function AdminDashboardPage() {
   const { t } = useTranslation(["admin", "common"]);
   const navigate = useNavigate();
-
-  // Development Placeholder User Logic
-  const getStoredUser = () => {
-    const stored = localStorage.getItem("adminUser");
-    if (stored) return JSON.parse(stored);
-    
-    if (import.meta.env.DEV) {
-       console.warn("Dev mode: Using Master placeholder");
-       return { id: 1, full_name: "Master User", role_id: 1, email: "master_user@example.com" };
-    }
-    return null;
-  };
-
-  const [user, setUser] = useState(getStoredUser());
+  const { user } = useUser();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,17 +25,14 @@ export default function AdminDashboardPage() {
       return;
     }
 
-    async function loadDashboardData() {
-      try {
-        const data = await getMappings(["projects"]);
-        setProjects(data.projects || []);
-      } catch (err) {
-        console.error("Dashboard data error:", err);
-      } finally {
-        setLoading(false);
-      }
+    if (user) {
+      // Find the role name from the mappings or user object
+      // Assuming user.role contains the name (e.g., 'admin' or 'master')
+      fetchProjectsList(user.id, user.role)
+        .then(setProjects)
+        .catch(err => console.error(err))
+        .finally(() => setLoading(false));
     }
-    loadDashboardData();
   }, [user, navigate]);
 
   const handleLogout = () => {

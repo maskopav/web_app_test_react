@@ -218,7 +218,10 @@ export const adminLogin = async (req, res) => {
   try {
     // 1. Find user - Include is_active in the SELECT statement
     const rows = await executeQuery(
-      `SELECT id, email, password_hash, full_name, role_id, is_active, must_change_password FROM users WHERE email = ?`,
+      `SELECT u.id, u.email, u.password_hash, u.full_name, u.role_id, r.name as role, u.is_active, u.must_change_password 
+      FROM users u
+      JOIN roles r ON u.role_id = r.id
+      WHERE u.email = ?`,
       [email]
     );
 
@@ -246,6 +249,7 @@ export const adminLogin = async (req, res) => {
         id: user.id,
         email: user.email,
         full_name: user.full_name,
+        role: user.role,
         role_id: user.role_id,
         must_change_password: user.must_change_password
       }

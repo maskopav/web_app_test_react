@@ -21,8 +21,8 @@ export default function UserTable({ users, onToggleStatus, onEdit, onAssignProje
           <thead>
             <tr>
               <th>{t("management.table.id")}</th>
-              <th>{t("management.table.user")}</th>
               <th>{t("management.table.fullName")}</th>
+              <th>{t("management.table.user")}</th>
               <th>{t("management.table.role")}</th>
               <th>{t("management.table.status")}</th>
               <th style={{ textAlign: "center" }}>{t("management.table.actions")}</th>
@@ -32,8 +32,8 @@ export default function UserTable({ users, onToggleStatus, onEdit, onAssignProje
             {users.map((u) => (
               <tr key={u.user_id}>
                 <td>{u.user_id}</td>
-                <td><strong>{u.user_email}</strong></td>
-                <td>{u.full_name || "—"}</td>
+                <td><strong>{u.full_name || "—"}</strong></td>
+                <td>{u.user_email}</td>
                 <td><span className="user-role-badge">{u.role}</span></td>
                 <td>
                   <span className={`status-badge ${u.is_active ? "active" : "inactive"}`}>

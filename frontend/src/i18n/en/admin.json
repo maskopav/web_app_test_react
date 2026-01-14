@@ -62,7 +62,10 @@
       "assignShort": "Assign"
     },
     "confirm": {
-      "removeAssignment": "Are you sure you want to remove this project assignment?"
+      "removeAssignment": "Are you sure you want to remove this project assignment?",
+      "confirm": "Remove",
+      "cancel": "Cancel",
+      "deleteTitle": "Confirm Removal"
     },
     "alerts": {
       "statusError": "Failed to update user status."

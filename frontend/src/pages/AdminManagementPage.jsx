@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useConfirm } from "../components/ConfirmDialog/ConfirmDialogContext";
 import DashboardTopBar from "../components/DashboardTopBar/DashboardTopBar";
 import UserTable from "../components/AdminManagement/UserTable";
 import UserProjectTable from "../components/AdminManagement/UserProjectTable";
@@ -10,12 +11,14 @@ import AddAdminModal from "../components/AdminManagement/AddAdminModal";
 import EditAdminModal from "../components/AdminManagement/EditAdminModal";
 import { fetchProjectsList } from "../api/projects";
 import { fetchAllAdmins, toggleAdminActive} from "../api/users";
-import { fetchAdminAssignments, assignProjectToUser } from "../api/userProjects";
+import { fetchAdminAssignments, assignProjectToUser, removeUserProjectAssignmentApi } from "../api/userProjects";
 import "./Pages.css";
 
 export default function AdminManagementPage() {
   const { t } = useTranslation(["admin", "common"]);
   const navigate = useNavigate();
+  const confirm = useConfirm();
+
   const [users, setUsers] = useState([]);
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,9 +56,22 @@ export default function AdminManagementPage() {
   };
 
   const handleRemoveAssignment = async (id) => {
-    if (window.confirm(t("management.confirm.removeAssignment"))) { // Translated confirmation
-      // API call logic for removal would go here
-      console.log("Removing assignment:", id);
+    // Call the custom dialog and wait for the boolean result
+    const isConfirmed = await confirm({
+      title: t("management.confirm.deleteTitle"),
+      message: t("management.confirm.removeAssignment"),
+      confirmText: t("management.confirm.confirm"),
+      cancelText: t("management.confirm.cancel"),
+    });
+
+    if (isConfirmed) {
+      try {
+        await removeUserProjectAssignmentApi(id);
+        await loadData(); // Refresh assignments table
+      } catch (err) {
+        // You could also implement a "useAlert" here for consistency
+        alert(err.message || "Failed to remove assignment.");
+      }
     }
   };
 

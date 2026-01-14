@@ -18,3 +18,13 @@ const API_BASE = import.meta.env.VITE_API_BASE;
     if (!res.ok) throw new Error(json.error || "Assignment failed");
     return json;
   }
+
+  export async function removeUserProjectAssignmentApi(id) {
+    const res = await fetch(`${API_BASE}/user-projects/remove-assignment/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" }
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || "Failed to remove assignment");
+    return json;
+  }

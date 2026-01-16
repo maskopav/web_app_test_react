@@ -95,6 +95,98 @@
     color: white;
 }
 
+/* Admin Form Container */
+.admin-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px 0;
+    min-width: 500px; /* Increases the overall modal width */
+}
+
+/* Row layout: Label on left, Input/Grid on right */
+.form-group {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; /* Centers label vertically with input */
+    gap: 12px;
+}
+
+/* Fixed width labels to align inputs in a column */
+.form-group .form-label {
+    width: 140px; 
+    flex-shrink: 0;
+    text-align: left;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+/* Align labels to the top for the project grid specifically */
+.form-group:has(.project-selection-grid) {
+    align-items: flex-start;
+}
+.form-group:has(.project-selection-grid) .form-label {
+    padding-top: 6px;
+}
+
+/* Inputs and grids take up the remaining row space */
+.participant-input, 
+.project-selection-grid {
+    flex: 1;
+    width: 100%;
+}
+
+/* Simple, clean project list */
+.project-selection-grid {
+    display: flex;
+    flex-direction:column;
+    align-items: flex-start;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #fafafa;
+}
+
+/* Compact checkbox rows aligned to the left */
+.checkbox-label {
+    display: flex; /* Keeps checkbox and text on one line */
+    align-items: center;
+    justify-content: flex-start; /* Forces alignment to the left */
+    width: 100%; /* Fills the container for a better hover area */
+    padding: 3px 6px; 
+    margin: 0;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.checkbox-label:hover {
+    background-color: #f0f0f0;
+}
+
+.checkbox-input {
+    margin-right: 10px;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    flex-shrink: 0; /* Prevents checkbox from squishing */
+}
+
+/* Error message alignment */
+.validation-error-msg {
+    margin-top: 5px;
+    margin-left: 152px; /* Matches label width (140px) + gap (12px) */
+    color: var(--danger);
+    font-size: 0.85rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 /* Responsive adjustments */
 @media (max-width: 568px) {

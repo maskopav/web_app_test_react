@@ -1,10 +1,12 @@
+// frontend/src/components/AdminManagement/AddAdminModal.jsx
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Modal from "../ProtocolEditor/Modal";
 import { createAdminApi } from "../../api/users";
+import "./AdminManagement.css";
 
 export default function AddAdminModal({ open, onClose, projects, onSuccess }) {
-  const { t } = useTranslation(["admin", "common"]);
+  const { t, i18n } = useTranslation(["admin", "common"]);
   const [formData, setFormData] = useState({
     email: "",
     full_name: "",
@@ -17,30 +19,27 @@ export default function AddAdminModal({ open, onClose, projects, onSuccess }) {
     setFormData(prev => ({
       ...prev,
       project_ids: prev.project_ids.includes(id)
-        ? prev.project_ids.filter(p => p !== id)
+        ? prev.project_ids.filter(pId => pId !== id)
         : [...prev.project_ids, id]
     }));
   };
 
   const handleSubmit = async () => {
-    // Basic presence check
-    if (!formData.email) return setError("Email is required");
+    if (!formData.email) return setError(t("adminLogin.errorGeneric"));
 
-    // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-      return setError("Please enter a valid email format (e.g., admin@example.com)");
+      return setError("Please enter a valid email format");
     } 
 
     setIsSubmitting(true);
     setError("");
     try {
       await createAdminApi({
-            email: formData.email,
-            full_name: formData.full_name,
-            project_ids: formData.project_ids // The array of IDs from the checkboxes
+        ...formData,
+        lang: i18n.language
       });
-      onSuccess(); // Refreshes the management tables
+      onSuccess(); 
       onClose();
       setFormData({ email: "", full_name: "", project_ids: [] });
     } catch (err) {
@@ -54,53 +53,58 @@ export default function AddAdminModal({ open, onClose, projects, onSuccess }) {
     <Modal 
       open={open} 
       onClose={onClose} 
-      title="Add New System Administrator"
+      title={t("management.addUser")}
       onSave={handleSubmit}
       showSaveButton={true}
-      saveLabel={isSubmitting ? "Creating..." : "Create Admin"}
+      saveLabel={isSubmitting ? t("common:saving") : t("management.addUser")}
     >
-      <div className="participant-form">
-        <div className="form-col">
-          <label className="form-label">Email Address <span className="label-required">*</span></label>
+      <div className="admin-form-container">
+        <div className="form-group">
+          <label className="form-label">
+            {t("management.table.user")} <span className="label-required">*</span>
+          </label>
           <input 
             className="participant-input"
             type="email"
             value={formData.email}
             onChange={(e) => {
                 setFormData({...formData, email: e.target.value})
-                if (error) setError(""); // Clear error when user starts typing again
+                if (error) setError("");
             }}
             placeholder="admin@example.com"
           />
         </div>
-        <div className="form-col">
-          <label className="form-label">Full Name (Optional)</label>
+
+        <div className="form-group">
+          <label className="form-label">{t("management.table.fullName")}</label>
           <input 
             className="participant-input"
             value={formData.full_name}
             onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-            placeholder="John Doe"
+            placeholder="e.g. John Doe"
           />
         </div>
         
-        <div className="form-col">
-          <label className="form-label">Assign to Projects</label>
-          <div className="project-selection-list" style={{maxHeight: '150px', overflowY: 'auto', border: '1px solid #ddd', padding: '10px', borderRadius: '4px'}}>
+        <div className="form-group">
+          <label className="form-label">{t("adminDashboard.projectsTitle")}</label>
+          <div className="project-selection-grid">
             {projects.map(p => (
-              <label key={p.id} style={{display: 'block', marginBottom: '5px', cursor: 'pointer'}}>
-                <input 
-                  type="checkbox" 
-                  checked={formData.project_ids.includes(p.id)}
-                  onChange={() => handleToggleProject(p.id)}
-                  style={{marginRight: '10px'}}
-                />
-                {p.name}
-              </label>
+              <div className="project-selection-checkbox">
+                <label key={p.project_id} className="checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    className="checkbox-input"
+                    checked={formData.project_ids.includes(p.project_id)}
+                    onChange={() => handleToggleProject(p.project_id)}
+                  />
+                  <span>{p.project_name}</span>
+                </label>
+              </div>
             ))}
           </div>
         </div>
 
-        {error && <div className="validation-error-msg" style={{marginTop: '10px'}}>{error}</div>}
+        {error && <div className="validation-error-msg">{error}</div>}
       </div>
     </Modal>
   );

@@ -114,3 +114,30 @@ export async function sendPasswordResetEmail(email, resetLink, protocolToken, la
     lang
   });
 }
+
+/**
+ * HELPER: New Admin Welcome (with temp password)
+ */
+export async function sendAdminWelcomeEmail(email, { fullName, tempPassword, loginLink }, lang = "en") {
+  const t = i18next.getFixedT(lang, "common");
+
+  const html = `
+    <div style="font-family: sans-serif; max-width: 600px; border: 1px solid #eee; padding: 20px;">
+      <h2 style="color: #3764df;">${t("email.adminWelcomeTitle", { name: fullName || email })}</h2>
+      <p>${t("email.adminWelcomeBody")}</p>
+      
+      <div style="background: #f9f9f9; padding: 20px; margin: 20px 0; border-radius: 8px; border: 1px dashed #3764df;">
+        <p style="margin: 0 0 10px 0;"><strong>${t("email.loginUrlLabel")}:</strong> <a href="${loginLink}">${loginLink}</a></p>
+        <p style="margin: 0;"><strong>${t("email.tempPasswordLabel")}:</strong> <code style="background: #fff; padding: 2px 6px; border: 1px solid #ddd;">${tempPassword}</code></p>
+      </div>
+
+    </div>
+  `;
+
+  return sendEmail({
+    to: email,
+    subject: t("email.adminWelcomeSubject"),
+    html,
+    lang
+  });
+}

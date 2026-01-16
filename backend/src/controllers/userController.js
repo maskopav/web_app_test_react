@@ -2,6 +2,7 @@
 import { executeQuery } from "../db/queryHelper.js";
 import bcrypt from "bcrypt";
 import { logToFile } from '../utils/logger.js';
+import { sendAdminWelcomeEmail } from "../utils/emailService.js";
 
 // Fetch all users for the management table
 export const getAllUsers = async (req, res) => {
@@ -25,9 +26,15 @@ export const toggleUserStatus = async (req, res) => {
 };
 
 export const createAdmin = async (req, res) => {
-    const { email, full_name, project_ids } = req.body;
+    const { email, full_name, project_ids, lang = 'en' } = req.body;
 
     try {
+        const existingUsers = await executeQuery("SELECT id FROM users WHERE email = ?", [email]);
+        if (existingUsers.length > 0) {
+            return res.status(400).json({ 
+                error: "User with this email already exists" 
+            });
+        }
         // 1. Get the 'admin' role ID
         const roles = await executeQuery("SELECT id FROM roles WHERE name = 'admin'", []);
         if (roles.length === 0) return res.status(500).json({ error: "Admin role not found" });
@@ -52,13 +59,25 @@ export const createAdmin = async (req, res) => {
             }
         }
 
-        logToFile(`✅ Admin ${email} created with the temp password: ${tempPassword}`);
+        // 5. Send the Welcome Email
+        // Determine Base URL from headers (Matches authController logic)
+        let baseUrl = req.headers.referer || req.headers.origin;
+        if (baseUrl && baseUrl.endsWith('/')) {
+            baseUrl = baseUrl.slice(0, -1);
+        }
+        // We do this asynchronously to not block the response
+        sendAdminWelcomeEmail(email, { 
+            fullName: full_name, 
+            tempPassword,
+            loginLink: baseUrl,
+        }, lang).catch(err => logToFile(`📧 Failed to send admin welcome email: ${err.message}`));
+
+        logToFile(`✅ Admin ${email} created with the temp password: ${tempPassword}, login link: ${baseUrl}`);
 
         res.status(201).json({ 
             success: true, 
-            message: "Admin created successfully",
+            message: "Admin created successfully and notification email sent.",
             userId: newUserId 
-            // In a real app, you'd send the tempPassword via email here
         });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {

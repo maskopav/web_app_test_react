@@ -11,7 +11,7 @@
 
         // Logic: Masters see all active projects. 
         // Regular admins see only assigned active projects.
-        if (role === 'master') {
+        if (role === 'master' || !role || !userId) {
             query = "SELECT * FROM v_project_summary_stats";
         } else {
             query = `

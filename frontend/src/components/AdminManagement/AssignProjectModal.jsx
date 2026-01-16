@@ -14,6 +14,8 @@ export default function AssignProjectModal({ user, onClose, onAssign }) {
     fetchProjectsList()
       .then(setProjects)
       .finally(() => setLoading(false));
+
+    console.log(projects);
   }, []);
 
   return (
@@ -29,10 +31,10 @@ export default function AssignProjectModal({ user, onClose, onAssign }) {
         ) : (
           <div className="project-selection-list">
             {projects.map(p => (
-              <div key={p.id} className="project-selection-item card" style={{ marginBottom: '10px', padding: '12px' }}>
+              <div key={p.project_id} className="project-selection-item card" style={{ marginBottom: '10px', padding: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <strong style={{ display: 'block' }}>{p.name}</strong>
+                    <strong style={{ display: 'block' }}>{p.project_name}</strong>
                     <span className="text-muted small">{p.description || t("projectDashboard.noDescription")}</span>
                   </div>
                   <button 

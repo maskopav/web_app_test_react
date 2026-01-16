@@ -19,8 +19,12 @@ export async function getProjectStats(projectId) {
 }
 
 export async function fetchProjectsList(userId, role) {
-  // Pass user context as query parameters
-  const res = await fetch(`${API_BASE}/projects/projects-list?userId=${userId}&role=${role}`);
+  const params = new URLSearchParams();
+  if (userId) params.append("userId", userId);
+  if (role) params.append("role", role);
+
+  const res = await fetch(`${API_BASE}/projects/projects-list?${params.toString()}`);
+  
   if (!res.ok) throw new Error("Failed to fetch projects");
   return res.json();
 }

@@ -4,7 +4,7 @@ import { executeQuery } from "../db/queryHelper.js";
   // Fetch all project assignments
   export const getUserProjectAssignments = async (req, res) => {
     try {
-      const rows = await executeQuery("SELECT * FROM view_user_project_assignments", []);
+      const rows = await executeQuery("SELECT * FROM v_user_project_assignments", []);
       res.json(rows);
     } catch (err) {
       res.status(500).json({ error: "Failed to fetch assignments" });

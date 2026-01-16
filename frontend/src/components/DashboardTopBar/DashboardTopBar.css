@@ -5,7 +5,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.3rem 0.5rem; /* Reduced vertical padding for a slimmer look */
-    background: white;
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
     height: 30px;
     box-sizing: border-box;

@@ -6,7 +6,7 @@ import { logToFile } from '../utils/logger.js';
 // Fetch all users for the management table
 export const getAllUsers = async (req, res) => {
     try {
-        const rows = await executeQuery("SELECT * FROM view_users_management", []);
+        const rows = await executeQuery("SELECT * FROM v_users_management", []);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch users" });

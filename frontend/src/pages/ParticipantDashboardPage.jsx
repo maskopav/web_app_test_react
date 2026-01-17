@@ -81,6 +81,7 @@ export default function ParticipantDashboardPage() {
   // Resolve project name for the title
   const currentProject = mappings?.projects?.find(p => p.id === Number(projectId));
   const projectName = currentProject?.name || "";
+  const isReadOnly = currentProject?.is_active === 0;
 
   // --- Handlers ---
   const handleAddClick = () => {
@@ -178,6 +179,11 @@ export default function ParticipantDashboardPage() {
       <h2 className="page-title">
         {projectName ? `${projectName}: ` : ""}
         {t("participantDashboard.title")}
+        {isReadOnly && (
+          <p className="inactive-mode-warning">
+            ⚠️{t("projectDashboard.status.inactive") + ": "+ t("projectDashboard.status.inactiveMode")}
+          </p>
+        )}
       </h2>
 
       {/* Main Content */}
@@ -194,17 +200,26 @@ export default function ParticipantDashboardPage() {
             </div>
             {/* BUTTON GROUP */}
             <div className="header-actions">
-              <button className="btn-create small" onClick={handleAddClick}>
+              <button 
+                className="btn-create small" 
+                onClick={handleAddClick}
+                disabled={isReadOnly}
+              >
                 + {t("participantDashboard.addParticipant")}
               </button>
 
-              <button className="btn-search small" onClick={handleSearchClick}>
+              <button 
+                className="btn-search small" 
+                onClick={handleSearchClick}
+                disabled={isReadOnly}
+              >
                 🔍 {t("participantDashboard.addExisting")}
               </button>
             </div>
           </div>
             <ParticipantTable 
               participants={participants} 
+              readOnly={isReadOnly}
               loading={loading}
               onEdit={handleEditClick}
               onAssignProtocol={handleOpenAssignModal}
@@ -226,6 +241,7 @@ export default function ParticipantDashboardPage() {
               rows={assignments} 
               onRefresh={handleAssignmentChange}
               onShowSuccessModal={handleShowSuccessModal}
+              readOnly={isReadOnly}
             />
         </section>
 

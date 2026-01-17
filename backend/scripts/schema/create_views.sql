@@ -20,6 +20,7 @@ SELECT
     pr.id                            AS project_id,
     pr.name                          AS project_name,
     pr.frequency                     AS project_frequency,
+    pr.is_active                     AS project_is_active,
 
     -- project_protocols
     ppr.id                           AS project_protocol_id,

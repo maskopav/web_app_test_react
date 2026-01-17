@@ -42,11 +42,12 @@ export default function ProjectDashboardPage() {
   }, [loadData]);
 
   const project = mappings?.projects?.find(p => p.id === Number(projectId));
+  const isReadOnly = project?.is_active === 0;
   
   if (loading) return <div className="app-container"><p>{t("loading", { ns: "common" })}...</p></div>;
 
   return (
-    <div className="dashboard-page">
+    <div className={`dashboard-page ${isReadOnly ? "view-only-mode" : ""}`}>
       <DashboardTopBar onBack={() => navigate("/admin")} />
 
       <div className="page-header">
@@ -55,6 +56,11 @@ export default function ProjectDashboardPage() {
           <div className="project-title-group">
             <h1 className="page-title">{project?.name || "—"}</h1>
             <StatusBadge active={project?.is_active === 1} />
+            {isReadOnly && (
+              <div className="inactive-mode-warning">
+                ⚠️ {t("projectDashboard.status.inactiveMode")}
+              </div>
+            )}
           </div>
         
         </div>
@@ -84,7 +90,8 @@ export default function ProjectDashboardPage() {
           </div>
           <button 
             className="btn-edit-project" 
-            onClick={() => setIsEditModalOpen(true)}
+            onClick={() => !isReadOnly && setIsEditModalOpen(true)}
+            disabled={isReadOnly}
             title={t("buttons.edit", { ns: "common" })}
           >
             {t("buttons.edit", { ns: "common" })}

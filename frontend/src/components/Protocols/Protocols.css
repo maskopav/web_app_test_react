@@ -74,6 +74,16 @@
   box-sizing: border-box;
 }
 
+.input:disabled {
+  cursor: not-allowed;
+  background-color: var(--bg);
+}
+
+.button:disabled {
+  color: var(--text) !important;
+  cursor: not-allowed !important;
+}
+
 .btn-create, .btn-search {
   width: auto;
   background: var(--success);

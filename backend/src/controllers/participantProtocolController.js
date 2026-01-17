@@ -39,6 +39,12 @@ export async function resolveParticipantToken(req, res) {
       return res.status(500).json({ error: "Protocol assignment for  given participant is not active!" });
     }
 
+    // Check parent project status
+    if (view.project_is_active === 0) {
+      return res.status(403).json({ 
+        error: "This project has been archived. Data collection is no longer possible." 
+      });
+    }
 
     // 3. Load tasks for the protocol
     const tasks = await executeQuery(

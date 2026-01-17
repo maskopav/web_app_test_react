@@ -40,6 +40,12 @@ export const createParticipant = async (req, res) => {
     protocol_id // The selected protocol to assign immediately
   } = req.body;
 
+  // Verify project is active before allowing creation
+  const [project] = await executeQuery("SELECT is_active FROM projects WHERE id = ?", [project_id]);
+  if (project && project.is_active === 0) {
+     return res.status(403).json({ error: "Cannot add participants to an inactive project." });
+  }
+
   logToFile(`👤 Creating participant: ${full_name},${external_id} for project ${project_id}`);
 
   try {

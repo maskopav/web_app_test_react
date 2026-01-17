@@ -24,6 +24,12 @@ export const saveProtocol = async (req, res) => {
     return res.status(400).json({ error: 'No tasks provided' });
   }
 
+  // Verify project is active before allowing protocol changes
+  const [project] = await executeQuery("SELECT is_active FROM projects WHERE id = ?", [project_id]);
+  if (project && project.is_active === 0) {
+     return res.status(403).json({ error: "Cannot edit protocols in an inactive project." });
+  }
+
   try {
       const protocol_id = await executeTransaction(async (conn) => {
       // Determine the protocol_group_id

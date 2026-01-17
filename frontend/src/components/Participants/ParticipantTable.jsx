@@ -7,7 +7,8 @@ export default function ParticipantTable({
   participants, 
   loading, 
   onEdit,
-  onAssignProtocol
+  onAssignProtocol, 
+  readOnly
 }) {
   const { t } = useTranslation(["admin", "common"]);
 
@@ -47,12 +48,17 @@ export default function ParticipantTable({
                   <td>{p.contact_phone || "—"}</td>
                   <td className="cell-notes" title={p.notes}>{p.notes || "—"}</td>
                   <td className="actions" onClick={(e) => e.stopPropagation()}>
-                    <button className="btn-edit" onClick={() => onEdit(p)}>
+                    <button 
+                      className="btn-edit" 
+                      disabled={readOnly}
+                      onClick={() => onEdit(p)}
+                    >
                       {t("participantDashboard.buttons.edit")}
                     </button>
                     <button 
                       className="btn-assign"
                       onClick={() => onAssignProtocol(p)}
+                      disabled={readOnly}
                       title={t("participants.actions.assign", "Assign Other Protocol")}
                     >
                       <AssignIcon />

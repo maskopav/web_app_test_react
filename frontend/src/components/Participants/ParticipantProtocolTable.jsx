@@ -10,7 +10,7 @@ import { useConfirm } from "../ConfirmDialog/ConfirmDialogContext";
 
 const VITE_APP_BASE_PATH = import.meta.env.VITE_APP_BASE_PATH;
 
-export default function ParticipantProtocolTable({ rows, onRefresh, onShowSuccessModal }) {
+export default function ParticipantProtocolTable({ rows, onRefresh, onShowSuccessModal, readOnly }) {
   const { t } = useTranslation(["admin"]);
   const confirm = useConfirm();
 
@@ -109,6 +109,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh, onShowSucces
                       {r.is_active == 0 && (
                         <button
                           className="btn-view"
+                          disabled={readOnly}
                           onClick={() =>
                             handleActivate(
                               r.participant_protocol_id,
@@ -126,6 +127,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh, onShowSucces
                         <>
                           <button
                             className="btn-edit"
+                            disabled={readOnly}
                             onClick={() =>
                               handleDeactivate(
                                 r.participant_protocol_id,
@@ -140,6 +142,7 @@ export default function ParticipantProtocolTable({ rows, onRefresh, onShowSucces
                           {/* EXTRA BUTTON TO SHOW MODAL */}
                           <button
                             className="btn-show-modal"
+                            disabled={readOnly}
                             onClick={() => {
                               const link = `${window.location.origin}${VITE_APP_BASE_PATH}#/participant/${r.access_token}`;
                               const emailText = generateEmail(

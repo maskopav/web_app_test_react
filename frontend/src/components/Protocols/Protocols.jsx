@@ -31,6 +31,7 @@ export default function Protocols({ onSelectProtocol }) {
 
   const currentProject = mappings?.projects?.find(p => p.id === Number(projectId));
   const projectName = currentProject?.name || "Current Project";
+  const isReadOnly = currentProject?.is_active === 0;
 
   useEffect(() => {
     if (!projectId) return;
@@ -105,6 +106,7 @@ export default function Protocols({ onSelectProtocol }) {
                       <button
                         className="btn-edit"
                         onClick={() => editProtocol(p.id)}
+                        disabled={isReadOnly}
                         title={t("protocolDashboard.buttons.edit")}
                       >
                         {t("protocolDashboard.buttons.edit")}
@@ -113,6 +115,7 @@ export default function Protocols({ onSelectProtocol }) {
                     <button
                       className="btn-duplicate"
                       onClick={() => duplicateProtocol(p.id)}
+                      disabled={isReadOnly}
                       title={t("protocolDashboard.buttons.duplicate")}
                     >
                       {t("protocolDashboard.buttons.duplicate")}
@@ -121,9 +124,10 @@ export default function Protocols({ onSelectProtocol }) {
                       <button
                         className="btn-share"
                         onClick={() => setSelectedEnrollment(p)}
+                        disabled={isReadOnly}
                         title={t("protocolDashboard.buttons.share")}
                       >
-                        🔗
+                        🔀
                       </button>
                     )}
                   </td>
@@ -140,6 +144,11 @@ export default function Protocols({ onSelectProtocol }) {
     <div className="protocol-page">
       {/* Header Title - Smaller padding */}
       <h2 className="page-title">{projectName + ': ' + t("protocolDashboard.title")}</h2>
+      {isReadOnly && (
+          <p className="inactive-mode-warning">
+            ⚠️{t("projectDashboard.status.inactive") + ": "+ t("projectDashboard.status.inactiveMode")}
+          </p>
+        )}
 
       {/* Create Section - Header with Button + Inputs Row */}
       <div className="card compact-create">
@@ -148,7 +157,7 @@ export default function Protocols({ onSelectProtocol }) {
           <span className="section-title">{t("protocolDashboard.createNew")}</span>
           <button
             className="btn-create"
-            disabled={!protocolName.trim() || nameExists}
+            disabled={!protocolName.trim() || nameExists || isReadOnly}
             onClick={() =>
               onSelectProtocol({
                 name: protocolName,
@@ -169,6 +178,7 @@ export default function Protocols({ onSelectProtocol }) {
               <input
                 type="text"
                 className={`input ${nameExists ? "input-error" : ""}`}
+                disabled={isReadOnly}
                 value={protocolName}
                 onChange={(e) => setProtocolName(e.target.value)}
               />
@@ -179,6 +189,7 @@ export default function Protocols({ onSelectProtocol }) {
               <input
                 type="text"
                 className="input"
+                disabled={isReadOnly}
                 value={protocolDescription}
                 onChange={(e) => setProtocolDescription(e.target.value)}
               />

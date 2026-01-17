@@ -78,7 +78,8 @@
     "editProject": "Edit project metadata",
     "status": {
       "active": "Active Project",
-      "inactive": "Inactive / Archived"
+      "inactive": "Inactive / Archived",
+      "inactiveMode": "Mode read-only"
     },
     "fields": {
       "name": "Project Name",
